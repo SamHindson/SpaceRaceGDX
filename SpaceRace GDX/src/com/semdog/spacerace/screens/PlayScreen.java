@@ -7,12 +7,12 @@ import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.universe.Universe;
 
 public class PlayScreen extends RaceScreen {
-	
+
 	private Universe universe;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
-		
+
 		universe = new Universe();
 	}
 
@@ -25,7 +25,7 @@ public class PlayScreen extends RaceScreen {
 	public void render() {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glClearColor(0, 0, 0, 1f);
-		
+
 		universe.render();
 	}
 
