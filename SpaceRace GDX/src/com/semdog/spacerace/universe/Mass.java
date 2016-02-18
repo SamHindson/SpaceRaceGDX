@@ -22,7 +22,7 @@ public class Mass {
 		this.y = y;
 		this.mass = mass;
 		
-		dx = 100;
+		dx = 50;
 	}
 
 	public void update(float dt, Array<Planet> gravitySources) {
