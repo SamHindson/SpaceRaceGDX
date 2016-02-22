@@ -8,30 +8,45 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Mass {
-	private float x, y, dx, dy, mass;
-	private boolean onSurface;
+	protected float x, y, dx, dy, mass, angle;
+	protected boolean onSurface;
+	protected Planet environment;
 
-	private static Texture texture;
+	protected static Texture texture;
 
 	static {
 		texture = new Texture(Gdx.files.internal("assets/test.png"));
 	}
 
-	public Mass(float x, float y, float mass) {
+	public Mass(float x, float y, float mass, Planet environment) {
 		this.x = x;
 		this.y = y;
 		this.mass = mass;
 		
-		dx = 50;
+		this.environment = environment;
+		
+		dx = 0;
 	}
 
 	public void update(float dt, Array<Planet> gravitySources) {
+		angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
+
 		for (Planet planet : gravitySources) {
 			if (inRange(planet) && !onSurface(planet)) {
+				
+				if(!environment.equals(planet)) {
+					environment = planet;
+				}
+				
 				float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
-				float angle = MathUtils.atan2(y - planet.getY(), x - planet.getX());
-				dx += -dt * force * MathUtils.cos(angle);
-				dy += -dt * force * MathUtils.sin(angle);
+				float ax = -dt * force * MathUtils.cos(angle);
+				float ay = -dt * force * MathUtils.sin(angle);
+				
+				ax /= mass;
+				ay /= mass;
+				
+				dx += ax * dt;
+				dy += ay * dt;
 			}
 		}
 
@@ -39,7 +54,7 @@ public class Mass {
 		y += dy * dt;
 	}
 
-	private boolean onSurface(Planet planet) {
+	protected boolean onSurface(Planet planet) {
 		if (distance(planet) <= planet.getRadius()) {
 			onSurface = true;
 			dx = dy = 0;
@@ -57,11 +72,11 @@ public class Mass {
 		return y;
 	}
 
-	private boolean inRange(Planet planet) {
+	protected boolean inRange(Planet planet) {
 		return distance(planet) < planet.getSOI();
 	}
 
-	private float distance(Planet planet) {
+	protected float distance(Planet planet) {
 		return Vector2.dst(x, y, planet.getX(), planet.getY());
 	}
 

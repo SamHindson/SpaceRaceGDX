@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.semdog.spacerace.GameLoader;
 
 public class Planet {
 	
@@ -21,6 +22,8 @@ public class Planet {
 		this.radius = radius;
 		
 		mass = MathUtils.PI * radius * radius;
+		
+		System.out.println(mass);
 		
 		Pixmap pixmap = new Pixmap((int)(radius * 2), (int)(radius * 2), Format.RGBA8888);
 		pixmap.setColor(Color.RED);
@@ -51,5 +54,9 @@ public class Planet {
 
 	public float getRadius() {
 		return radius;
+	}
+	
+	public float getGravity(float distance) {
+		return ((mass) * (Universe.GRAVITY)) / (float)Math.pow(distance, 2);
 	}
 }
