@@ -19,6 +19,7 @@ public class Player {
 	private Sprite sprite;
 
 	private float x, y, a;
+	private float dx, dy;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
