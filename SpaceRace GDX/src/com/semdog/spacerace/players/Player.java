@@ -18,8 +18,8 @@ public class Player {
 
 	private Sprite sprite;
 
-	private float x, y, a;
-	private float dx, dy;
+	private float x, y;
+	private float dd;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
@@ -31,11 +31,10 @@ public class Player {
 
 		sprite = new Sprite(new Texture(Gdx.files.internal("assets/test.png")));
 		sprite.setSize(5, 5);
+
 	}
 
 	public void update(float dt) {
-		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
-
 		if (!onGround) {
 			if (distance > environment.getRadius()) {
 				onGround = false;
@@ -46,31 +45,33 @@ public class Player {
 
 		if (onGround) {
 			distance = environment.getRadius();
-			a = 0;
+			dd = 0;
 		} else {
-			a = -environment.getGravity(distance) * dt;
+			dd += -environment.getGravity(distance) * dt;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			angle += dt * 0.2f;
+			angle += dt * 50 / distance;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			angle -= dt * 0.2f;
+			angle -= dt * 50 / distance;
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.SPACE)) {
-			a = 10;
+		if(Gdx.input.isKeyPressed(Keys.SPACE) && onGround) {
+			dd += 100;
+			onGround = false;
 		}
 		
-		distance += a * dt;
+		distance += dd * dt;
 
-		System.out.println(a);
+		System.out.println(dd);
 
 		x = environment.getX() + distance * MathUtils.cos(angle);
 		y = environment.getY() + distance * MathUtils.sin(angle);
 
 		sprite.setPosition(x - 2.5f, y - 2.5f);
+		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
 	}
 
 	public void draw(SpriteBatch batch) {

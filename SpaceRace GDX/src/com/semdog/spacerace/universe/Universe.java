@@ -7,7 +7,7 @@ import com.semdog.spacerace.players.Player;
 
 public class Universe {
 	
-	public static final float GRAVITY = 1000f;
+	public static final float GRAVITY = 50f;
 
 	private Array<Planet> planets;
 	private Array<Mass> masses;
@@ -41,6 +41,8 @@ public class Universe {
 		for(Mass mass : masses) {
 			mass.update(dt, planets);
 		}
+		
+		camera.zoom = 1;
 
 		player.update(dt);
 		camera.position.set(player.getX(), player.getY(), 0);
