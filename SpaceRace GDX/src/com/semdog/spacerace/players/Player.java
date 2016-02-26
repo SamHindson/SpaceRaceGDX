@@ -29,14 +29,14 @@ public class Player {
 		this.x = x;
 		this.y = y;
 
-		sprite = new Sprite(new Texture(Gdx.files.internal("assets/test.png")));
-		sprite.setSize(5, 5);
+		sprite = new Sprite(new Texture(Gdx.files.internal("assets/dude.png")));
+		sprite.setSize(20, 20);
 
 	}
 
 	public void update(float dt) {
 		if (!onGround) {
-			if (distance > environment.getRadius()) {
+			if (distance > environment.getRadius() + 10) {
 				onGround = false;
 			} else {
 				onGround = true;
@@ -44,7 +44,7 @@ public class Player {
 		}
 
 		if (onGround) {
-			distance = environment.getRadius();
+			distance = environment.getRadius() + 10;
 			dd = 0;
 		} else {
 			dd += -environment.getGravity(distance) * dt;
@@ -66,11 +66,13 @@ public class Player {
 		distance += dd * dt;
 
 		System.out.println(dd);
+		
+		sprite.rotate(angle * MathUtils.radiansToDegrees);
 
 		x = environment.getX() + distance * MathUtils.cos(angle);
 		y = environment.getY() + distance * MathUtils.sin(angle);
 
-		sprite.setPosition(x - 2.5f, y - 2.5f);
+		sprite.setPosition(x - 10, y - 10);
 		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
 	}
 

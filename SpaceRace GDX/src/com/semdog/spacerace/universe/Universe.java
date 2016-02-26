@@ -42,7 +42,7 @@ public class Universe {
 			mass.update(dt, planets);
 		}
 		
-		camera.zoom = 1;
+		camera.zoom = 0.3f;
 
 		player.update(dt);
 		camera.position.set(player.getX(), player.getY(), 0);
