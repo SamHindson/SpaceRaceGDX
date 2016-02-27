@@ -10,6 +10,7 @@ public class GameLoader {
 		config.width = 800;
 		config.height = 600;
 		config.title = "SPACERACE!";
+		config.samples = 4;
 		config.resizable = false;
 		new LwjglApplication(new RaceGame(), config);
 	}

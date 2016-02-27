@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.semdog.spacerace.GameLoader;
 
@@ -14,8 +15,6 @@ public class Planet {
 	private float radius, x, y, r;
 	private float mass;
 	
-	private Texture texture;
-	
 	public Planet(float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
@@ -23,17 +22,13 @@ public class Planet {
 		
 		mass = MathUtils.PI * radius * radius;
 		
-		System.out.println(mass);
-		
-		Pixmap pixmap = new Pixmap((int)(radius * 2), (int)(radius * 2), Format.RGBA8888);
-		pixmap.setColor(Color.RED);
-		pixmap.fillCircle((int)radius, (int)radius, (int)radius);
-		
-		texture = new Texture(pixmap);
+		System.out.println("Planet mass: " + mass);
+		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
 	}
 	
-	public void draw(SpriteBatch batch) {
-		batch.draw(texture, x - radius, y - radius);
+	public void draw(ShapeRenderer shapeRenderer) {
+		shapeRenderer.setColor(Color.CYAN);
+		shapeRenderer.circle(x, y, radius, 100);
 	}
 
 	public float getX() {
@@ -45,7 +40,7 @@ public class Planet {
 	}
 	
 	public float getSOI() {
-		return radius * 2;
+		return radius * 5;
 	}
 
 	public float getMass() {
