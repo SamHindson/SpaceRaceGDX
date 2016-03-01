@@ -58,7 +58,7 @@ public class Universe {
 			mass.update(dt, planets);
 		}
 		
-		camera.zoom = 2f;
+		camera.zoom = 0.1f;
 
 		player.update(dt, camera);
 		camera.position.set(player.getX(), player.getY(), 0);
@@ -84,6 +84,14 @@ public class Universe {
 	
 	public void addMass(Mass what) {
 		masses.add(what);
+	}
+
+	public void addExplosion(float x, float y, int magnitude) {
+		
+	}
+
+	public void killMass(Grenade grenade) {
+		
 	}
 
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 
@@ -87,10 +88,10 @@ public class Player {
 			float gx = x + 20 * MathUtils.cos(a);
 			float gy = y + 20 * MathUtils.sin(a);
 			
-			float gdx = 350 * MathUtils.cos(a);
-			float gdy = 350 * MathUtils.sin(a);
+			float gdx = 375 * MathUtils.cos(a);
+			float gdy = 375 * MathUtils.sin(a);
 			
-			new Mass(gx, gy, gdx, gdy, 50, environment);
+			new Grenade(gx, gy, gdx, gdy, 10, environment);
 		}
 	}
 

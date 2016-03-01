@@ -75,7 +75,7 @@ public class Mass {
 		return onSurface;
 	}
 
-	private void handleCollision(float speed) {
+	protected void handleCollision(float speed) {
 		System.out.println("Collision at " + speed + "u/s");
 	}
 
