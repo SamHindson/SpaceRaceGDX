@@ -34,7 +34,7 @@ public class Grenade extends Mass {
 	protected void handleCollision(float speed) {
 		if(!exploded) {
 			exploded = true;
-			universe.addExplosion(x, y, 100);
+			universe.addExplosion(x, y, 3000);
 			universe.killMass(this);
 		}
 	}

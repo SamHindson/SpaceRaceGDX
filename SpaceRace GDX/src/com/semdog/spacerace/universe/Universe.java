@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.Player;
 
 public class Universe {
@@ -17,6 +18,8 @@ public class Universe {
 
 	private Array<Planet> planets;
 	private Array<Mass> masses;
+	
+	private Array<Explosion> explosions;
 	
 	private Player player;
 
@@ -30,6 +33,8 @@ public class Universe {
 		
 		planets = new Array<>();
 		masses = new Array<>();
+		
+		explosions = new Array<>();
 
 		planets.add(new Planet(0, 0, 500));
 		
@@ -58,7 +63,11 @@ public class Universe {
 			mass.update(dt, planets);
 		}
 		
-		camera.zoom = 0.1f;
+		for(Explosion explosion : explosions) {
+			explosion.update(dt);
+		}
+		
+		camera.zoom = 1f;
 
 		player.update(dt, camera);
 		camera.position.set(player.getX(), player.getY(), 0);
@@ -78,6 +87,11 @@ public class Universe {
 		for(Mass mass : masses) {
 			mass.debugRender(universeBatch);
 		}
+		
+		for(Explosion explosion : explosions) {
+			explosion.draw(universeBatch);
+		}
+		
 		player.draw(universeBatch);
 		universeBatch.end();
 	}
@@ -87,7 +101,29 @@ public class Universe {
 	}
 
 	public void addExplosion(float x, float y, int magnitude) {
+		/*hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+		hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah*/
+		// TODO remove this shit someday
 		
+		explosions.add(new Explosion(x, y, magnitude));
 	}
 
 	public void killMass(Grenade grenade) {

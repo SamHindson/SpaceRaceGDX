@@ -21,6 +21,20 @@ public class Art {
 		errorPix.fillTriangle(0, 0, 50, 0, 25, 50);
 		
 		artwork.put("error", new Texture(errorPix));
+		
+		artwork.put("pixel_red", createPixel(Color.RED));
+		artwork.put("pixel_orange", createPixel(Color.ORANGE));
+		artwork.put("pixel_yellow", createPixel(Color.YELLOW));
+		artwork.put("pixel_green", createPixel(Color.GREEN));
+		artwork.put("pixel_blue", createPixel(Color.BLUE));
+		artwork.put("pixel_purple", createPixel(Color.PURPLE));
+	}
+
+	private static Texture createPixel(Color color) {
+		Pixmap pix = new Pixmap(1, 1, Format.RGB565);
+		pix.setColor(color);
+		pix.drawPixel(0, 0);
+		return new Texture(pix);
 	}
 
 	public static Texture get(String name) {
