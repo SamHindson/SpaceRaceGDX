@@ -55,7 +55,7 @@ public class Explosion {
 
 	public void draw(SpriteBatch batch) {
 		for(int j = 0; j < particleNumber; j++) {
-			batch.draw(Art.get("pixel_red"), xs[j], ys[j], MathUtils.random(life - age) * 10, MathUtils.random(life - age) * 10);
+			batch.draw(Art.get("pixel_red"), xs[j], ys[j], 5, 5);
 		}
 	}
 

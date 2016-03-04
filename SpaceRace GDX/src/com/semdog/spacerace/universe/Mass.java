@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.players.Player;
 
 public class Mass {
 	protected float x, y, dx, dy, mass, angle;
@@ -14,6 +16,8 @@ public class Mass {
 
 	protected static Texture texture;
 	protected static Universe universe;
+	
+	protected Rectangle bounds;
 
 	public static void initiate(Universe _universe) {
 		universe = _universe;
@@ -97,5 +101,9 @@ public class Mass {
 
 	public void debugRender(SpriteBatch batch) {
 		batch.draw(texture, x, y, 5, 5);
+	}
+
+	public void checkCollisions(Player...s) {
+		
 	}
 }

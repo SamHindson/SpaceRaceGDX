@@ -1,9 +1,13 @@
 package com.semdog.spacerace.universe;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.players.Player;
 
 public class Grenade extends Mass {
 	
@@ -16,6 +20,8 @@ public class Grenade extends Mass {
 		sprite = new Sprite(Art.get("grenade"));
 		sprite.setSize(5, 5);
 		sprite.setOriginCenter();
+		
+		bounds = new Rectangle(x, y, 5, 5);
 	}
 	
 	@Override
@@ -23,6 +29,7 @@ public class Grenade extends Mass {
 		super.update(dt, gravitySources);
 		sprite.rotate(dt * 2000);
 		sprite.setPosition(x, y);
+		bounds.set(x, y, 5, 5);
 	}
 	
 	@Override
@@ -36,6 +43,18 @@ public class Grenade extends Mass {
 			exploded = true;
 			universe.addExplosion(x, y, 3000);
 			universe.killMass(this);
+		}
+	}
+	
+	@Override
+	public void checkCollisions(Player... s) {
+		for(Player player : s) {
+			if(bounds.contains(player.getBounds())) {
+				exploded = true;
+				universe.addExplosion(x, y, 3000);
+				universe.killMass(this);
+				System.out.println("HIT A PLAYER");
+			}
 		}
 	}
 

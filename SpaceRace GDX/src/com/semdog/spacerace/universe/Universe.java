@@ -61,6 +61,7 @@ public class Universe {
 	public void tick(float dt) {
 		for(Mass mass : masses) {
 			mass.update(dt, planets);
+			mass.checkCollisions(player);
 		}
 		
 		for(Explosion explosion : explosions) {
@@ -77,12 +78,6 @@ public class Universe {
 	}
 
 	public void render() {
-		universeShapeRenderer.begin(ShapeType.Filled);
-		for (Planet planet : planets) {
-			planet.draw(universeShapeRenderer);
-		}
-		universeShapeRenderer.end();
-		
 		universeBatch.begin();
 		for(Mass mass : masses) {
 			mass.debugRender(universeBatch);
@@ -94,6 +89,13 @@ public class Universe {
 		
 		player.draw(universeBatch);
 		universeBatch.end();
+		
+		universeShapeRenderer.begin(ShapeType.Filled);
+		for (Planet planet : planets) {
+			planet.draw(universeShapeRenderer);
+		}
+		player.debugDraw(universeShapeRenderer);
+		universeShapeRenderer.end();
 	}
 	
 	public void addMass(Mass what) {

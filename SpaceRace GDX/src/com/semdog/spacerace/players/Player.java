@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.semdog.spacerace.universe.Grenade;
-import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 
 public class Player {
@@ -25,6 +25,8 @@ public class Player {
 	private float x, y;
 	private float ax, ay, a;
 	private float dd;
+	
+	private Rectangle bounds;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
@@ -36,6 +38,8 @@ public class Player {
 
 		sprite = new Sprite(new Texture(Gdx.files.internal("assets/dude.png")));
 		sprite.setSize(20, 20);
+		
+		bounds = new Rectangle(x - 10, y - 10, 20, 20);
 	}
 
 	public void update(float dt, OrthographicCamera camera) {
@@ -73,6 +77,8 @@ public class Player {
 
 		x = environment.getX() + distance * MathUtils.cos(angle);
 		y = environment.getY() + distance * MathUtils.sin(angle);
+		
+		bounds.setPosition(x, y);
 
 		sprite.setPosition(x - 10, y - 10);
 		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
@@ -88,8 +94,8 @@ public class Player {
 			float gx = x + 20 * MathUtils.cos(a);
 			float gy = y + 20 * MathUtils.sin(a);
 			
-			float gdx = 375 * MathUtils.cos(a);
-			float gdy = 375 * MathUtils.sin(a);
+			float gdx = 350 * MathUtils.cos(a);
+			float gdy = 350 * MathUtils.sin(a);
 			
 			new Grenade(gx, gy, gdx, gdy, 10, environment);
 		}
@@ -98,6 +104,10 @@ public class Player {
 	public void draw(SpriteBatch batch) {
 		sprite.draw(batch);
 	}
+	
+	public void debugDraw(ShapeRenderer sr) {
+		//sr.rect(x - 10, y - 10, 20, 20);
+	}
 
 	public float getX() {
 		return x;
@@ -105,6 +115,10 @@ public class Player {
 
 	public float getY() {
 		return y;
+	}
+
+	public Rectangle getBounds() {
+		return bounds;
 	}
 
 }

@@ -27,7 +27,7 @@ public class Planet {
 	}
 	
 	public void draw(ShapeRenderer shapeRenderer) {
-		shapeRenderer.setColor(Color.CYAN);
+		shapeRenderer.setColor(new Color(0.69f, 0.219f, 0.219f, 1f));
 		shapeRenderer.circle(x, y, radius, 100);
 	}
 
