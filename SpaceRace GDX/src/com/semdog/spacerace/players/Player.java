@@ -2,6 +2,7 @@ package com.semdog.spacerace.players;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -78,7 +79,7 @@ public class Player {
 		x = environment.getX() + distance * MathUtils.cos(angle);
 		y = environment.getY() + distance * MathUtils.sin(angle);
 		
-		bounds.setPosition(x, y);
+		bounds.setPosition(x - 10, y - 10);
 
 		sprite.setPosition(x - 10, y - 10);
 		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
@@ -94,10 +95,11 @@ public class Player {
 			float gx = x + 20 * MathUtils.cos(a);
 			float gy = y + 20 * MathUtils.sin(a);
 			
-			float gdx = 350 * MathUtils.cos(a);
-			float gdy = 350 * MathUtils.sin(a);
+			float gdx = 375 * MathUtils.cos(a);
+			float gdy = 375 * MathUtils.sin(a);
 			
 			new Grenade(gx, gy, gdx, gdy, 10, environment);
+			System.out.println("?");
 		}
 	}
 
@@ -106,7 +108,8 @@ public class Player {
 	}
 	
 	public void debugDraw(ShapeRenderer sr) {
-		//sr.rect(x - 10, y - 10, 20, 20);
+		//sr.setColor(Color.BLUE);
+		//sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 	public float getX() {
@@ -119,6 +122,10 @@ public class Player {
 
 	public Rectangle getBounds() {
 		return bounds;
+	}
+
+	public void die(String string) {
+		
 	}
 
 }

@@ -3,6 +3,7 @@ package com.semdog.spacerace.graphics.effects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.misc.Tools;
 
 public class Explosion {
 	private float x, y;
@@ -29,15 +30,13 @@ public class Explosion {
 		dys = new float[particleNumber];
 		
 		for(int j = 0; j < particleNumber; j++) {
-			float k = MathUtils.random(magnitude) - magnitude/2;
-			float m = MathUtils.random(magnitude) - magnitude/2;
-			
-			System.out.println(k + ", " + m);
+			float v = MathUtils.random(magnitude) / 2;
+			float a = MathUtils.random(MathUtils.PI2);
 			
 			xs[j] = x;
 			ys[j] = y;
-			dxs[j] = k;
-			dys[j] = m;
+			dxs[j] = v * MathUtils.cos(a);
+			dys[j] = v * MathUtils.sin(a);
 		}
 	}
 
@@ -55,7 +54,7 @@ public class Explosion {
 
 	public void draw(SpriteBatch batch) {
 		for(int j = 0; j < particleNumber; j++) {
-			batch.draw(Art.get("pixel_red"), xs[j], ys[j], 5, 5);
+			batch.draw(Art.get("pixel_" + Tools.decide("red", "yellow", "orange")), xs[j], ys[j], (life - age) * 5, (life - age) * 5);
 		}
 	}
 

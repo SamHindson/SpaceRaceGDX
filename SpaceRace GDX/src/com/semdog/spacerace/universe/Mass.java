@@ -3,6 +3,7 @@ package com.semdog.spacerace.universe;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -16,8 +17,10 @@ public class Mass {
 
 	protected static Texture texture;
 	protected static Universe universe;
-	
+
 	protected Rectangle bounds;
+	
+	protected boolean dead = false;
 
 	public static void initiate(Universe _universe) {
 		universe = _universe;
@@ -69,9 +72,9 @@ public class Mass {
 			if (distance(planet) <= planet.getRadius()) {
 				float speed = Vector2.dst(0, 0, dx, dy);
 				handleCollision(speed);
-				
+
 				onSurface = true;
-				dx = dy = 0;				
+				dx = dy = 0;
 			} else {
 				onSurface = false;
 			}
@@ -99,11 +102,19 @@ public class Mass {
 		return Vector2.dst(x, y, planet.getX(), planet.getY());
 	}
 
-	public void debugRender(SpriteBatch batch) {
-		batch.draw(texture, x, y, 5, 5);
+	public void debugRender(ShapeRenderer renderer) {
+		//renderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
+	public void render(SpriteBatch batch) {
+		
 	}
 
-	public void checkCollisions(Player...s) {
+	public void checkCollisions(Player... s) {
 		
+	}
+	
+	public boolean isDead() {
+		return dead;
 	}
 }

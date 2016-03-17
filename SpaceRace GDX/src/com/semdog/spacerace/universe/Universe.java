@@ -79,12 +79,13 @@ public class Universe {
 
 	public void render() {
 		universeBatch.begin();
-		for(Mass mass : masses) {
-			mass.debugRender(universeBatch);
-		}
 		
 		for(Explosion explosion : explosions) {
 			explosion.draw(universeBatch);
+		}
+		
+		for(Mass mass : masses) {
+			mass.render(universeBatch);
 		}
 		
 		player.draw(universeBatch);
@@ -96,6 +97,22 @@ public class Universe {
 		}
 		player.debugDraw(universeShapeRenderer);
 		universeShapeRenderer.end();
+	}
+	
+	public void finalizeState() {
+		for(Explosion explosion : explosions) {
+			if(!explosion.alive()) {
+				explosions.removeValue(explosion, true);
+				break;
+			}
+		}
+		
+		for(Mass mass : masses) {
+			if(mass.isDead()) {
+				masses.removeValue(mass, true);
+				break;
+			}
+		}
 	}
 	
 	public void addMass(Mass what) {
@@ -128,8 +145,7 @@ public class Universe {
 		explosions.add(new Explosion(x, y, magnitude));
 	}
 
-	public void killMass(Grenade grenade) {
-		
+	public void playerKilled(Player player, String cause) {
+		player.die("cause");
 	}
-
 }
