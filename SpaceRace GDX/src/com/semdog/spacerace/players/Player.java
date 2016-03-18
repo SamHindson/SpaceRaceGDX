@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
+import com.semdog.spacerace.weapons.Carbine;
+import com.semdog.spacerace.weapons.Weapon;
 
 public class Player {
 
@@ -28,6 +30,8 @@ public class Player {
 	private float dd;
 	
 	private Rectangle bounds;
+	
+	private Weapon weapon;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
@@ -41,6 +45,9 @@ public class Player {
 		sprite.setSize(20, 20);
 		
 		bounds = new Rectangle(x - 10, y - 10, 20, 20);
+		
+		weapon = new Carbine();
+		weapon.pickup(this);
 	}
 
 	public void update(float dt, OrthographicCamera camera) {
@@ -90,6 +97,8 @@ public class Player {
 		
 		a = -MathUtils.atan2(ay - (Gdx.graphics.getHeight() / 2), ax - Gdx.graphics.getWidth() / 2);
 		
+		weapon.update(dt);
+		
 		if(Gdx.input.isKeyJustPressed(Keys.G)) {
 			System.out.println("New Granade!");
 			float gx = x + 20 * MathUtils.cos(a);
@@ -99,7 +108,6 @@ public class Player {
 			float gdy = 375 * MathUtils.sin(a);
 			
 			new Grenade(gx, gy, gdx, gdy, 10, environment);
-			System.out.println("?");
 		}
 	}
 
@@ -126,6 +134,10 @@ public class Player {
 
 	public void die(String string) {
 		
+	}
+
+	public float getAngle() {
+		return angle + 90;
 	}
 
 }
