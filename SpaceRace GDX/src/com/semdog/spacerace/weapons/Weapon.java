@@ -19,6 +19,7 @@ public abstract class Weapon {
 	private boolean justFired = false;
 	
 	protected Player owner;
+	protected float aimAngle;
 
 	public Weapon(String name, int clipSize, boolean automatic, float fireDelay, int damage, String fireSound) {
 		this.name = name;
@@ -35,7 +36,8 @@ public abstract class Weapon {
 		this.owner = owner;
 	}
 
-	public void update(float dt) {
+	public void update(float dt, float a) {
+		aimAngle = a;
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			if (!justFired && ammoleft > 0) {
 				justFired = true;
@@ -47,9 +49,10 @@ public abstract class Weapon {
 	}
 
 	private void fire() {
-		float a = MathUtils.atan2((Gdx.graphics.getHeight() - Gdx.input.getY()) - Gdx.graphics.getHeight() / 2, Gdx.input.getX() - Gdx.graphics.getWidth() / 2);
 		fireSound.play();
-		Universe.currentUniverse.addBullet(new Bullet(owner.getX(), owner.getY(), a, damage));
+		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle);
+		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle);
+		Universe.currentUniverse.addBullet(new Bullet(ax, ay, aimAngle, damage));
 		ammoleft--;
 	}
 }

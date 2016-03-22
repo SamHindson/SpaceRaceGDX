@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -27,17 +28,17 @@ public class Universe {
 
 	private Player player;
 
-	private SpriteBatch universeBatch, backgroundBatch;
+	private SpriteBatch universeBatch;
 	private ShapeRenderer universeShapeRenderer;
 
 	private OrthographicCamera camera;
 	private float cameraRot, desiredRot;
 
-	private Texture stars;
+	private Sprite stars;
 
 	public Universe() {
 		Mass.initiate(this);
-		
+
 		currentUniverse = this;
 
 		planets = new Array<>();
@@ -54,13 +55,11 @@ public class Universe {
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
 
-		backgroundBatch = new SpriteBatch();
-
 		camera = new OrthographicCamera(800, 600);
 		camera.position.set(0, 0, 0);
 		camera.zoom = 0.5f;
 
-		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Format.RGBA4444);
+		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 2, Gdx.graphics.getHeight() * 2, Format.RGBA4444);
 		pixmap.setColor(Color.BLACK);
 		pixmap.fill();
 
@@ -73,7 +72,8 @@ public class Universe {
 			pixmap.fillRectangle((int) x, (int) y, (int) s, (int) s);
 		}
 
-		stars = new Texture(pixmap);
+		stars = new Sprite(new Texture(pixmap));
+		stars.setOriginCenter();
 
 		universeBatch.setProjectionMatrix(camera.combined);
 
@@ -91,31 +91,30 @@ public class Universe {
 		}
 
 		for (Bullet bullet : bullets) {
-			bullet.update(dt);
+			bullet.update(dt, planets);
 		}
 
-		camera.zoom = 1f;
+		camera.zoom = 1.2f;
 
-		/*
-		 * desiredRot = player.getAngle(); System.out.println("Desired " +
-		 * desiredRot); cameraRot += (desiredRot - cameraRot) * dt;
-		 * System.out.println("Actual " + cameraRot);
-		 */
-		// camera.rotate((desiredRot - cameraRot) * dt);
+		desiredRot = player.getAngle() % MathUtils.PI2;
+		float da = (desiredRot - cameraRot) / 10.f;
+		cameraRot += da;
+		camera.rotate(-da * MathUtils.radiansToDegrees);
 
 		player.update(dt, camera);
 		camera.position.set(player.getX(), player.getY(), 0);
 		camera.update();
+		
 		universeBatch.setProjectionMatrix(camera.combined);
 		universeShapeRenderer.setProjectionMatrix(camera.combined);
+		stars.setOriginCenter();
+		stars.setPosition(player.getX() - Gdx.graphics.getWidth(), player.getY() - Gdx.graphics.getHeight());
 	}
 
 	public void render() {
-		backgroundBatch.begin();
-		backgroundBatch.draw(stars, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		backgroundBatch.end();
-
 		universeBatch.begin();
+		
+		stars.draw(universeBatch);
 
 		for (Explosion explosion : explosions) {
 			explosion.draw(universeBatch);
@@ -136,7 +135,7 @@ public class Universe {
 		for (Bullet bullet : bullets) {
 			bullet.draw(universeShapeRenderer);
 		}
-		
+
 		player.debugDraw(universeShapeRenderer);
 		universeShapeRenderer.end();
 	}
@@ -155,9 +154,9 @@ public class Universe {
 				break;
 			}
 		}
-		
-		for(Bullet bullet : bullets) {
-			if(!bullet.alive()) {
+
+		for (Bullet bullet : bullets) {
+			if (!bullet.alive()) {
 				bullets.removeValue(bullet, true);
 				break;
 			}
@@ -197,7 +196,7 @@ public class Universe {
 	}
 
 	public void playerKilled(Player player, String cause) {
-		player.die("cause");
+		player.die("elephants");
 	}
 
 	public void addBullet(Bullet bullet) {

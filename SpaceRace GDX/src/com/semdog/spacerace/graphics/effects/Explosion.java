@@ -7,7 +7,6 @@ import com.semdog.spacerace.misc.Tools;
 
 public class Explosion {
 	private float x, y;
-	private int magnitude;
 
 	private float life = 1.5f;
 	private float age = 0;
@@ -22,7 +21,6 @@ public class Explosion {
 	public Explosion(float x, float y, int magnitude) {
 		this.x = x;
 		this.y = y;
-		this.magnitude = magnitude;
 		
 		xs = new float[particleNumber];
 		ys = new float[particleNumber];
@@ -62,5 +60,13 @@ public class Explosion {
 
 	public boolean alive() {
 		return age < life;
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
 	}
 }

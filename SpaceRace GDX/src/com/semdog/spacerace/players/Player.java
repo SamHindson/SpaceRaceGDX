@@ -2,7 +2,6 @@ package com.semdog.spacerace.players;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -32,6 +31,7 @@ public class Player {
 	private Rectangle bounds;
 	
 	private Weapon weapon;
+	private float da;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
@@ -67,12 +67,14 @@ public class Player {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
-			angle += dt * 100 / distance;
+			da = dt * 100 / distance;
+		} else if (Gdx.input.isKeyPressed(Keys.D)) {
+			da = -dt * 100 / distance;
+		} else {
+			da = 0;
 		}
-
-		if (Gdx.input.isKeyPressed(Keys.D)) {
-			angle -= dt * 100 / distance;
-		}
+	
+		angle += da;
 
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && onGround) {
 			dd += 100;
@@ -90,19 +92,18 @@ public class Player {
 
 		sprite.setPosition(x - 10, y - 10);
 		distance = Vector2.dst(x, y, environment.getX(), environment.getY());
-
+		
 		// AIMING
 		ax = Gdx.input.getX();
 		ay = Gdx.input.getY();
 		
-		a = -MathUtils.atan2(ay - (Gdx.graphics.getHeight() / 2), ax - Gdx.graphics.getWidth() / 2);
+		a = -MathUtils.atan2(ay - (Gdx.graphics.getHeight() / 2), ax - (Gdx.graphics.getWidth() / 2)) + angle - MathUtils.PI / 2;
 		
-		weapon.update(dt);
+		weapon.update(dt, a);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.G)) {
-			System.out.println("New Granade!");
-			float gx = x + 20 * MathUtils.cos(a);
-			float gy = y + 20 * MathUtils.sin(a);
+			float gx = x + 10 * MathUtils.cos(a);
+			float gy = y + 10 * MathUtils.sin(a);
 			
 			float gdx = 375 * MathUtils.cos(a);
 			float gdy = 375 * MathUtils.sin(a);
@@ -127,6 +128,10 @@ public class Player {
 	public float getY() {
 		return y;
 	}
+	
+	public float getDa() {
+		return da;
+	}
 
 	public Rectangle getBounds() {
 		return bounds;
@@ -137,7 +142,7 @@ public class Player {
 	}
 
 	public float getAngle() {
-		return angle + 90;
+		return angle - MathUtils.PI / 2;
 	}
 
 }
