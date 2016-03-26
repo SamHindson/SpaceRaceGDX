@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.semdog.spacerace.graphics.Colors;
 
 public class Planet {
 	
@@ -29,7 +30,7 @@ public class Planet {
 		System.out.println("Planet mass: " + mass);
 		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
 		
-		color = new Color(0.69f, 0.219f, 0.219f, 1f);
+		color = Colors.getRandom();
 		
 		dustMaker = new Random((int)(x + y + radius));
 		dustBalls = dustMaker.nextInt(100);
@@ -47,8 +48,6 @@ public class Planet {
 			
 			dustColors[j] = new Color(color.r + MathUtils.random(0.2f), color.g + MathUtils.random(0.2f), color.b + MathUtils.random(0.2f), 1.f);
 		}
-		
-		System.out.println("Nice");
 	}
 	
 	public void draw(ShapeRenderer shapeRenderer) {
@@ -83,5 +82,9 @@ public class Planet {
 	
 	public float getGravity(float distance) {
 		return ((mass) * (Universe.GRAVITY)) / (float)Math.pow(distance, 2);
+	}
+
+	public Color getColor() {
+		return color;
 	}
 }

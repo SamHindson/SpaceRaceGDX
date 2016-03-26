@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.players.Player;
 
-public class Mass {
+public abstract class Mass {
 	protected float x, y, dx, dy, mass, angle;
 	protected boolean onSurface;
 	protected Planet environment;
@@ -19,8 +19,6 @@ public class Mass {
 	protected static Universe universe;
 
 	protected Rectangle bounds;
-	
-	protected boolean dead = false;
 
 	public static void initiate(Universe _universe) {
 		universe = _universe;
@@ -69,13 +67,17 @@ public class Mass {
 
 	protected boolean onSurface(Planet planet) {
 		if (!onSurface) {
-			if (distance(planet) <= planet.getRadius()) {
+			if (distance(planet) <= planet.getRadius() + getHeight() / 2.f) {
 				float speed = Vector2.dst(0, 0, dx, dy);
 				handleCollision(speed);
 
 				onSurface = true;
 				dx = dy = 0;
 			} else {
+				onSurface = false;
+			}
+		} else {
+			if(distance(planet) >= planet.getRadius() + getHeight() / 2.f) {
 				onSurface = false;
 			}
 		}
@@ -93,6 +95,13 @@ public class Mass {
 	public float getY() {
 		return y;
 	}
+	
+	public boolean alive() {
+		return true;
+	}
+	
+	protected abstract float getWidth();
+	protected abstract float getHeight();
 
 	protected boolean inRange(Planet planet) {
 		return distance(planet) < planet.getSOI();
@@ -112,9 +121,5 @@ public class Mass {
 
 	public void checkCollisions(Player... s) {
 		
-	}
-	
-	public boolean isDead() {
-		return dead;
 	}
 }

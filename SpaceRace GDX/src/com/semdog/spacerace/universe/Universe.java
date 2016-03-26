@@ -1,6 +1,7 @@
 package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -12,8 +13,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.semdog.spacerace.graphics.effects.Explosion;
+import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.players.Player;
+import com.semdog.spacerace.vehicles.Ship;
+import com.semdog.spacerace.vehicles.SmallBombarder;
 import com.semdog.spacerace.weapons.Bullet;
 
 public class Universe {
@@ -23,10 +26,11 @@ public class Universe {
 	private Array<Planet> planets;
 	private Array<Mass> masses;
 
-	private Array<Explosion> explosions;
+	private Array<Effect> effects;
 	private Array<Bullet> bullets;
 
 	private Player player;
+	private Ship crapDude;
 
 	private SpriteBatch universeBatch;
 	private ShapeRenderer universeShapeRenderer;
@@ -44,26 +48,28 @@ public class Universe {
 		planets = new Array<>();
 		masses = new Array<>();
 
-		explosions = new Array<>();
+		effects = new Array<>();
 
 		bullets = new Array<>();
 
 		planets.add(new Planet(0, 0, 500));
 
 		player = new Player(0, 600, planets.get(0));
+		crapDude = new SmallBombarder(100, 600, planets.get(0));
+		player.setShip(crapDude);
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
 
-		camera = new OrthographicCamera(800, 600);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(0, 0, 0);
 		camera.zoom = 0.5f;
 
-		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 2, Gdx.graphics.getHeight() * 2, Format.RGBA4444);
+		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 20, Gdx.graphics.getHeight() * 20, Format.RGBA4444);
 		pixmap.setColor(Color.BLACK);
 		pixmap.fill();
 
-		for (int k = 0; k < 1000; k++) {
+		for (int k = 0; k < 100000; k++) {
 			float i = MathUtils.random();
 			float x = MathUtils.random(pixmap.getWidth());
 			float y = MathUtils.random(pixmap.getHeight());
@@ -77,6 +83,8 @@ public class Universe {
 
 		universeBatch.setProjectionMatrix(camera.combined);
 
+		Gdx.input.setInputProcessor(new InputManager());
+		camera.zoom = 1.5f;
 		camera.update();
 	}
 
@@ -86,15 +94,19 @@ public class Universe {
 			mass.checkCollisions(player);
 		}
 
-		for (Explosion explosion : explosions) {
-			explosion.update(dt);
+		for (Effect effect : effects) {
+			effect.update(dt);
 		}
 
 		for (Bullet bullet : bullets) {
 			bullet.update(dt, planets);
 		}
-
-		camera.zoom = 1.2f;
+		
+		if(Gdx.input.getInputProcessor().scrolled(1)) {
+			camera.zoom += 0.2f;
+		} else if(Gdx.input.getInputProcessor().scrolled(-1)) {
+			camera.zoom -= 0.2f;
+		} 
 
 		desiredRot = player.getAngle() % MathUtils.PI2;
 		float da = (desiredRot - cameraRot) / 10.f;
@@ -102,13 +114,13 @@ public class Universe {
 		camera.rotate(-da * MathUtils.radiansToDegrees);
 
 		player.update(dt, camera);
-		camera.position.set(player.getX(), player.getY(), 0);
+		camera.position.set(player.getFX(), player.getFY(), 0);
 		camera.update();
 		
 		universeBatch.setProjectionMatrix(camera.combined);
 		universeShapeRenderer.setProjectionMatrix(camera.combined);
 		stars.setOriginCenter();
-		stars.setPosition(player.getX() - Gdx.graphics.getWidth(), player.getY() - Gdx.graphics.getHeight());
+		stars.setPosition(player.getFX() - Gdx.graphics.getWidth() * 10, player.getFY() - Gdx.graphics.getHeight() * 10);
 	}
 
 	public void render() {
@@ -116,8 +128,8 @@ public class Universe {
 		
 		stars.draw(universeBatch);
 
-		for (Explosion explosion : explosions) {
-			explosion.draw(universeBatch);
+		for (Effect effect : effects) {
+			effect.render(universeBatch);
 		}
 
 		for (Mass mass : masses) {
@@ -135,21 +147,25 @@ public class Universe {
 		for (Bullet bullet : bullets) {
 			bullet.draw(universeShapeRenderer);
 		}
+		
+		crapDude.debugRender(universeShapeRenderer);
 
 		player.debugDraw(universeShapeRenderer);
 		universeShapeRenderer.end();
 	}
 
 	public void finalizeState() {
-		for (Explosion explosion : explosions) {
-			if (!explosion.alive()) {
-				explosions.removeValue(explosion, true);
+		for (Effect effect : effects) {
+			if (!effect.isAlive()) {
+				System.out.println("remong a dead mamn! ");
+				System.out.println(effect);
+				effects.removeValue(effect, true);
 				break;
 			}
 		}
 
 		for (Mass mass : masses) {
-			if (mass.isDead()) {
+			if (!mass.alive()) {
 				masses.removeValue(mass, true);
 				break;
 			}
@@ -166,33 +182,9 @@ public class Universe {
 	public void addMass(Mass what) {
 		masses.add(what);
 	}
-
-	public void addExplosion(float x, float y, int magnitude) {
-		/*
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 * hahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
-		 */
-		// TODO remove this shit someday
-
-		explosions.add(new Explosion(x, y, magnitude));
+	
+	public void addEffect(Effect effect) {
+		effects.add(effect);
 	}
 
 	public void playerKilled(Player player, String cause) {
@@ -201,5 +193,56 @@ public class Universe {
 
 	public void addBullet(Bullet bullet) {
 		bullets.add(bullet);
+	}
+	
+	class InputManager implements InputProcessor {
+
+		@Override
+		public boolean keyDown(int keycode) {
+			return false;
+		}
+
+		@Override
+		public boolean keyUp(int keycode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean keyTyped(char character) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean touchDragged(int screenX, int screenY, int pointer) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean mouseMoved(int screenX, int screenY) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean scrolled(int amount) {
+			camera.zoom += amount * 0.2f;
+			return false;
+		}
+		
 	}
 }

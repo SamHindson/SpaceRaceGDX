@@ -52,7 +52,7 @@ public abstract class Weapon {
 		fireSound.play();
 		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle);
 		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle);
-		Universe.currentUniverse.addBullet(new Bullet(ax, ay, aimAngle, damage));
+		Universe.currentUniverse.addBullet(new Bullet(ax, ay, owner.getDX(), owner.getDY(), aimAngle, damage));
 		ammoleft--;
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.Player;
 
 public class Grenade extends Mass {
@@ -55,8 +56,22 @@ public class Grenade extends Mass {
 
 	private void explode() {
 		exploded = true;
-		universe.addExplosion(x, y, 3000);
-		dead = true;
+		universe.addEffect(new Explosion(x, y, 3000));
+	}
+	
+	@Override
+	public boolean alive() {
+		return !exploded;
+	}
+
+	@Override
+	protected float getWidth() {
+		return 0;
+	}
+
+	@Override
+	protected float getHeight() {
+		return 0;
 	}
 
 }

@@ -5,9 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.Tools;
 
-public class Explosion {
-	private float x, y;
-
+public class Explosion extends Effect {
 	private float life = 1.5f;
 	private float age = 0;
 	
@@ -51,16 +49,6 @@ public class Explosion {
 			dys[j] /= 1.1f;
 		}
 	}
-
-	public void draw(SpriteBatch batch) {
-		for(int j = 0; j < particleNumber; j++) {
-			batch.draw(Art.get("pixel_" + Tools.decide("red", "yellow", "orange")), xs[j], ys[j], (life - age) * 5, (life - age) * 5);
-		}
-	}
-
-	public boolean alive() {
-		return age < life;
-	}
 	
 	public float getX() {
 		return x;
@@ -68,5 +56,17 @@ public class Explosion {
 	
 	public float getY() {
 		return y;
+	}
+
+	@Override
+	public void render(SpriteBatch batch) {
+		for(int j = 0; j < particleNumber; j++) {
+			batch.draw(Art.get("pixel_" + Tools.decide("red", "yellow", "orange")), xs[j], ys[j], (life - age) * 5, (life - age) * 5);
+		}
+	}
+
+	@Override
+	public boolean isAlive() {
+		return age < life;
 	}
 }
