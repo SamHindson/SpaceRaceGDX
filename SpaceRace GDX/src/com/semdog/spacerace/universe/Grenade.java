@@ -60,7 +60,7 @@ public class Grenade extends Mass {
 	}
 	
 	@Override
-	public boolean alive() {
+	public boolean isAlive() {
 		return !exploded;
 	}
 

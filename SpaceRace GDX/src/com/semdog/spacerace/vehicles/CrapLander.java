@@ -13,7 +13,7 @@ public class CrapLander extends Ship {
 	private ParticleEffect particleEffect;
 
 	public CrapLander(float x, float y, Planet environment) {
-		super(x, y, 10000, 1000, environment, "tinyship");
+		super(x, y, 32, 32, 10000, 1000, environment, "tinyship");
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
@@ -56,7 +56,7 @@ public class CrapLander extends Ship {
 	
 	@Override
 	protected float getImpactThreshhold() {
-		return 100;
+		return 1000;
 	}
 
 	@Override

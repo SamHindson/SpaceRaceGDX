@@ -12,14 +12,13 @@ import com.semdog.spacerace.universe.Universe;
 public class Bullet {
 	private float x, y, dx, dy, age, life = 5;
 	
-	@SuppressWarnings("unused")
 	private int damage;
 
 	public Bullet(float x, float y, float dx, float dy, float angle, int damage) {
 		this.x = x;
 		this.y = y;
-		this.dx = 500 * MathUtils.cos(angle) + dx;
-		this.dy = 500 * MathUtils.sin(angle) + dy;
+		this.dx = 1000 * MathUtils.cos(angle) + dx;
+		this.dy = 1000 * MathUtils.sin(angle) + dy;
 		this.damage = damage;
 	}
 
@@ -28,8 +27,8 @@ public class Bullet {
 			float d = Vector2.dst(planet.getX(), planet.getY(), x, y);
 			float a = MathUtils.atan2(y - planet.getY(), x - planet.getX());
 			
-			dx += -planet.getGravity(d) * MathUtils.cos(a) * dt * 0.2f;
-			dy += -planet.getGravity(d) * MathUtils.sin(a) * dt * 0.2f;
+			//dx += -planet.getGravity(d) * MathUtils.cos(a) * dt * 0.2f;
+			//dy += -planet.getGravity(d) * MathUtils.sin(a) * dt * 0.2f;
 			
 			if(d < planet.getRadius()) {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
@@ -50,5 +49,21 @@ public class Bullet {
 
 	public boolean alive() {
 		return age < life;
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
+	
+	public int getDamage() {
+		return damage;
+	}
+
+	public void die() {
+		age = life * 5;
 	}
 }

@@ -25,20 +25,18 @@ public abstract class Ship extends Mass {
 	protected float totalFuel, currentFuel;
 	protected float r, width, height;
 	protected float power;
-	
-	protected boolean alive = true;
 
 	protected int pAmmo, sAmmo;
 	protected boolean pAutomatic, sAutomatic;
 	protected float pCooldown, sCooldown, pRest, sRest;
 
-	protected Ship(float x, float y, float fuel, float power, Planet environment, String textureName) {
-		this(x, y, fuel, power, 0, 0, environment, textureName);
+	protected Ship(float x, float y, float w, float h, float fuel, float power, Planet environment, String textureName) {
+		this(x, y, w, h, fuel, power, 0, 0, environment, textureName);
 	}
 
-	protected Ship(float x, float y, float fuel, float power, int primaryAmmo, int secondaryAmmo, Planet environment,
+	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo, Planet environment,
 			String textureName) {
-		super(x, y, 0, 0, 5000, environment);
+		super(x, y, 0, 0, 5000, w, h, environment);
 		this.x = x;
 		this.y = y;
 
@@ -61,7 +59,7 @@ public abstract class Ship extends Mass {
 		//updateControls(dt);
 		super.update(dt, gravitySources);
 		sprite.setRotation(r);
-		sprite.setPosition(x - width / 2.f, y - height / 2.f);
+		sprite.setPosition(x - width / 2, y - height / 2);
 	}
 
 	@Override
@@ -82,6 +80,11 @@ public abstract class Ship extends Mass {
 	public float getHeight() {
 		return height;
 	}
+	
+	@Override
+	protected void die() {
+		explode();
+	}
 
 	@Override
 	protected void handleCollision(float speed) {
@@ -91,18 +94,13 @@ public abstract class Ship extends Mass {
 	}
 
 	protected void explode() {
-		Universe.currentUniverse.addEffect(new Explosion(x, y, 5000));
+		Universe.currentUniverse.addEffect(new Explosion(x, y, 1000));
 		
 		for(int k = 0; k < 50; k++) {
 			new DebrisPiece(x, y, dx, dy, environment, this);
 		}
 		
 		alive = false;
-	}
-	
-	@Override
-	public boolean alive() {
-		return alive;
 	}
 
 	protected abstract float getImpactThreshhold();

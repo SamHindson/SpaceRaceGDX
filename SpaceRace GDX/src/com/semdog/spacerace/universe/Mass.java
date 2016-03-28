@@ -12,13 +12,15 @@ import com.semdog.spacerace.players.Player;
 
 public abstract class Mass {
 	protected float x, y, dx, dy, mass, angle;
-	protected boolean onSurface;
+	protected boolean onSurface, alive = true;
 	protected Planet environment;
 
 	protected static Texture texture;
 	protected static Universe universe;
 
 	protected Rectangle bounds;
+
+	protected int currentHealth, maxHealth;
 
 	public static void initiate(Universe _universe) {
 		universe = _universe;
@@ -28,7 +30,7 @@ public abstract class Mass {
 		texture = new Texture(Gdx.files.internal("assets/test.png"));
 	}
 
-	public Mass(float x, float y, float dx, float dy, float mass, Planet environment) {
+	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment) {
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
@@ -37,6 +39,31 @@ public abstract class Mass {
 		this.environment = environment;
 
 		universe.addMass(this);
+
+		if (width == 0 || height == 0) {
+			Gdx.app.error("Mass", "Warning! Mass created with a zero width or height. What the hell mate?");
+		}
+
+		bounds = new Rectangle(x, y, width, height);
+	}
+
+	public Mass(float x, float y, float dx, float dy, float mass, Planet environment) {
+		this(x, y, dx, dy, mass, 0, 0, environment);
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+		currentHealth = maxHealth;
+	}
+
+	public void doDamage(int amount) {
+		if (currentHealth <= amount) {
+			currentHealth = 0;
+			alive = false;
+			die();
+		} else {
+			currentHealth -= amount;
+		}
 	}
 
 	public void update(float dt, Array<Planet> gravitySources) {
@@ -63,6 +90,8 @@ public abstract class Mass {
 
 		x += dx * dt;
 		y += dy * dt;
+
+		bounds.setPosition(x - getWidth() / 2, y - getHeight() / 2);
 	}
 
 	protected boolean onSurface(Planet planet) {
@@ -77,7 +106,7 @@ public abstract class Mass {
 				onSurface = false;
 			}
 		} else {
-			if(distance(planet) >= planet.getRadius() + getHeight() / 2.f) {
+			if (distance(planet) >= planet.getRadius() + getHeight() / 2.f) {
 				onSurface = false;
 			}
 		}
@@ -95,12 +124,21 @@ public abstract class Mass {
 	public float getY() {
 		return y;
 	}
-	
-	public boolean alive() {
-		return true;
+
+	public Rectangle getBounds() {
+		return bounds;
+	}
+
+	public boolean isAlive() {
+		return alive;
 	}
 	
+	protected void die() {
+		Gdx.app.log("Mass", "A mass was just told to die.");
+	}
+
 	protected abstract float getWidth();
+
 	protected abstract float getHeight();
 
 	protected boolean inRange(Planet planet) {
@@ -112,14 +150,17 @@ public abstract class Mass {
 	}
 
 	public void debugRender(ShapeRenderer renderer) {
-		//renderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+		/*renderer.setColor(Color.WHITE);
+		renderer.set(ShapeType.Filled);
+		renderer.rect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		renderer.rect(600, 0, 50, 50);*/
 	}
-	
+
 	public void render(SpriteBatch batch) {
-		
+
 	}
 
 	public void checkCollisions(Player... s) {
-		
+
 	}
 }

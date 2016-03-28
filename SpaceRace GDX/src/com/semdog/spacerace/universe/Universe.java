@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.players.Player;
+import com.semdog.spacerace.vehicles.CrapLander;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.vehicles.SmallBombarder;
 import com.semdog.spacerace.weapons.Bullet;
@@ -30,7 +31,9 @@ public class Universe {
 	private Array<Bullet> bullets;
 
 	private Player player;
-	private Ship crapDude;
+	
+	@SuppressWarnings("unused")
+	private Ship testShip, testTarget;
 
 	private SpriteBatch universeBatch;
 	private ShapeRenderer universeShapeRenderer;
@@ -55,8 +58,10 @@ public class Universe {
 		planets.add(new Planet(0, 0, 500));
 
 		player = new Player(0, 600, planets.get(0));
-		crapDude = new SmallBombarder(100, 600, planets.get(0));
-		player.setShip(crapDude);
+		testShip = new SmallBombarder(100, 600, planets.get(0));
+		player.setShip(testShip);
+		
+		testTarget = new CrapLander(525, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
@@ -102,31 +107,42 @@ public class Universe {
 			bullet.update(dt, planets);
 		}
 		
-		if(Gdx.input.getInputProcessor().scrolled(1)) {
+		//	Check collisions between bullets and masses
+		for(Mass mass : masses) {
+			for(Bullet bullet : bullets) {
+				if(mass.getBounds().contains(bullet.getX(), bullet.getY())) {
+					mass.doDamage(bullet.getDamage());
+					bullet.die();
+				}
+			}
+		}
+
+		if (Gdx.input.getInputProcessor().scrolled(1)) {
 			camera.zoom += 0.2f;
-		} else if(Gdx.input.getInputProcessor().scrolled(-1)) {
+		} else if (Gdx.input.getInputProcessor().scrolled(-1)) {
 			camera.zoom -= 0.2f;
-		} 
+		}
 
 		desiredRot = player.getAngle() % MathUtils.PI2;
 		float da = (desiredRot - cameraRot) / 10.f;
 		cameraRot += da;
-		camera.rotate(-da * MathUtils.radiansToDegrees);
+		// camera.rotate(-da * MathUtils.radiansToDegrees);
 
 		player.update(dt, camera);
 		camera.position.set(player.getFX(), player.getFY(), 0);
 		camera.update();
-		
+
 		universeBatch.setProjectionMatrix(camera.combined);
 		universeShapeRenderer.setProjectionMatrix(camera.combined);
 		stars.setOriginCenter();
-		stars.setPosition(player.getFX() - Gdx.graphics.getWidth() * 10, player.getFY() - Gdx.graphics.getHeight() * 10);
+		stars.setPosition(player.getFX() - Gdx.graphics.getWidth() * 10,
+				player.getFY() - Gdx.graphics.getHeight() * 10);
 	}
 
 	public void render() {
 		universeBatch.begin();
-		
-		stars.draw(universeBatch);
+
+		// stars.draw(universeBatch);
 
 		for (Effect effect : effects) {
 			effect.render(universeBatch);
@@ -140,17 +156,21 @@ public class Universe {
 		universeBatch.end();
 
 		universeShapeRenderer.begin(ShapeType.Filled);
-		for (Planet planet : planets) {
-			planet.draw(universeShapeRenderer);
-		}
-
 		for (Bullet bullet : bullets) {
 			bullet.draw(universeShapeRenderer);
 		}
 		
-		crapDude.debugRender(universeShapeRenderer);
+		for (Planet planet : planets) {
+			planet.draw(universeShapeRenderer);
+		}
+
+		//crapDude.debugRender(universeShapeRenderer);
 
 		player.debugDraw(universeShapeRenderer);
+
+		for (Mass m : masses) {
+			m.debugRender(universeShapeRenderer);
+		}
 		universeShapeRenderer.end();
 	}
 
@@ -165,8 +185,9 @@ public class Universe {
 		}
 
 		for (Mass mass : masses) {
-			if (!mass.alive()) {
+			if (!mass.isAlive()) {
 				masses.removeValue(mass, true);
+				System.out.println("Removed a dead mass.");
 				break;
 			}
 		}
@@ -182,7 +203,7 @@ public class Universe {
 	public void addMass(Mass what) {
 		masses.add(what);
 	}
-	
+
 	public void addEffect(Effect effect) {
 		effects.add(effect);
 	}
@@ -194,7 +215,7 @@ public class Universe {
 	public void addBullet(Bullet bullet) {
 		bullets.add(bullet);
 	}
-	
+
 	class InputManager implements InputProcessor {
 
 		@Override
@@ -243,6 +264,6 @@ public class Universe {
 			camera.zoom += amount * 0.2f;
 			return false;
 		}
-		
+
 	}
 }

@@ -19,7 +19,7 @@ public class DebrisPiece extends Mass {
 	private float w, h;
 
 	public DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
-		super(x, y, dx + MathUtils.random(1000) - 500, dy + MathUtils.random(1000) - 500, 50, environment);
+		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 50, environment);
 		
 		int w = (int) MathUtils.random(ship.getWidth() / 2);
 		int h = (int) MathUtils.random(ship.getHeight() / 2);
@@ -45,12 +45,8 @@ public class DebrisPiece extends Mass {
 		age += dt;
 		sprite.setPosition(x, y);
 		sprite.rotate(rotationalSpeed * dt);
-	}
-
-	@Override
-	public boolean alive() {
-		return age < life && !onSurface;
-		//return true;
+		
+		alive = age < life && !onSurface;
 	}
 
 	@Override
