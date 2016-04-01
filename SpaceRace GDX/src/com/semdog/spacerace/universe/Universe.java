@@ -177,8 +177,6 @@ public class Universe {
 	public void finalizeState() {
 		for (Effect effect : effects) {
 			if (!effect.isAlive()) {
-				System.out.println("remong a dead mamn! ");
-				System.out.println(effect);
 				effects.removeValue(effect, true);
 				break;
 			}
@@ -187,7 +185,6 @@ public class Universe {
 		for (Mass mass : masses) {
 			if (!mass.isAlive()) {
 				masses.removeValue(mass, true);
-				System.out.println("Removed a dead mass.");
 				break;
 			}
 		}

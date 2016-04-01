@@ -34,8 +34,6 @@ public class Explosion extends Effect {
 			dxs[j] = v * MathUtils.cos(a);
 			dys[j] = v * MathUtils.sin(a);
 		}
-		
-		System.out.println("New explosion created.");
 	}
 
 	public void update(float dt) {

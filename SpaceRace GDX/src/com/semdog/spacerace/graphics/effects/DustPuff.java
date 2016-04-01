@@ -18,7 +18,6 @@ public class DustPuff extends Effect {
 				color.r, color.g, color.b, 1, color.r, color.g, color.b, 1
 		});
 		effect.setPosition(x, y);
-		System.out.println("Puff created.");
 		effect.start();
 	}
 	

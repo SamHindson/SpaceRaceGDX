@@ -99,9 +99,6 @@ public abstract class Mass {
 			if (distance(planet) <= planet.getRadius() + getHeight() / 2.f) {
 				float speed = Vector2.dst(0, 0, dx, dy);
 				handleCollision(speed);
-
-				onSurface = true;
-				dx = dy = 0;
 			} else {
 				onSurface = false;
 			}
@@ -114,7 +111,8 @@ public abstract class Mass {
 	}
 
 	protected void handleCollision(float speed) {
-		System.out.println("Collision at " + speed + "u/s");
+		onSurface = true;
+		dx = dy = 0;
 	}
 
 	public float getX() {

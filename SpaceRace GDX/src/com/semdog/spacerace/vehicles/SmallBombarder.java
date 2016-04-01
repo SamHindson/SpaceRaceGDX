@@ -16,7 +16,7 @@ public class SmallBombarder extends Ship {
 		super(x, y, 32, 32, 20000, 50, environment, "runt");
 
 		pCooldown = 0.02f;
-		dx = 400;
+		dy = -50;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class SmallBombarder extends Ship {
 
 	@Override
 	protected float getImpactThreshhold() {
-		return 500;
+		return 250;
 	}
 
 	@Override
