@@ -98,7 +98,7 @@ public abstract class Ship extends Mass {
 	protected void explode() {
 		Universe.currentUniverse.addEffect(new Explosion(x, y, 1000));
 		
-		for(int k = 0; k < 50; k++) {
+		for(int k = 0; k < 15; k++) {
 			new DebrisPiece(x, y, dx, dy, environment, this);
 		}
 		

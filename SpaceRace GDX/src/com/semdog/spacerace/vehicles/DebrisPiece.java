@@ -56,7 +56,7 @@ public class DebrisPiece extends Mass {
 	 */
 	@Override
 	protected void handleCollision(float speed) {
-		if (bounces < 2) {
+		if (bounces < 1) {
 			float normal = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 			float velDirection = MathUtils.atan2(dy, dx);
 			float diff = normal - velDirection;

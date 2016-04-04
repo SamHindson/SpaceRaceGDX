@@ -31,7 +31,7 @@ public class Universe {
 	private Array<Bullet> bullets;
 
 	private Player player;
-	
+
 	@SuppressWarnings("unused")
 	private Ship testShip, testTarget;
 
@@ -58,9 +58,9 @@ public class Universe {
 		planets.add(new Planet(0, 0, 500));
 
 		player = new Player(0, 600, planets.get(0));
-		testShip = new SmallBombarder(100, 600, planets.get(0));
-		player.setShip(testShip);
-		
+		testShip = new SmallBombarder(0, 600, planets.get(0));
+		//player.setShip(testShip);
+
 		testTarget = new CrapLander(525, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
@@ -94,41 +94,29 @@ public class Universe {
 	}
 
 	public void tick(float dt) {
-		for (Mass mass : masses) {
-			mass.update(dt, planets);
-			mass.checkCollisions(player);
+		if (Gdx.input.getInputProcessor().scrolled(1)) {
+			camera.zoom += 0.2f;
+		} else if (Gdx.input.getInputProcessor().scrolled(-1)) {
+			camera.zoom -= 0.2f;
+		}
+		
+		for(int i = 0; i < bullets.size; i++) {
+			bullets.get(i).checkCollisions(planets);
+		}
+		
+		for (int i = 0; i < masses.size; i++) {
+			masses.get(i).checkState();
 		}
 
 		for (Effect effect : effects) {
 			effect.update(dt);
 		}
 
-		for (Bullet bullet : bullets) {
-			bullet.update(dt, planets);
-		}
-		
-		//	Check collisions between bullets and masses
-		for(Mass mass : masses) {
-			for(Bullet bullet : bullets) {
-				if(mass.getBounds().contains(bullet.getX(), bullet.getY())) {
-					mass.doDamage(bullet.getDamage());
-					bullet.die();
-				}
-			}
-		}
-
-		if (Gdx.input.getInputProcessor().scrolled(1)) {
-			camera.zoom += 0.2f;
-		} else if (Gdx.input.getInputProcessor().scrolled(-1)) {
-			camera.zoom -= 0.2f;
-		}
-
 		desiredRot = player.getAngle() % MathUtils.PI2;
 		float da = (desiredRot - cameraRot) / 10.f;
 		cameraRot += da;
-		// camera.rotate(-da * MathUtils.radiansToDegrees);
+		camera.rotate(-da * MathUtils.radiansToDegrees);
 
-		player.update(dt, camera);
 		camera.position.set(player.getFX(), player.getFY(), 0);
 		camera.update();
 
@@ -139,59 +127,84 @@ public class Universe {
 				player.getFY() - Gdx.graphics.getHeight() * 10);
 	}
 
+	public void tickPhysics(float dt) {
+		player.update(dt, camera);
+
+		for (int i = 0; i < masses.size; i++) {
+			masses.get(i).update(dt, planets);
+			masses.get(i).checkCollisions(player);
+		}
+
+		for (Bullet bullet : bullets) {
+			bullet.updatePhysics(dt, planets);
+		}
+
+		// Check collisions between bullets and masses
+		for (Mass mass : masses) {
+			for (Bullet bullet : bullets) {
+				if (mass.getBounds().contains(bullet.getX(), bullet.getY())) {
+					mass.doDamage(bullet.getDamage());
+					bullet.die();
+				}
+			}
+		}
+	}
+
 	public void render() {
 		universeBatch.begin();
 
-		// stars.draw(universeBatch);
+		stars.draw(universeBatch);
 
-		for (Effect effect : effects) {
-			effect.render(universeBatch);
+		for (int i = 0; i < effects.size; i++) {
+			effects.get(i).render(universeBatch);
 		}
 
-		for (Mass mass : masses) {
-			mass.render(universeBatch);
+		for (int i = 0; i < masses.size; i++) {
+			masses.get(i).render(universeBatch);
 		}
 
 		player.draw(universeBatch);
 		universeBatch.end();
 
 		universeShapeRenderer.begin(ShapeType.Filled);
-		for (Bullet bullet : bullets) {
-			bullet.draw(universeShapeRenderer);
-		}
-		
-		for (Planet planet : planets) {
-			planet.draw(universeShapeRenderer);
+		for (int i = 0; i < bullets.size; i++) {
+			bullets.get(i).draw(universeShapeRenderer);
 		}
 
-		//crapDude.debugRender(universeShapeRenderer);
+		for (int i = 0; i < planets.size; i++) {
+			planets.get(i).draw(universeShapeRenderer);
+		}
+		
+		planets.get(0).draw(universeShapeRenderer);
+
+		// crapDude.debugRender(universeShapeRenderer);
 
 		player.debugDraw(universeShapeRenderer);
 
-		for (Mass m : masses) {
-			m.debugRender(universeShapeRenderer);
-		}
+		/*for (int i = 0; i < masses.size - 1; i++) {
+			masses.get(i).debugRender(universeShapeRenderer);
+		}*/
 		universeShapeRenderer.end();
 	}
 
 	public void finalizeState() {
-		for (Effect effect : effects) {
-			if (!effect.isAlive()) {
-				effects.removeValue(effect, true);
+		for (int i = 0; i < effects.size; i++) {
+			if (!effects.get(i).isAlive()) {
+				effects.removeValue(effects.get(i), true);
 				break;
 			}
 		}
 
-		for (Mass mass : masses) {
-			if (!mass.isAlive()) {
-				masses.removeValue(mass, true);
+		for (int i = 0; i < masses.size; i++) {
+			if (!masses.get(i).isAlive()) {
+				masses.removeValue(masses.get(i), true);
 				break;
 			}
 		}
 
-		for (Bullet bullet : bullets) {
-			if (!bullet.alive()) {
-				bullets.removeValue(bullet, true);
+		for (int i = 0; i < bullets.size; i++) {
+			if (!bullets.get(i).alive()) {
+				bullets.removeValue(bullets.get(i), true);
 				break;
 			}
 		}

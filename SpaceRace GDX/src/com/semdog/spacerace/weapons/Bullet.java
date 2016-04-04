@@ -22,14 +22,16 @@ public class Bullet {
 		this.damage = damage;
 	}
 
-	public void update(float dt, Array<Planet> planets) {
+	public void updatePhysics(float dt, Array<Planet> planets) {
+		x += dx * dt;
+		y += dy * dt;
+	}
+	
+	public void checkCollisions(Array<Planet> planets) {
 		for(Planet planet : planets) {
 			float d = Vector2.dst(planet.getX(), planet.getY(), x, y);
 			float a = MathUtils.atan2(y - planet.getY(), x - planet.getX());
-			
-			//dx += -planet.getGravity(d) * MathUtils.cos(a) * dt * 0.2f;
-			//dy += -planet.getGravity(d) * MathUtils.sin(a) * dt * 0.2f;
-			
+						
 			if(d < planet.getRadius()) {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
 				float py = planet.getY() + MathUtils.sin(a) * planet.getRadius();
@@ -38,8 +40,6 @@ public class Bullet {
 			}
 		}
 		
-		x += dx * dt;
-		y += dy * dt;
 	}
 
 	public void draw(ShapeRenderer renderer) {

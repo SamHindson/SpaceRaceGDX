@@ -69,8 +69,9 @@ public abstract class Mass {
 	public void update(float dt, Array<Planet> gravitySources) {
 		angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 
-		for (Planet planet : gravitySources) {
-			if (inRange(planet) && !onSurface(planet)) {
+		for (int i = 0; i < gravitySources.size; i++) {
+			Planet planet = gravitySources.get(i);
+			if (inRange(planet) && !onSurface) {
 
 				if (!environment.equals(planet)) {
 					environment = planet;
@@ -92,6 +93,10 @@ public abstract class Mass {
 		y += dy * dt;
 
 		bounds.setPosition(x - getWidth() / 2, y - getHeight() / 2);
+	}
+	
+	public void checkState() {
+		onSurface(environment);
 	}
 
 	protected boolean onSurface(Planet planet) {
