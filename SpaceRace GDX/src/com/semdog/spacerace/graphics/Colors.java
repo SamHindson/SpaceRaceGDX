@@ -12,6 +12,7 @@ public class Colors {
 	public static final Color PLANETPURPLE = new Color(0x7B1FA2ff);
 	public static final Color PLANETGRAY = new Color(0x616161ff);
 	public static final Color PLANETWHITE = new Color(0xBDBDBDff);
+	public static final Color PLANETPINK = new Color(0xff006eff);
 	
 	public static Color getRandom() {
 		return (Color) Tools.decide(PLANETBLUE, PLANETGRAY, PLANETGREEN, PLANETORANGE, PLANETPURPLE, PLANETRED, PLANETWHITE, PLANETYELLOW);

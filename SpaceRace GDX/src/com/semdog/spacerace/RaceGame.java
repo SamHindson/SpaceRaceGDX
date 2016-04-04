@@ -12,7 +12,7 @@ public class RaceGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		screen = new PlayScreen(this);
+		screen = new MenuScreen(this);
 	}
 
 	@Override

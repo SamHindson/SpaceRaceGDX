@@ -9,14 +9,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class Button {
 	private static BitmapFont font;
 	private static Texture texture;
 
 	static {
-		font = new BitmapFont(Gdx.files.internal("assets/fonts/VCR20B.fnt"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+				Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 16;
 
+		font = generator.generateFont(parameter);
+		generator.dispose();
+		
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.WHITE);
 		pixmap.drawPixel(0, 0);
@@ -27,7 +35,7 @@ public class Button {
 	private Event clickEvent;
 	private boolean hovered, held;
 
-	private Color hoverColor;
+	private Color buttonColor, textColor;
 	private boolean darkHover;
 	private String text;
 
@@ -42,14 +50,15 @@ public class Button {
 		GlyphLayout glyphLayout = new GlyphLayout(font, text);
 		tx = x - glyphLayout.width / 2.f;
 		ty = y + glyphLayout.height / 2.f;
-		
-		hoverColor = Color.WHITE;
+
+		buttonColor = Color.WHITE;
+		textColor = Color.BLACK;
 	}
 
-	public void setColor(Color color) {
-		this.hoverColor = color;
-
-		darkHover = (color.r + color.g + color.b) < 1.5f;
+	public void setColors(Color buttonColor, Color textColor) {
+		this.buttonColor = buttonColor;
+		this.textColor = textColor;
+		darkHover = (buttonColor.r + buttonColor.g + buttonColor.b) < 1.5f;
 	}
 
 	public void update(float dt) {
@@ -72,11 +81,11 @@ public class Button {
 	}
 
 	public void draw(SpriteBatch batch) {
-		batch.setColor(hovered ? hoverColor : Color.CLEAR);
+		batch.setColor(hovered ? textColor : buttonColor);
 		batch.draw(texture, x - w / 2, y - h / 2, w, h);
 
 		batch.setColor(Color.WHITE);
-		font.setColor(hovered ? (darkHover ? Color.BLACK : Color.WHITE) : hoverColor);
+		font.setColor(hovered ? buttonColor : textColor);
 		font.draw(batch, text, tx, ty);
 	}
 }
