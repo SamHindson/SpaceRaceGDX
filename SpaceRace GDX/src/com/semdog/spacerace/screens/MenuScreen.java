@@ -3,15 +3,11 @@ package com.semdog.spacerace.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.math.MathUtils;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.TitleCard;
 
 public class MenuScreen extends RaceScreen {
 	
@@ -19,22 +15,15 @@ public class MenuScreen extends RaceScreen {
 	
 	private SpriteBatch batch;
 	
-	private BitmapFont titleFont;
 	private float titleOffset;
 	
 	private Button button1, button2, button3, button4, button5, secretButton;
+	private TitleCard titleCard;
 
 	public MenuScreen(RaceGame game) {
 		super(game);
 		
 		batch = new SpriteBatch();
-		
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 48;
-		
-		titleFont = generator.generateFont(parameter);
-		generator.dispose();
 		
 		button1 = new Button("Singleplayer", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 50, () -> {
 			game.changeScreen("play");
@@ -47,7 +36,7 @@ public class MenuScreen extends RaceScreen {
 		button2.setColors(Colors.PLANETBLUE, Color.YELLOW);
 		
 		button3 = new Button("Settings", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.35f, 200, 50, () -> {
-			System.out.println("Settings");
+			game.changeScreen("settings");
 		});
 		button3.setColors(Colors.PLANETORANGE, Color.GREEN);
 		
@@ -65,6 +54,8 @@ public class MenuScreen extends RaceScreen {
 			Gdx.app.exit();
 		});
 		secretButton.setColors(Color.ORANGE, Color.GREEN);
+		
+		titleCard = new TitleCard(1, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
 	}
 
 	@Override
@@ -84,10 +75,7 @@ public class MenuScreen extends RaceScreen {
 
 		batch.begin();
 		
-		titleFont.setColor(Colors.PLANETRED);
-		titleFont.draw(batch, "Space", Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() * 0.95f);
-		titleFont.setColor(Colors.PLANETYELLOW);
-		titleFont.draw(batch, "Race!", Gdx.graphics.getWidth() / 2 - 78, Gdx.graphics.getHeight() * 0.85f);
+		titleCard.draw(batch);
 		
 		button1.draw(batch);
 		button2.draw(batch);
@@ -102,7 +90,7 @@ public class MenuScreen extends RaceScreen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		titleFont.dispose();
+		titleCard.dispose();
 	}
 	
 }
