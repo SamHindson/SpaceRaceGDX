@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.universe.Planet;
@@ -19,6 +20,8 @@ public class CrapLander extends Ship {
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
 		particleEffect.start();
+		
+		dy = -350;
 	}
 
 	@Override
@@ -33,6 +36,11 @@ public class CrapLander extends Ship {
 	public void render(SpriteBatch batch) {
 		particleEffect.draw(batch);
 		super.render(batch);
+	}
+	
+	@Override
+	public void debugRender(ShapeRenderer renderer) {
+		super.debugRender(renderer);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class SmallBombarder extends Ship {
 		super(x, y, 32, 32, 20000, 50, environment, "runt");
 
 		pCooldown = 0.02f;
-		dx = 350;
+		dx = 0;
 	}
 
 	@Override

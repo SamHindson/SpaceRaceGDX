@@ -43,14 +43,9 @@ public class PlayScreen extends RaceScreen {
 		@Override
 		public void run() {
 			running = true;
-			long thisTime = 0;
-			long lastTime = System.nanoTime();
-			float dt = 0;
 
 			while (running) {
-				thisTime = System.nanoTime();
-				dt = (thisTime - lastTime) / 1000000000.f;
-				universe.tickPhysics(dt);
+				universe.tickPhysics(0.016f);
 				universe.finalizeState();
 				
 				try {
@@ -58,8 +53,6 @@ public class PlayScreen extends RaceScreen {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
-				lastTime = thisTime;
 			}
 		}
 

@@ -8,7 +8,7 @@ public class Colors {
 	public static final Color PLANETORANGE = new Color(0xE64A19ff);
 	public static final Color PLANETYELLOW = new Color(0xFFA000ff);
 	public static final Color PLANETGREEN = new Color(0x388E3Cff);
-	public static final Color PLANETBLUE = new Color(0x303F9Fff);
+	public static final Color PLANETBLUE = new Color(0x434DB0ff);
 	public static final Color PLANETPURPLE = new Color(0x7B1FA2ff);
 	public static final Color PLANETGRAY = new Color(0x616161ff);
 	public static final Color PLANETWHITE = new Color(0xBDBDBDff);

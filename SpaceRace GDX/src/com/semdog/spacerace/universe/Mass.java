@@ -1,9 +1,12 @@
 package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -127,6 +130,14 @@ public abstract class Mass {
 	public float getY() {
 		return y;
 	}
+	
+	public float getDx() {
+		return dx;
+	}
+	
+	public float getDy() {
+		return dy;
+	}
 
 	public Rectangle getBounds() {
 		return bounds;
@@ -137,7 +148,7 @@ public abstract class Mass {
 	}
 	
 	protected void die() {
-		Gdx.app.log("Mass", "A mass was just told to die.");
+		alive = false;
 	}
 
 	protected abstract float getWidth();
@@ -153,17 +164,30 @@ public abstract class Mass {
 	}
 
 	public void debugRender(ShapeRenderer renderer) {
-		/*renderer.setColor(Color.WHITE);
+		renderer.setColor(Color.WHITE);
 		renderer.set(ShapeType.Filled);
 		renderer.rect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-		renderer.rect(600, 0, 50, 50);*/
 	}
 
 	public void render(SpriteBatch batch) {
 
 	}
-
+	
 	public void checkCollisions(Player... s) {
 
+	}
+	
+	public void checkCollisions(Array<Mass> masses) {
+		for(int u = 0; u < masses.size; u++) {
+			Mass m = masses.get(u);
+			
+			if(!m.equals(this)) {
+				if(Intersector.overlaps(getBounds(), m.getBounds())) {
+					float v = Vector2.len(dx - m.getDx(), dy - m.getDy());
+					handleCollision(v);
+					m.handleCollision(v);
+				}
+			}
+		}
 	}
 }

@@ -59,9 +59,9 @@ public class Universe {
 
 		player = new Player(0, 600, planets.get(0));
 		testShip = new SmallBombarder(0, 600, planets.get(0));
-		//player.setShip(testShip);
+		player.setShip(testShip);
 
-		testTarget = new CrapLander(525, 0, planets.get(0));
+		testTarget = new CrapLander(600, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
@@ -115,7 +115,7 @@ public class Universe {
 		desiredRot = player.getAngle() % MathUtils.PI2;
 		float da = (desiredRot - cameraRot) / 10.f;
 		cameraRot += da;
-		camera.rotate(-da * MathUtils.radiansToDegrees);
+		//camera.rotate(-da * MathUtils.radiansToDegrees);
 
 		camera.position.set(player.getFX(), player.getFY(), 0);
 		camera.update();
@@ -133,6 +133,10 @@ public class Universe {
 		for (int i = 0; i < masses.size; i++) {
 			masses.get(i).update(dt, planets);
 			masses.get(i).checkCollisions(player);
+		}
+		
+		for (int i = 0; i < masses.size; i++) {
+			masses.get(i).checkCollisions(masses);
 		}
 
 		for (Bullet bullet : bullets) {
@@ -177,11 +181,11 @@ public class Universe {
 		
 		planets.get(0).draw(universeShapeRenderer);
 
-		// crapDude.debugRender(universeShapeRenderer);
+		//crapDude.debugRender(universeShapeRenderer);
 
 		player.debugDraw(universeShapeRenderer);
 
-		/*for (int i = 0; i < masses.size - 1; i++) {
+		/*for (int i = 0; i < masses.size; i++) {
 			masses.get(i).debugRender(universeShapeRenderer);
 		}*/
 		universeShapeRenderer.end();
