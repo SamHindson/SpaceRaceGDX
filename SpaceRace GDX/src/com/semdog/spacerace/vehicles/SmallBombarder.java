@@ -13,7 +13,7 @@ import com.semdog.spacerace.weapons.Bullet;
 public class SmallBombarder extends Ship {
 
 	public SmallBombarder(float x, float y, Planet environment) {
-		super(x, y, 32, 32, 20000, 50, environment, "runt");
+		super(x, y, 32, 32, 30000, 50, environment, "runt");
 
 		pCooldown = 0.02f;
 		dx = 0;

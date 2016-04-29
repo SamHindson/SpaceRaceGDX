@@ -87,8 +87,8 @@ public abstract class Ship extends Mass {
 	}
 
 	@Override
-	protected void handleCollision(float speed) {
-		super.handleCollision(speed);
+	protected void handlePlanetCollision(float speed, boolean v) {
+		super.handlePlanetCollision(speed, v);
 		if (speed > getImpactThreshhold()) {
 			explode();
 		}

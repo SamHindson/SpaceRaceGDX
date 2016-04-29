@@ -21,7 +21,7 @@ public class CrapLander extends Ship {
 		particleEffect.setPosition(x, y);
 		particleEffect.start();
 		
-		dy = -350;
+		dy = 350;
 	}
 
 	@Override

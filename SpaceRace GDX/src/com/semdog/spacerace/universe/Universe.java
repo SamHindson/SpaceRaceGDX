@@ -23,6 +23,8 @@ import com.semdog.spacerace.weapons.Bullet;
 public class Universe {
 	public static final float GRAVITY = 50f;
 	public static Universe currentUniverse;
+	
+	private float age = 0;
 
 	private Array<Planet> planets;
 	private Array<Mass> masses;
@@ -61,7 +63,7 @@ public class Universe {
 		testShip = new SmallBombarder(0, 600, planets.get(0));
 		player.setShip(testShip);
 
-		testTarget = new CrapLander(600, 0, planets.get(0));
+		testTarget = new CrapLander(-600, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
@@ -94,6 +96,10 @@ public class Universe {
 	}
 
 	public void tick(float dt) {
+		age += dt;
+		
+		//Gdx.app.log("Universe", (int)age + "s");
+		
 		if (Gdx.input.getInputProcessor().scrolled(1)) {
 			camera.zoom += 0.2f;
 		} else if (Gdx.input.getInputProcessor().scrolled(-1)) {

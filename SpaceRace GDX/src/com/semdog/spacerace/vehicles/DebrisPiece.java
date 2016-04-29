@@ -49,13 +49,18 @@ public class DebrisPiece extends Mass {
 	public void render(SpriteBatch batch) {
 		sprite.draw(batch);
 	}
+	
+	@Override
+	protected void handleMassCollision(Mass m, float v) {
+		// TODO Auto-generated method stub
+	}
 
 	/***
 	 * Debris pieces are to bounce twice before exploding into a puff of colored smoke.
 	 * This function works out if it is strong enough to bounce and, if so, how it bounces.
 	 */
 	@Override
-	protected void handleCollision(float speed) {
+	protected void handlePlanetCollision(float speed, boolean planet) {
 		if (bounces < 1) {
 			float normal = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 			float velDirection = MathUtils.atan2(dy, dx);
@@ -67,7 +72,7 @@ public class DebrisPiece extends Mass {
 			bounces++;
 		} else {
 			alive = false;
-			super.handleCollision(speed);
+			super.handlePlanetCollision(speed, true);
 			Universe.currentUniverse.addEffect(new DustPuff(x, y, environment.getColor()));
 		}
 	}

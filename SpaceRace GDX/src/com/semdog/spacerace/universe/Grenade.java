@@ -36,7 +36,7 @@ public class Grenade extends Mass {
 	}
 
 	@Override
-	protected void handleCollision(float speed) {
+	protected void handlePlanetCollision(float speed, boolean x) {
 		if (!exploded) {
 			explode();
 		}

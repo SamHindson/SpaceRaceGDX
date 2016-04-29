@@ -97,7 +97,7 @@ public abstract class Mass {
 
 		bounds.setPosition(x - getWidth() / 2, y - getHeight() / 2);
 	}
-	
+
 	public void checkState() {
 		onSurface(environment);
 	}
@@ -106,7 +106,7 @@ public abstract class Mass {
 		if (!onSurface) {
 			if (distance(planet) <= planet.getRadius() + getHeight() / 2.f) {
 				float speed = Vector2.dst(0, 0, dx, dy);
-				handleCollision(speed);
+				handlePlanetCollision(speed, true);
 			} else {
 				onSurface = false;
 			}
@@ -118,9 +118,22 @@ public abstract class Mass {
 		return onSurface;
 	}
 
-	protected void handleCollision(float speed) {
+	protected void handlePlanetCollision(float speed, boolean withPlanet) {
 		onSurface = true;
 		dx = dy = 0;
+	}
+
+	protected void handleMassCollision(Mass m, float speed) {
+		float angle = MathUtils.atan2(m.getY() - getY(), m.getX() - getX());
+		float dist = Vector2.dst(x, y, m.getX(), m.getY());
+		float radii = getAverageRadius() + m.getAverageRadius();
+		float intersect = dist - radii;
+		x += intersect * MathUtils.cos(angle);
+		y += intersect * MathUtils.sin(angle);
+		float bx = -speed * MathUtils.cos(angle);
+		float by = -speed * MathUtils.sin(angle);
+		dx += bx;
+		dy += by;
 	}
 
 	public float getX() {
@@ -130,11 +143,11 @@ public abstract class Mass {
 	public float getY() {
 		return y;
 	}
-	
+
 	public float getDx() {
 		return dx;
 	}
-	
+
 	public float getDy() {
 		return dy;
 	}
@@ -146,7 +159,7 @@ public abstract class Mass {
 	public boolean isAlive() {
 		return alive;
 	}
-	
+
 	protected void die() {
 		alive = false;
 	}
@@ -154,6 +167,10 @@ public abstract class Mass {
 	protected abstract float getWidth();
 
 	protected abstract float getHeight();
+	
+	protected float getAverageRadius() {
+		return (getWidth() + getHeight()) / 2.f;
+	}
 
 	protected boolean inRange(Planet planet) {
 		return distance(planet) < planet.getSOI();
@@ -172,20 +189,20 @@ public abstract class Mass {
 	public void render(SpriteBatch batch) {
 
 	}
-	
+
 	public void checkCollisions(Player... s) {
 
 	}
-	
+
 	public void checkCollisions(Array<Mass> masses) {
-		for(int u = 0; u < masses.size; u++) {
+		for (int u = 0; u < masses.size; u++) {
 			Mass m = masses.get(u);
-			
-			if(!m.equals(this)) {
-				if(Intersector.overlaps(getBounds(), m.getBounds())) {
+
+			if (!m.equals(this)) {
+				if (Intersector.overlaps(getBounds(), m.getBounds())) {
 					float v = Vector2.len(dx - m.getDx(), dy - m.getDy());
-					handleCollision(v);
-					m.handleCollision(v);
+					handleMassCollision(m, v);
+					m.handleMassCollision(m, v);
 				}
 			}
 		}
