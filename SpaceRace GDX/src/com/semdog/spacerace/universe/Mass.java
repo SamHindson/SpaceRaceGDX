@@ -11,27 +11,23 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.Player;
 
 public abstract class Mass {
-	protected float x, y, dx, dy, mass, angle;
-	protected boolean onSurface, alive = true;
-	protected Planet environment;
-
 	protected static Texture texture;
 	protected static Universe universe;
-
-	protected Rectangle bounds;
-
-	protected int currentHealth, maxHealth;
-
-	public static void initiate(Universe _universe) {
-		universe = _universe;
-	}
 
 	static {
 		texture = new Texture(Gdx.files.internal("assets/test.png"));
 	}
+
+	protected float x, y, dx, dy, mass, angle;
+	protected boolean onSurface, alive = true;
+	protected Planet environment;
+	protected boolean shouldCollide;
+	protected Rectangle bounds;
+	protected int currentHealth, maxHealth;
 
 	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment) {
 		this.x = x;
@@ -40,6 +36,8 @@ public abstract class Mass {
 		this.dy = dy;
 		this.mass = mass;
 		this.environment = environment;
+
+		shouldCollide = true;
 
 		universe.addMass(this);
 
@@ -54,41 +52,47 @@ public abstract class Mass {
 		this(x, y, dx, dy, mass, 0, 0, environment);
 	}
 
+	public static void initiate(Universe _universe) {
+		universe = _universe;
+	}
+
 	public void setMaxHealth(int maxHealth) {
 		this.maxHealth = maxHealth;
 		currentHealth = maxHealth;
 	}
 
-	public void doDamage(int amount) {
+	public void doDamage(int amount, DeathCause reason) {
 		if (currentHealth <= amount) {
 			currentHealth = 0;
 			alive = false;
-			die();
+			die(reason);
 		} else {
 			currentHealth -= amount;
 		}
 	}
 
 	public void update(float dt, Array<Planet> gravitySources) {
-		angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
+		if (environment != null) {
+			angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 
-		for (int i = 0; i < gravitySources.size; i++) {
-			Planet planet = gravitySources.get(i);
-			if (inRange(planet) && !onSurface) {
+			for (int i = 0; i < gravitySources.size; i++) {
+				Planet planet = gravitySources.get(i);
+				if (inRange(planet) && !onSurface) {
 
-				if (!environment.equals(planet)) {
-					environment = planet;
+					if (!environment.equals(planet)) {
+						environment = planet;
+					}
+
+					float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
+					float ax = -dt * force * MathUtils.cos(angle);
+					float ay = -dt * force * MathUtils.sin(angle);
+
+					ax /= mass;
+					ay /= mass;
+
+					dx += ax * dt * 100;
+					dy += ay * dt * 100;
 				}
-
-				float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
-				float ax = -dt * force * MathUtils.cos(angle);
-				float ay = -dt * force * MathUtils.sin(angle);
-
-				ax /= mass;
-				ay /= mass;
-
-				dx += ax * dt * 100;
-				dy += ay * dt * 100;
 			}
 		}
 
@@ -98,21 +102,25 @@ public abstract class Mass {
 		bounds.setPosition(x - getWidth() / 2, y - getHeight() / 2);
 	}
 
+	protected abstract float getImpactThreshhold();
+
 	public void checkState() {
 		onSurface(environment);
 	}
 
 	protected boolean onSurface(Planet planet) {
-		if (!onSurface) {
-			if (distance(planet) <= planet.getRadius() + getHeight() / 2.f) {
-				float speed = Vector2.dst(0, 0, dx, dy);
-				handlePlanetCollision(speed, true);
+		if (environment != null) {
+			if (!onSurface) {
+				if (distance(planet) <= planet.getRadius() + getHeight() / 2.f) {
+					float speed = Vector2.dst(0, 0, dx, dy);
+					handlePlanetCollision(speed, true);
+				} else {
+					onSurface = false;
+				}
 			} else {
-				onSurface = false;
-			}
-		} else {
-			if (distance(planet) >= planet.getRadius() + getHeight() / 2.f) {
-				onSurface = false;
+				if (distance(planet) >= planet.getRadius() + getHeight() / 2.f) {
+					onSurface = false;
+				}
 			}
 		}
 		return onSurface;
@@ -121,19 +129,6 @@ public abstract class Mass {
 	protected void handlePlanetCollision(float speed, boolean withPlanet) {
 		onSurface = true;
 		dx = dy = 0;
-	}
-
-	protected void handleMassCollision(Mass m, float speed) {
-		float angle = MathUtils.atan2(m.getY() - getY(), m.getX() - getX());
-		float dist = Vector2.dst(x, y, m.getX(), m.getY());
-		float radii = getAverageRadius() + m.getAverageRadius();
-		float intersect = dist - radii;
-		x += intersect * MathUtils.cos(angle);
-		y += intersect * MathUtils.sin(angle);
-		float bx = -speed * MathUtils.cos(angle);
-		float by = -speed * MathUtils.sin(angle);
-		dx += bx;
-		dy += by;
 	}
 
 	public float getX() {
@@ -160,16 +155,16 @@ public abstract class Mass {
 		return alive;
 	}
 
-	protected void die() {
+	protected void die(DeathCause reason) {
 		alive = false;
 	}
 
 	protected abstract float getWidth();
 
 	protected abstract float getHeight();
-	
+
 	protected float getAverageRadius() {
-		return (getWidth() + getHeight()) / 2.f;
+		return (getWidth() + getHeight()) / 4.f;
 	}
 
 	protected boolean inRange(Planet planet) {
@@ -199,11 +194,48 @@ public abstract class Mass {
 			Mass m = masses.get(u);
 
 			if (!m.equals(this)) {
-				if (Intersector.overlaps(getBounds(), m.getBounds())) {
+				if (Intersector.overlaps(getBounds(), m.getBounds()) && m.shouldCollide && shouldCollide) {
 					float v = Vector2.len(dx - m.getDx(), dy - m.getDy());
-					handleMassCollision(m, v);
-					m.handleMassCollision(m, v);
+					float d = Vector2.dst(x, y, m.getX(), m.getY());
+					float a1 = MathUtils.atan2(m.getY() - getY(), m.getX() - getX());
+					float a2 = -a1;
+					float r = (getRadius(a1) + m.getRadius(a2));
+					float i = (d - r) / 2.f;
+
+					if (v > getImpactThreshhold()) {
+						die(DeathCause.SHIP);
+					}
+
+					x += i * MathUtils.cos(a1);
+					y += i * MathUtils.sin(a1);
+
+					float p1 = mass * getVelocity();
+					float p2 = m.mass * m.getVelocity();
+
+					float pf = (p1 + p2) / 2.f;
+
+					dx += (pf / mass) * -MathUtils.cos(a1);
+					dy += (pf / mass) * -MathUtils.sin(a1);
 				}
+			}
+		}
+	}
+
+	public float getRadius(float angle) {
+		float ar = getAverageRadius();
+		return ar * (float) Math.min(Math.abs(1.f / (Math.cos(angle))), Math.abs(1.f / (Math.sin(angle))));
+	}
+
+	public float getVelocity() {
+		return Vector2.dst(0, 0, dx, dy);
+	}
+
+	protected abstract void hitPlayer(Player player);
+
+	public void checkPlayerCollision(Player player) {
+		if (Intersector.overlaps(getBounds(), player.getBounds())) {
+			if (getVelocity() - player.getVelocity() > 50) {
+				hitPlayer(player);
 			}
 		}
 	}

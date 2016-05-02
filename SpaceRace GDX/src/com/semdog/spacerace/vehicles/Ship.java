@@ -1,5 +1,6 @@
 package com.semdog.spacerace.vehicles;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Explosion;
+import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
@@ -20,22 +22,25 @@ import com.semdog.spacerace.universe.Universe;
 
 public abstract class Ship extends Mass {
 
-	protected Player driver;
+	protected Player pilot;
 	protected Sprite sprite;
 	protected float totalFuel, currentFuel;
 	protected float r, width, height;
 	protected float power;
 
+	protected float beepTime;
+
 	protected int pAmmo, sAmmo;
 	protected boolean pAutomatic, sAutomatic;
 	protected float pCooldown, sCooldown, pRest, sRest;
 
-	protected Ship(float x, float y, float w, float h, float fuel, float power, Planet environment, String textureName) {
+	protected Ship(float x, float y, float w, float h, float fuel, float power, Planet environment,
+				   String textureName) {
 		this(x, y, w, h, fuel, power, 0, 0, environment, textureName);
 	}
 
-	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo, Planet environment,
-			String textureName) {
+	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo,
+				   Planet environment, String textureName) {
 		super(x, y, 0, 0, 5000, w, h, environment);
 		this.x = x;
 		this.y = y;
@@ -52,14 +57,25 @@ public abstract class Ship extends Mass {
 		sprite.setOriginCenter();
 		width = sprite.getWidth();
 		height = sprite.getHeight();
+
+		Universe.currentUniverse.addShip(this);
+
+		beepTime = MathUtils.random();
 	}
 
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
-		//updateControls(dt);
+		// updateControls(dt);
 		super.update(dt, gravitySources);
 		sprite.setRotation(r);
 		sprite.setPosition(x - width / 2, y - height / 2);
+
+		beepTime += dt;
+
+		if (beepTime > 2f) {
+			beepTime = 0;
+			Universe.currentUniverse.playSound("beep", x, y, 0);
+		}
 	}
 
 	@Override
@@ -80,34 +96,49 @@ public abstract class Ship extends Mass {
 	public float getHeight() {
 		return height;
 	}
-	
-	@Override
-	protected void die() {
-		explode();
+
+	protected void die(DeathCause reason) {
+		super.die(reason);
+		explode(reason);
 	}
 
 	@Override
 	protected void handlePlanetCollision(float speed, boolean v) {
 		super.handlePlanetCollision(speed, v);
 		if (speed > getImpactThreshhold()) {
-			explode();
+			explode(DeathCause.PLANET);
 		}
 	}
 
-	protected void explode() {
-		Universe.currentUniverse.addEffect(new Explosion(x, y, 1000));
-		
-		for(int k = 0; k < 15; k++) {
+	protected void explode(DeathCause cause) {
+		Gdx.app.log("Ship", "BOOOOM!");
+		Universe.currentUniverse.addEffect(new Explosion(x, y));
+
+		if (pilot != null) {
+			Universe.currentUniverse.playerKilled(pilot, cause);
+		}
+
+		for (int k = 0; k < 15; k++) {
 			new DebrisPiece(x, y, dx, dy, environment, this);
 		}
-		
+
 		alive = false;
 	}
 
-	protected abstract float getImpactThreshhold();
-	
+	@Override
+	protected void hitPlayer(Player player) {
+		player.addSpeed(dx, dy);
+		player.doDamage(getVelocity(), DeathCause.SHIP);
+
+	}
+
 	public abstract void firePrimary();
+
 	public abstract void fireSecondary();
+
+	public void setPilot(Player pilot) {
+		this.pilot = pilot;
+	}
 
 	public Texture getTexture() {
 		return sprite.getTexture();

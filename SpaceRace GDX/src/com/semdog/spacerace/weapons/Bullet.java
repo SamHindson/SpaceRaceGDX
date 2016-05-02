@@ -36,6 +36,7 @@ public class Bullet {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
 				float py = planet.getY() + MathUtils.sin(a) * planet.getRadius();
 				Universe.currentUniverse.addEffect(new DustPuff(px, py, planet.getColor()));
+				Universe.currentUniverse.playSound("bulletground", x, y, 0.5f);
 				age = life + 1;
 			}
 		}

@@ -143,7 +143,7 @@ colors11: 0.2509804
 timelineCount: 4
 timeline0: 0.0
 timeline1: 0.060240965
-timeline2: 0.29259896
+timeline2: 0.16582915
 timeline3: 1.0
 - Transparency - 
 lowMin: 0.0
@@ -153,10 +153,10 @@ highMax: 1.0
 relative: false
 scalingCount: 2
 scaling0: 1.0
-scaling1: 0.0877193
+scaling1: 0.0
 timelineCount: 2
 timeline0: 0.0
-timeline1: 0.3561644
+timeline1: 0.23287672
 - Options - 
 attached: true
 continuous: true

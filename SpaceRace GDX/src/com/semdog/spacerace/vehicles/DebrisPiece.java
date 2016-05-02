@@ -5,12 +5,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.DustPuff;
+import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.players.DeathCause;
+import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
-public class DebrisPiece extends Mass {
+class DebrisPiece extends Mass {
 
 	private Sprite sprite;
 	private float rotationalSpeed;
@@ -19,7 +23,7 @@ public class DebrisPiece extends Mass {
 
 	private int bounces;
 
-	public DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
+	DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
 		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 10, 10, 50, environment);
 
 		int w = (int) MathUtils.random(ship.getWidth() / 2);
@@ -34,6 +38,8 @@ public class DebrisPiece extends Mass {
 		sprite.setOriginCenter();
 		rotationalSpeed = MathUtils.random(0, 720);
 
+		shouldCollide = false;
+
 		this.w = w;
 		this.h = h;
 	}
@@ -46,13 +52,18 @@ public class DebrisPiece extends Mass {
 	}
 
 	@Override
+	protected float getImpactThreshhold() {
+		return 0;
+	}
+
+	@Override
 	public void render(SpriteBatch batch) {
 		sprite.draw(batch);
 	}
-	
+
 	@Override
-	protected void handleMassCollision(Mass m, float v) {
-		// TODO Auto-generated method stub
+	public void checkCollisions(Array<Mass> masses) {
+
 	}
 
 	/***
@@ -74,6 +85,7 @@ public class DebrisPiece extends Mass {
 			alive = false;
 			super.handlePlanetCollision(speed, true);
 			Universe.currentUniverse.addEffect(new DustPuff(x, y, environment.getColor()));
+			Universe.currentUniverse.playSound("shrap" + Tools.decide("1", "2", "3"), x, y, 0.2f);
 		}
 	}
 
@@ -85,6 +97,13 @@ public class DebrisPiece extends Mass {
 	@Override
 	protected float getHeight() {
 		return h;
+	}
+
+	@Override
+	protected void hitPlayer(Player player) {
+		Universe.currentUniverse.playerHurt(player, getVelocity(), DeathCause.DEBRIS);
+		Universe.currentUniverse.addEffect(new DustPuff(x, y, Colors.PLANETRED));
+		alive = false;
 	}
 
 }

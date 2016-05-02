@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.universe.Planet;
+import com.semdog.spacerace.universe.Universe;
 
 public class CrapLander extends Ship {
 
@@ -19,9 +20,9 @@ public class CrapLander extends Ship {
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
-		particleEffect.start();
-		
-		dy = 350;
+		particleEffect.allowCompletion();
+
+		dy = (float) -Math.sqrt((2 * Universe.GRAVITY * environment.getMass()) / y);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class CrapLander extends Ship {
 	
 	@Override
 	protected float getImpactThreshhold() {
-		return 1000;
+		return 200;
 	}
 
 	@Override

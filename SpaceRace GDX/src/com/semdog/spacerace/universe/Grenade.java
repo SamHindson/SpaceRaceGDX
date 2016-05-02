@@ -6,11 +6,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Explosion;
+import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.Player;
+
+/***
+ * Kabuum
+ */
 
 public class Grenade extends Mass {
 
-	boolean exploded = false;
+	private boolean exploded = false;
 
 	private Sprite sprite;
 
@@ -20,7 +25,7 @@ public class Grenade extends Mass {
 		sprite.setSize(5, 5);
 		sprite.setOriginCenter();
 
-		bounds = new Rectangle(x, y, 5, 5);
+		bounds = new Rectangle(x, y, 1, 1);
 	}
 
 	@Override
@@ -28,7 +33,12 @@ public class Grenade extends Mass {
 		super.update(dt, gravitySources);
 		sprite.rotate(dt * 2000);
 		sprite.setPosition(x, y);
-		bounds.set(x, y, 5, 5);
+		bounds.set(x, y, 1, 1);
+	}
+
+	@Override
+	protected float getImpactThreshhold() {
+		return 0;
 	}
 
 	public void render(SpriteBatch batch) {
@@ -43,20 +53,14 @@ public class Grenade extends Mass {
 	}
 
 	@Override
-	public void checkCollisions(Player... s) {
-		for (Player player : s) {
-			if (player.getBounds().contains(x, y)) {
-				if (!exploded) {
-					explode();
-					universe.playerKilled(player, "grenade");
-				}
-			}
-		}
+	protected void hitPlayer(Player player) {
+		Universe.currentUniverse.playerKilled(player, DeathCause.EXPLOSION);
+		explode();
 	}
 
 	private void explode() {
 		exploded = true;
-		universe.addEffect(new Explosion(x, y, 3000));
+		universe.addEffect(new Explosion(x, y));
 	}
 	
 	@Override
@@ -66,12 +70,12 @@ public class Grenade extends Mass {
 
 	@Override
 	protected float getWidth() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	protected float getHeight() {
-		return 0;
+		return 1;
 	}
 
 }

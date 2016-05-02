@@ -1,51 +1,38 @@
 package com.semdog.spacerace.graphics.effects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.universe.Universe;
 
 public class Explosion extends Effect {
-	private float life = 1.5f;
-	private float age = 0;
-	
-	private int particleNumber = 1000;
-	
-	private float[] xs;
-	private float[] ys;
-	private float[] dxs;
-	private float[] dys;
+	private ParticleEffect effect;
 
-	public Explosion(float x, float y, int magnitude) {
+	public Explosion(float x, float y) {
 		this.x = x;
 		this.y = y;
-		
-		xs = new float[particleNumber];
-		ys = new float[particleNumber];
-		dxs = new float[particleNumber];
-		dys = new float[particleNumber];
-		
-		for(int j = 0; j < particleNumber; j++) {
-			float v = MathUtils.random(magnitude) / 2;
-			float a = MathUtils.random(MathUtils.PI2);
-			
-			xs[j] = x;
-			ys[j] = y;
-			dxs[j] = v * MathUtils.cos(a);
-			dys[j] = v * MathUtils.sin(a);
-		}
+
+		effect = new ParticleEffect();
+		effect.load(Gdx.files.internal("assets/effects/explosion2.p"), Gdx.files.internal("assets/effects"));
+
+		effect.setPosition(x, y);
+		effect.start();
+
+		Universe.currentUniverse.playSound("explosion" + Tools.decide("1", "2", "3"), x, y, 0.2f);
+	}
+
+	public void render(SpriteBatch batch) {
+		effect.draw(batch);
 	}
 
 	public void update(float dt) {
-		age += dt;
-		
-		for(int j = 0; j < particleNumber; j++) {
-			xs[j] += dxs[j] * dt;
-			ys[j] += dys[j] * dt;
-			
-			dxs[j] /= 1.1f;
-			dys[j] /= 1.1f;
-		}
+		effect.update(dt);
+	}
+
+	@Override
+	public boolean isAlive() {
+		return !effect.isComplete();
 	}
 	
 	public float getX() {
@@ -54,17 +41,5 @@ public class Explosion extends Effect {
 	
 	public float getY() {
 		return y;
-	}
-
-	@Override
-	public void render(SpriteBatch batch) {
-		for(int j = 0; j < particleNumber; j++) {
-			batch.draw(Art.get("pixel_" + Tools.decide("red", "yellow", "orange")), xs[j], ys[j], (life - age) * 5, (life - age) * 5);
-		}
-	}
-
-	@Override
-	public boolean isAlive() {
-		return age < life;
 	}
 }

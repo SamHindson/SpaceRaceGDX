@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.semdog.spacerace.screens.MenuScreen;
 import com.semdog.spacerace.screens.PlayScreen;
 import com.semdog.spacerace.screens.RaceScreen;
-import com.semdog.spacerace.screens.TestScren;
 
 public class RaceGame extends ApplicationAdapter {
 	
@@ -13,7 +12,7 @@ public class RaceGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		screen = new TestScren(this);
+		screen = new PlayScreen(this);
 	}
 
 	@Override

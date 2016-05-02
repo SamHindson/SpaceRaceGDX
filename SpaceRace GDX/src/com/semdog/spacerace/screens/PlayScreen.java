@@ -14,13 +14,14 @@ public class PlayScreen extends RaceScreen {
 		super(game);
 
 		universe = new Universe();
-		physicsThread = new Thread(new PhysicsRunnable(), "SpaceRace Physics Thread");
+		physicsThread = new Thread(new PhysicsRunnable(), "SpaceRace! Physics Thread");
 		physicsThread.start();
 	}
 
 	@Override
 	public void update(float dt) {
-		universe.tick(dt);
+		if (!universe.isLoading())
+			universe.tick(dt);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class PlayScreen extends RaceScreen {
 
 	}
 
-	class PhysicsRunnable implements Runnable {
+	private class PhysicsRunnable implements Runnable {
 
 		boolean running = false;
 
@@ -45,13 +46,15 @@ public class PlayScreen extends RaceScreen {
 			running = true;
 
 			while (running) {
-				universe.tickPhysics(0.016f);
-				universe.finalizeState();
-				
-				try {
-					Thread.sleep(16);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (!universe.isLoading()) {
+					universe.tickPhysics(0.016f);
+					universe.finalizeState();
+
+					try {
+						Thread.sleep(16);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

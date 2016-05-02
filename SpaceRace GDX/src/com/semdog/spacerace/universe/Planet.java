@@ -1,13 +1,12 @@
 package com.semdog.spacerace.universe;
 
-import java.util.Random;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.graphics.Colors;
+
+import java.util.Random;
 
 public class Planet {
 	
@@ -34,7 +33,7 @@ public class Planet {
 		color = Colors.getRandom();
 		
 		dustMaker = new Random((int)(x + y + radius));
-		dustBalls = dustMaker.nextInt(100);
+		dustBalls = dustMaker.nextInt(20);
 		ballX = new float[dustBalls];
 		ballY = new float[dustBalls];
 		ballR = new float[dustBalls];
