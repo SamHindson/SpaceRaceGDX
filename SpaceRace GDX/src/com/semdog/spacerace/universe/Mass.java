@@ -79,9 +79,9 @@ public abstract class Mass {
 				Planet planet = gravitySources.get(i);
 				if (inRange(planet) && !onSurface) {
 
-					if (!environment.equals(planet)) {
-						environment = planet;
-					}
+					//if (!environment.equals(planet)) {
+						setEnvironment(planet);
+					//}
 
 					float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
 					float ax = -dt * force * MathUtils.cos(angle);
@@ -100,6 +100,10 @@ public abstract class Mass {
 		y += dy * dt;
 
 		bounds.setPosition(x - getWidth() / 2, y - getHeight() / 2);
+	}
+
+	protected void setEnvironment(Planet planet) {
+		environment = planet;
 	}
 
 	protected abstract float getImpactThreshhold();

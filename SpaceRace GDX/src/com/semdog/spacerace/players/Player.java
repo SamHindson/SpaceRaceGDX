@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
@@ -31,6 +32,7 @@ public class Player {
 
 	private boolean onGround = false;
 	private boolean lefting = false, righting = false;
+	private boolean sprinting = false;
 	private boolean alive = true;
 
 	private boolean pilotingShip = false;
@@ -128,17 +130,21 @@ public class Player {
 					dx = 0;
 					dy = 0;
 				}
+				
+				sprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
 
 				if (Gdx.input.isKeyPressed(Keys.A)) {
 					// Move anti-clockwise around planet
-					wx = -100 * MathUtils.cos(angle - MathUtils.PI / 2.f);
-					wy = -100 * MathUtils.sin(angle - MathUtils.PI / 2.f);
+					float speed = sprinting ? -300 : -100;
+					wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
+					wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
 					lefting = true;
 					righting = false;
 				} else if (Gdx.input.isKeyPressed(Keys.D)) {
 					// Move clockwise around planet
-					wx = 100 * MathUtils.cos(angle - MathUtils.PI / 2.f);
-					wy = 100 * MathUtils.sin(angle - MathUtils.PI / 2.f);
+					float speed = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 300 : 100;
+					wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
+					wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
 					righting = true;
 					lefting = false;
 				} else {
@@ -209,11 +215,12 @@ public class Player {
 				// batch.draw(animation.getKeyFrame(0, true), x - 10, y - 10,
 				// 10,
 				// 10, 20, 20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
+				float m = sprinting ? 3 : 1;
 				if (righting)
-					batch.draw(animation.getKeyFrame(animTime, true), x - 10, y - 10, 10, 10, 20, 20, 1, 1,
+					batch.draw(animation.getKeyFrame(animTime * m, true), x - 10, y - 10, 10, 10, 20, 20, 1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
 				else if (lefting)
-					batch.draw(animation.getKeyFrame(animTime, true), x - 10, y - 10, 10, 10, 20, 20, -1, 1,
+					batch.draw(animation.getKeyFrame(animTime * m, true), x - 10, y - 10, 10, 10, 20, 20, -1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
 				else
 					batch.draw(idleTexture, x - 10, y - 10, 10, 10, 20, 20, 1, 1,
@@ -228,11 +235,11 @@ public class Player {
 	}
 
 	public float getX() {
-		return x;
+		return pilotingShip ? ship.getX() : (x + dx * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getY() {
-		return y;
+		return pilotingShip ? ship.getY() : (y + dy * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getFX() {
@@ -253,7 +260,7 @@ public class Player {
 
 	public void die() {
 		alive = false;
-		//weapon = null;
+		// weapon = null;
 		ship = null;
 		pilotingShip = false;
 	}
@@ -289,6 +296,8 @@ public class Player {
 		if (alive) {
 			health -= amount;
 
+			Universe.currentUniverse.playUISound("playerhit" + Tools.decide(1, 2, 3, 4, 5));
+
 			if (health < 0) {
 				health = 0;
 				Universe.currentUniverse.playerKilled(this, cause);
@@ -303,5 +312,9 @@ public class Player {
 
 	public float getVelocity() {
 		return Vector2.dst(0, 0, dx, dy);
+	}
+
+	public void setEnvironment(Planet planet) {
+		environment = planet;
 	}
 }

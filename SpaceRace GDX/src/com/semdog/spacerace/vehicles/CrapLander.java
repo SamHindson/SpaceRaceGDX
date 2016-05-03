@@ -21,8 +21,10 @@ public class CrapLander extends Ship {
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
 		particleEffect.allowCompletion();
+		
+		System.out.println("GUD");
 
-		dy = (float) -Math.sqrt((2 * Universe.GRAVITY * environment.getMass()) / y);
+		//dy = (float) -Math.sqrt((2 * Universe.GRAVITY * environment.getMass()) / y);
 	}
 
 	@Override

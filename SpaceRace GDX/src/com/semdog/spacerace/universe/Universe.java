@@ -75,20 +75,18 @@ public class Universe {
 
 		bullets = new Array<>();
 
-		planets.add(new Planet(0, 0, MathUtils.random(100, 600)));
+		planets.add(new Planet(0, 0, 300));
+		planets.add(new Planet(3000, 0, 300));
 
 		player = new Player(0, 600, planets.get(0));
 		hud = new HUD(player);
 
 		hudBatch = new SpriteBatch();
 
-		testShip = new SmallBombarder(0, planets.get(0).getRadius() + 100, planets.get(0));
-
 		new SmallBombarder(100, planets.get(0).getRadius() + 100, planets.get(0));
-
-		player.setShip(testShip);
-
-		testTarget = new CrapLander(planets.get(0).getRadius() + 100, 0, planets.get(0));
+		player.setShip(
+				new SmallBombarder(0, planets.get(0).getRadius() + 100, planets.get(0)));
+		new CrapLander(planets.get(0).getRadius() + 100, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
@@ -162,7 +160,7 @@ public class Universe {
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < masses.size; i++) {
 			masses.get(i).checkState();
 		}
@@ -184,14 +182,13 @@ public class Universe {
 		cameraRot += da;
 		camera.rotate(-da * MathUtils.radiansToDegrees);
 
-
 		if (followingPlayer) {
 			desiredCX = player.getFX();
 			desiredCY = player.getFY();
 		}
 
-		cameraX += (desiredCX - cameraX) / 2.f;
-		cameraY += (desiredCY - cameraY) / 2.f;
+		cameraX += (desiredCX - cameraX) / 10.f;
+		cameraY += (desiredCY - cameraY) / 10.f;
 
 		camera.position.set(cameraX, cameraY, 0);
 		camera.update();
@@ -199,8 +196,7 @@ public class Universe {
 		universeBatch.setProjectionMatrix(camera.combined);
 		universeShapeRenderer.setProjectionMatrix(camera.combined);
 		stars.setOriginCenter();
-		stars.setPosition(player.getFX() - stars.getWidth() / 2,
-				player.getFY() - stars.getHeight() / 2);
+		stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
 
 		boolean f = true;
 
@@ -227,7 +223,7 @@ public class Universe {
 
 		for (int i = 0; i < masses.size; i++) {
 			masses.get(i).update(dt, planets);
-			//masses.get(i).checkCollisions(player);
+			// masses.get(i).checkCollisions(player);
 		}
 
 		for (Bullet bullet : bullets) {
@@ -267,9 +263,10 @@ public class Universe {
 
 		player.debugDraw(universeShapeRenderer);
 
-		/*for (int i = 0; i < masses.size; i++) {
-			masses.get(i).debugRender(universeShapeRenderer);
-		}*/
+		/*
+		 * for (int i = 0; i < masses.size; i++) {
+		 * masses.get(i).debugRender(universeShapeRenderer); }
+		 */
 		universeShapeRenderer.end();
 
 		hudBatch.begin();
@@ -331,8 +328,8 @@ public class Universe {
 
 	public void respawnPlayer(Player player) {
 		switch (player.getTeam()) {
-			case PINK:
-				player.spawn(0, 550);
+		case PINK:
+			player.spawn(0, 550);
 		}
 	}
 
@@ -341,8 +338,13 @@ public class Universe {
 	}
 
 	public void loopSound(String name, float x, float y, float volume) {
-		float v = 1.f / Vector2.dst(x, y, player.getX(), player.getY());
-		soundManager.loopSound(name, v + volume, 0);
+		float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
+		Gdx.app.log("Universe", "" + v);
+
+		float u = x - player.getX();
+		float pan = (float) Math.atan(u);
+
+		soundManager.loopSound(name, v + volume, pan);
 	}
 
 	public void stopSound(String name) {
@@ -350,8 +352,13 @@ public class Universe {
 	}
 
 	public void playSound(String name, float x, float y, float volume) {
-		float v = 1.f / Vector2.dst(x, y, player.getX(), player.getY());
-		soundManager.playSound(name, v + volume, 0);
+		float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
+		Gdx.app.log("Universe", "" + v);
+
+		float u = x - player.getX();
+		float pan = (float) Math.atan(u);
+
+		soundManager.playSound(name, v + volume, pan);
 	}
 
 	public void playerHurt(Player player, float amount, DeathCause cause) {
@@ -412,7 +419,7 @@ public class Universe {
 			load("explosion1.ogg");
 			load("explosion2.ogg");
 			load("explosion3.ogg");
-			load("shipbeep.ogg");
+			load("beep.wav");
 			load("jump.ogg");
 			load("egress.ogg");
 			load("ingress.ogg");
@@ -422,6 +429,13 @@ public class Universe {
 			load("shrap3.ogg");
 			load("runt.wav");
 			load("carbine.wav");
+
+			load("runtgun.wav");
+			load("playerhit1.wav");
+			load("playerhit2.wav");
+			load("playerhit3.wav");
+			load("playerhit4.wav");
+			load("playerhit5.wav");
 
 			looping = new HashMap<>();
 		}
@@ -435,7 +449,7 @@ public class Universe {
 			if (clips.containsKey(name)) {
 				clips.get(name).play(volume, 1, pan);
 			} else {
-				Gdx.app.error("Universe", "No! " + name);
+				Gdx.app.error("Universe", "No spund: " + name);
 			}
 		}
 

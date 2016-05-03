@@ -24,6 +24,8 @@ public class SmallBombarder extends Ship {
 
 		pCooldown = 0.02f;
 		dx = 0;
+		
+		setMaxHealth(100);
 	}
 
 	@Override
@@ -43,12 +45,12 @@ public class SmallBombarder extends Ship {
 			r -= dt * 150;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 0) {
+		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 1) {
 			currentFuel -= power * dt;
 			dx -= 250 * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
 			dy += 250 * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
 			particleEffect.start();
-			Universe.currentUniverse.loopSound("runt", x, y, 0.1f);
+			Universe.currentUniverse.loopSound("runt", x, y, -1f);
 		} else {
 			particleEffect.allowCompletion();
 			Universe.currentUniverse.stopSound("runt");
@@ -85,8 +87,9 @@ public class SmallBombarder extends Ship {
 	public void firePrimary() {
 		float xo = width * MathUtils.sin(-r * MathUtils.degreesToRadians);
 		float yo = width * MathUtils.cos(-r * MathUtils.degreesToRadians);
+		Universe.currentUniverse.playSound("runtgun", x, y, 0.1f);
 		Universe.currentUniverse.addBullet(
-				new Bullet(x + xo, y + yo, dx, dy, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 1000));
+				new Bullet(x + xo, y + yo, dx, dy, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 10));
 	}
 
 	@Override

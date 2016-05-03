@@ -35,12 +35,12 @@ public abstract class Ship extends Mass {
 	protected float pCooldown, sCooldown, pRest, sRest;
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, Planet environment,
-				   String textureName) {
+			String textureName) {
 		this(x, y, w, h, fuel, power, 0, 0, environment, textureName);
 	}
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo,
-				   Planet environment, String textureName) {
+			Planet environment, String textureName) {
 		super(x, y, 0, 0, 5000, w, h, environment);
 		this.x = x;
 		this.y = y;
@@ -70,11 +70,22 @@ public abstract class Ship extends Mass {
 		sprite.setRotation(r);
 		sprite.setPosition(x - width / 2, y - height / 2);
 
-		beepTime += dt;
+		if (pilot == null) {
+			beepTime += dt;
 
-		if (beepTime > 2f) {
-			beepTime = 0;
-			Universe.currentUniverse.playSound("beep", x, y, 0);
+			if (beepTime > 0.5f) {
+				beepTime = 0;
+				Universe.currentUniverse.playSound("beep", x, y, 0.5f);
+			}
+		}
+	}
+	
+	@Override
+	protected void setEnvironment(Planet planet) {
+		super.setEnvironment(planet);
+		
+		if(pilot != null) {
+			pilot.setEnvironment(planet);
 		}
 	}
 
