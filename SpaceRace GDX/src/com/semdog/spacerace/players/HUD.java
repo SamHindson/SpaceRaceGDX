@@ -57,7 +57,7 @@ public class HUD {
                 messageShowing = false;
 
                 if (respawnable)
-                    Universe.currentUniverse.respawnPlayer(owner);
+                    Universe.currentUniverse.respawnPlayer();
             }
         }
     }

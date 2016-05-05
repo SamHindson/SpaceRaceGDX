@@ -16,7 +16,6 @@ import com.semdog.spacerace.players.Player;
 
 public abstract class Mass {
 	protected static Texture texture;
-	protected static Universe universe;
 
 	static {
 		texture = new Texture(Gdx.files.internal("assets/test.png"));
@@ -39,7 +38,7 @@ public abstract class Mass {
 
 		shouldCollide = true;
 
-		universe.addMass(this);
+		Universe.currentUniverse.addMass(this);
 
 		if (width == 0 || height == 0) {
 			Gdx.app.error("Mass", "Warning! Mass created with a zero width or height. What the hell mate?");
@@ -52,8 +51,8 @@ public abstract class Mass {
 		this(x, y, dx, dy, mass, 0, 0, environment);
 	}
 
-	public static void initiate(Universe _universe) {
-		universe = _universe;
+	public Mass(float x, float y, float dx, float dy, float mass, float width, float height) {
+		this(x, y, dx, dy, mass, width, height, null);
 	}
 
 	public void setMaxHealth(int maxHealth) {
@@ -74,25 +73,25 @@ public abstract class Mass {
 	public void update(float dt, Array<Planet> gravitySources) {
 		if (environment != null) {
 			angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
+		}
 
-			for (int i = 0; i < gravitySources.size; i++) {
-				Planet planet = gravitySources.get(i);
-				if (inRange(planet) && !onSurface) {
+		for (int i = 0; i < gravitySources.size; i++) {
+			Planet planet = gravitySources.get(i);
+			if (inRange(planet) && !onSurface) {
 
-					//if (!environment.equals(planet)) {
-						setEnvironment(planet);
-					//}
+				// if (!environment.equals(planet)) {
+				setEnvironment(planet);
+				// }
 
-					float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
-					float ax = -dt * force * MathUtils.cos(angle);
-					float ay = -dt * force * MathUtils.sin(angle);
+				float force = (float) (Universe.GRAVITY * mass * planet.getMass() / Math.pow(distance(planet), 2));
+				float ax = -dt * force * MathUtils.cos(angle);
+				float ay = -dt * force * MathUtils.sin(angle);
 
-					ax /= mass;
-					ay /= mass;
+				ax /= mass;
+				ay /= mass;
 
-					dx += ax * dt * 100;
-					dy += ay * dt * 100;
-				}
+				dx += ax * dt * 100;
+				dy += ay * dt * 100;
 			}
 		}
 

@@ -15,8 +15,8 @@ import com.semdog.spacerace.weapons.Bullet;
 public class SmallBombarder extends Ship {
 	private ParticleEffect particleEffect;
 
-	public SmallBombarder(float x, float y, Planet environment) {
-		super(x, y, 32, 32, 30000, 50, environment, "runt");
+	public SmallBombarder(float x, float y) {
+		super(x, y, 32, 32, 30000, 50, "runt");
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/runtflame.p"), Gdx.files.internal("assets/effects"));

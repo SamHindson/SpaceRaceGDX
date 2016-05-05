@@ -2,6 +2,7 @@ package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.JsonReader;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.universe.Universe;
 

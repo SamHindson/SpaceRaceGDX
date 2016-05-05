@@ -14,8 +14,8 @@ public class CrapLander extends Ship {
 
 	private ParticleEffect particleEffect;
 
-	public CrapLander(float x, float y, Planet environment) {
-		super(x, y, 32, 32, 10000, 1000, environment, "tinyship");
+	public CrapLander(float x, float y) {
+		super(x, y, 32, 32, 10000, 1000, "tinyship");
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));

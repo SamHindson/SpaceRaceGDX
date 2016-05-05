@@ -43,9 +43,6 @@ public class Universe {
 
 	private SoundManager soundManager;
 
-	@SuppressWarnings("unused")
-	private Ship testShip, testTarget;
-
 	private SpriteBatch hudBatch;
 
 	private SpriteBatch universeBatch;
@@ -53,7 +50,7 @@ public class Universe {
 
 	private OrthographicCamera camera;
 	private float cameraRot, desiredRot;
-
+	
 	private Sprite stars;
 
 	private float cameraX, cameraY, desiredCX, desiredCY;
@@ -65,8 +62,6 @@ public class Universe {
 	private boolean isLoading = true;
 
 	public Universe() {
-		Mass.initiate(this);
-
 		currentUniverse = this;
 
 		planets = new Array<>();
@@ -77,17 +72,11 @@ public class Universe {
 
 		bullets = new Array<>();
 
-		planets.add(new Planet(0, 0, 300));
-		planets.add(new Planet(3000, 0, 300));
-
-		player = new Player(0, 600, planets.get(1));
+		player = new Player(0, 0, null);
+		
 		hud = new HUD(player);
 
 		hudBatch = new SpriteBatch();
-
-		new SmallBombarder(100, planets.get(0).getRadius() + 100, planets.get(0));
-		player.setShip(new SmallBombarder(planets.get(1).getX(), planets.get(1).getRadius() + 100, planets.get(1)));
-		new CrapLander(planets.get(0).getRadius() + 100, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
 		universeShapeRenderer = new ShapeRenderer();
@@ -122,6 +111,8 @@ public class Universe {
 		soundManager.init();
 
 		isLoading = false;
+		
+		new UniverseLoader().load(this);
 	}
 
 	public boolean isLoading() {
@@ -216,11 +207,16 @@ public class Universe {
 				player.setBoarding(false, null);
 		}
 
+		player.update(dt, camera);
+
 		hud.update(dt);
 
 		if (cameraShake > 0) {
-			cameraShake -= dt / 2.f;
-			System.out.println("RURU");
+			
+			if(cameraShake > 5)
+				cameraShake = 5;
+			
+			cameraShake -= dt * 1.5f;
 			System.out.println(cameraShake);
 		} else {
 			cameraShake = 0;
@@ -228,8 +224,6 @@ public class Universe {
 	}
 
 	public void tickPhysics(float dt) {
-		player.update(dt, camera);
-
 		for (int i = 0; i < masses.size; i++) {
 			masses.get(i).update(dt, planets);
 			// masses.get(i).checkCollisions(player);
@@ -321,10 +315,11 @@ public class Universe {
 	public void addEffect(Effect effect) {
 		effects.add(effect);
 
-		if (effect instanceof Explosion) {
+		if (effect instanceof Explosion && cameraShake < 5) {
 			float d = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
 					((Explosion) effect).getY());
-			cameraShake += ((100.f) / d - 5);
+			cameraShake += ((1000.f) / d - 5);
+			//cameraShake = 5;
 		}
 	}
 
@@ -341,11 +336,15 @@ public class Universe {
 		return player;
 	}
 
-	public void respawnPlayer(Player player) {
+	public void respawnPlayer() {
 		switch (player.getTeam()) {
 		case PINK:
-			player.spawn(0, 550);
+			player.spawn(0, 550, planets);
 		}
+	}
+	
+	public void spawnPlayer(float x, float y) {
+		player.spawn(x, y, planets);
 	}
 
 	public void playUISound(String name) {
@@ -488,5 +487,9 @@ public class Universe {
 				looping.remove(name);
 			}
 		}
+	}
+
+	public void createPlanet(float x, float y, float radius) {
+		planets.add(new Planet(x, y, radius));
 	}
 }

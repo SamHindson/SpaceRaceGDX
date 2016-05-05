@@ -1,0 +1,25 @@
+{
+	"name" : "yeeeaaahhh",
+	"planet-0" : [
+		{
+			"radius" : 1000,
+			"x" : 0,
+			"y" : 0
+		}
+	],
+	
+	"runt" : [
+		{
+			"x" : 1100,
+			"y" : 0
+		}
+	],
+	
+	"player_details" : [
+		{
+			"x" : 12,
+			"y" : 1100,
+			"planet" : "0"
+		}
+	]
+}

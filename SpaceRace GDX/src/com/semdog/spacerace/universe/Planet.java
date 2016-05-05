@@ -87,4 +87,8 @@ public class Planet {
 	public Color getColor() {
 		return color;
 	}
+
+	public boolean inRange(float x2, float y2) {
+		return Vector2.dst(x, y, x2, y2) < getSOI();
+	}
 }

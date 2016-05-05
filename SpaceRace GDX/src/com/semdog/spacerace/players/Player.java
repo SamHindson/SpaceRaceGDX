@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
@@ -56,8 +57,6 @@ public class Player {
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
-		distance = Vector2.dst(x, y, planet.getX(), planet.getY());
-		angle = MathUtils.atan2(y - planet.getY(), x - planet.getX());
 
 		this.x = x;
 		this.y = y;
@@ -114,23 +113,25 @@ public class Player {
 				distance = Vector2.dst(environment.getX(), environment.getY(), x, y);
 				angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 
-				onGround = distance < environment.getRadius() + 10;
+				if (environment != null) {
+					onGround = distance < environment.getRadius() + 10;
 
-				if (!onGround) {
-					float force = (float) (Universe.GRAVITY * 100 * environment.getMass() / Math.pow(distance, 2));
-					float ax = -dt * force * MathUtils.cos(angle);
-					float ay = -dt * force * MathUtils.sin(angle);
+					if (!onGround) {
+						float force = (float) (Universe.GRAVITY * 100 * environment.getMass() / Math.pow(distance, 2));
+						float ax = -dt * force * MathUtils.cos(angle);
+						float ay = -dt * force * MathUtils.sin(angle);
 
-					ax /= 100;
-					ay /= 100;
+						ax /= 100;
+						ay /= 100;
 
-					dx += ax * dt * 100;
-					dy += ay * dt * 100;
-				} else {
-					dx = 0;
-					dy = 0;
+						dx += ax * dt * 100;
+						dy += ay * dt * 100;
+					} else {
+						dx = 0;
+						dy = 0;
+					}
 				}
-				
+
 				sprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
 
 				if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -277,10 +278,17 @@ public class Player {
 		return dy;
 	}
 
-	public void spawn(float x, float y) {
+	public void spawn(float x, float y, Array<Planet> planets) {
 		this.x = x;
 		this.y = y;
 		alive = true;
+		
+		for(Planet planet : planets) {
+			if(planet.inRange(x, y)) {
+				environment = planet;
+				return;
+			}
+		}
 	}
 
 	public void setBoarding(boolean boarding, Ship boardingShip) {
@@ -300,6 +308,7 @@ public class Player {
 
 			if (health < 0) {
 				health = 0;
+				alive = false;
 				Universe.currentUniverse.playerKilled(this, cause);
 			}
 		}

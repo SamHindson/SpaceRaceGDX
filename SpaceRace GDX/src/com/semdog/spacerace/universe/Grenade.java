@@ -60,7 +60,7 @@ public class Grenade extends Mass {
 
 	private void explode() {
 		exploded = true;
-		universe.addEffect(new Explosion(x, y));
+		Universe.currentUniverse.addEffect(new Explosion(x, y));
 	}
 	
 	@Override

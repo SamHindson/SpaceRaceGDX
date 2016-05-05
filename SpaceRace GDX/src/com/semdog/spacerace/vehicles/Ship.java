@@ -34,14 +34,13 @@ public abstract class Ship extends Mass {
 	protected boolean pAutomatic, sAutomatic;
 	protected float pCooldown, sCooldown, pRest, sRest;
 
-	protected Ship(float x, float y, float w, float h, float fuel, float power, Planet environment,
-			String textureName) {
-		this(x, y, w, h, fuel, power, 0, 0, environment, textureName);
+	protected Ship(float x, float y, float w, float h, float fuel, float power, String textureName) {
+		this(x, y, w, h, fuel, power, 0, 0, textureName);
 	}
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo,
-			Planet environment, String textureName) {
-		super(x, y, 0, 0, 5000, w, h, environment);
+			String textureName) {
+		super(x, y, 0, 0, 5000, w, h, null);
 		this.x = x;
 		this.y = y;
 
@@ -79,12 +78,12 @@ public abstract class Ship extends Mass {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void setEnvironment(Planet planet) {
 		super.setEnvironment(planet);
-		
-		if(pilot != null) {
+
+		if (pilot != null) {
 			pilot.setEnvironment(planet);
 		}
 	}
