@@ -20,7 +20,7 @@ public class Grenade extends Mass {
 	private Sprite sprite;
 
 	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment) {
-		super(x, y, dx, dy, mass, environment);
+		super(x, y, dx, dy, 2, 2, mass, environment);
 		sprite = new Sprite(Art.get("grenade"));
 		sprite.setSize(5, 5);
 		sprite.setOriginCenter();

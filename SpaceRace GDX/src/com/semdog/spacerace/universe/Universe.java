@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.effects.Effect;
+import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.Player;
@@ -59,6 +60,7 @@ public class Universe {
 	private boolean followingPlayer = true, lockedRotation = true;
 
 	private float zoom, desiredZoom, deltaZoom;
+	private float cameraShake = 0;
 
 	private boolean isLoading = true;
 
@@ -78,14 +80,13 @@ public class Universe {
 		planets.add(new Planet(0, 0, 300));
 		planets.add(new Planet(3000, 0, 300));
 
-		player = new Player(0, 600, planets.get(0));
+		player = new Player(0, 600, planets.get(1));
 		hud = new HUD(player);
 
 		hudBatch = new SpriteBatch();
 
 		new SmallBombarder(100, planets.get(0).getRadius() + 100, planets.get(0));
-		player.setShip(
-				new SmallBombarder(0, planets.get(0).getRadius() + 100, planets.get(0)));
+		player.setShip(new SmallBombarder(planets.get(1).getX(), planets.get(1).getRadius() + 100, planets.get(1)));
 		new CrapLander(planets.get(0).getRadius() + 100, 0, planets.get(0));
 
 		universeBatch = new SpriteBatch();
@@ -190,7 +191,7 @@ public class Universe {
 		cameraX += (desiredCX - cameraX) / 10.f;
 		cameraY += (desiredCY - cameraY) / 10.f;
 
-		camera.position.set(cameraX, cameraY, 0);
+		camera.position.set(cameraX + MathUtils.random() * cameraShake, cameraY + MathUtils.random() * cameraShake, 0);
 		camera.update();
 
 		universeBatch.setProjectionMatrix(camera.combined);
@@ -216,6 +217,14 @@ public class Universe {
 		}
 
 		hud.update(dt);
+
+		if (cameraShake > 0) {
+			cameraShake -= dt / 2.f;
+			System.out.println("RURU");
+			System.out.println(cameraShake);
+		} else {
+			cameraShake = 0;
+		}
 	}
 
 	public void tickPhysics(float dt) {
@@ -311,6 +320,12 @@ public class Universe {
 
 	public void addEffect(Effect effect) {
 		effects.add(effect);
+
+		if (effect instanceof Explosion) {
+			float d = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
+					((Explosion) effect).getY());
+			cameraShake += ((100.f) / d - 5);
+		}
 	}
 
 	public void playerKilled(Player player, DeathCause cause) {
@@ -339,7 +354,6 @@ public class Universe {
 
 	public void loopSound(String name, float x, float y, float volume) {
 		float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
-		Gdx.app.log("Universe", "" + v);
 
 		float u = x - player.getX();
 		float pan = (float) Math.atan(u);
@@ -352,13 +366,18 @@ public class Universe {
 	}
 
 	public void playSound(String name, float x, float y, float volume) {
-		float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
-		Gdx.app.log("Universe", "" + v);
+		float d = Vector2.dst(x, y, player.getX(), player.getY());
 
-		float u = x - player.getX();
-		float pan = (float) Math.atan(u);
+		System.out.println(d);
+		
+		if (d < 2000) {
+			float v = -0.0005f * d + 1;
 
-		soundManager.playSound(name, v + volume, pan);
+			float u = x - player.getX();
+			float pan = (float) Math.atan(u);
+
+			soundManager.playSound(name, v, pan);
+		}
 	}
 
 	public void playerHurt(Player player, float amount, DeathCause cause) {
