@@ -1,5 +1,6 @@
 package com.semdog.spacerace.universe;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,7 +23,7 @@ public class Grenade extends Mass {
 	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment) {
 		super(x, y, dx, dy, 2, 2, mass, environment);
 		sprite = new Sprite(Art.get("grenade"));
-		sprite.setSize(5, 5);
+		sprite.setSize(2, 2);
 		sprite.setOriginCenter();
 
 		bounds = new Rectangle(x, y, 1, 1);
@@ -31,6 +32,9 @@ public class Grenade extends Mass {
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
+		if(sprite == null && alive) {
+			Gdx.app.error("Grenade", "BIG MISTAKE!!!");
+		}
 		sprite.rotate(dt * 2000);
 		sprite.setPosition(x, y);
 		bounds.set(x, y, 1, 1);
@@ -54,15 +58,17 @@ public class Grenade extends Mass {
 
 	@Override
 	protected void hitPlayer(Player player) {
-		Universe.currentUniverse.playerKilled(player, DeathCause.EXPLOSION);
-		explode();
+		if (!exploded) {
+			Universe.currentUniverse.playerKilled(player, DeathCause.EXPLOSION);
+			explode();
+		}
 	}
 
 	private void explode() {
 		exploded = true;
 		Universe.currentUniverse.addEffect(new Explosion(x, y));
 	}
-	
+
 	@Override
 	public boolean isAlive() {
 		return !exploded;
@@ -77,5 +83,4 @@ public class Grenade extends Mass {
 	protected float getHeight() {
 		return 1;
 	}
-
 }

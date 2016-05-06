@@ -3,7 +3,6 @@ package com.semdog.spacerace.universe;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.google.gson.JsonArray;
 import com.semdog.spacerace.vehicles.SmallBombarder;
 
 public class UniverseLoader {

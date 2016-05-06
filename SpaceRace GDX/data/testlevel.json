@@ -2,7 +2,7 @@
 	"name" : "yeeeaaahhh",
 	"planet-0" : [
 		{
-			"radius" : 1000,
+			"radius" : 100,
 			"x" : 0,
 			"y" : 0
 		}
@@ -18,7 +18,7 @@
 	"player_details" : [
 		{
 			"x" : 12,
-			"y" : 1100,
+			"y" : 200,
 			"planet" : "0"
 		}
 	]

@@ -217,7 +217,6 @@ public class Universe {
 				cameraShake = 5;
 			
 			cameraShake -= dt * 1.5f;
-			System.out.println(cameraShake);
 		} else {
 			cameraShake = 0;
 		}
@@ -366,8 +365,6 @@ public class Universe {
 
 	public void playSound(String name, float x, float y, float volume) {
 		float d = Vector2.dst(x, y, player.getX(), player.getY());
-
-		System.out.println(d);
 		
 		if (d < 2000) {
 			float v = -0.0005f * d + 1;

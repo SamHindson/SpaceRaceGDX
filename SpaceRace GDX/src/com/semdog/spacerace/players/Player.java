@@ -201,8 +201,8 @@ public class Player {
 					float gx = x + 10 * MathUtils.cos(a);
 					float gy = y + 10 * MathUtils.sin(a);
 
-					float gdx = 375 * MathUtils.cos(a);
-					float gdy = 375 * MathUtils.sin(a);
+					float gdx = 375 * MathUtils.cos(a) + dx;
+					float gdy = 375 * MathUtils.sin(a) + dy;
 
 					new Grenade(gx, gy, gdx, gdy, 10, environment);
 				}
