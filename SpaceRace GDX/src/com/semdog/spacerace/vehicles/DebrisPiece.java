@@ -72,16 +72,16 @@ class DebrisPiece extends Mass {
 	 */
 	@Override
 	protected void handlePlanetCollision(float speed, boolean planet) {
-		if (bounces < 1) {
-			float normal = MathUtils.atan2(y - environment.getY(), x - environment.getX());
-			float velDirection = MathUtils.atan2(dy, dx);
-			float diff = normal - velDirection;
-			float xm = MathUtils.sin(diff);
-			float ym = MathUtils.cos(diff);
-			dx = dx * xm;
-			dy = dy * ym;
-			bounces++;
-		} else {
+        if (bounces < 3) {
+            float surfaceAngle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
+            float velocityAngle = MathUtils.atan2(dy, dx);
+            float impactAngle = (MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
+            dx *= MathUtils.cos(impactAngle);
+            dy *= MathUtils.sin(impactAngle);
+            x += dx * 0.016f;
+            y += dy * 0.016f;
+            bounces++;
+        } else {
 			alive = false;
 			super.handlePlanetCollision(speed, true);
 			Universe.currentUniverse.addEffect(new DustPuff(x, y, environment.getColor()));

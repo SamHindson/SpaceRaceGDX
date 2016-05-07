@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.Player;
 
@@ -26,7 +27,7 @@ public abstract class Mass {
 	protected Planet environment;
 	protected boolean shouldCollide;
 	protected Rectangle bounds;
-	protected int currentHealth, maxHealth;
+    protected float currentHealth, maxHealth;
 
 	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment) {
 		this.x = x;
@@ -60,9 +61,9 @@ public abstract class Mass {
 		currentHealth = maxHealth;
 	}
 
-	public void doDamage(int amount, DeathCause reason) {
-		if (currentHealth <= amount) {
-			currentHealth = 0;
+    public void doDamage(float amount, DeathCause reason) {
+        if (currentHealth <= amount) {
+            currentHealth = 0;
 			alive = false;
 			die(reason);
 		} else {
@@ -188,10 +189,6 @@ public abstract class Mass {
 
 	}
 
-	public void checkCollisions(Player... s) {
-
-	}
-
 	public void checkCollisions(Array<Mass> masses) {
 		for (int u = 0; u < masses.size; u++) {
 			Mass m = masses.get(u);
@@ -239,7 +236,8 @@ public abstract class Mass {
 		if (Intersector.overlaps(getBounds(), player.getBounds())) {
 			if (getVelocity() - player.getVelocity() > 50) {
 				hitPlayer(player);
-			}
-		}
+                Universe.currentUniverse.playSound("playerhit" + Tools.decide(1, 2, 3, 4, 5), x, y, 0);
+            }
+        }
 	}
 }

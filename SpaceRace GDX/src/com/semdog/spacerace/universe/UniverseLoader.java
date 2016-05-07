@@ -17,23 +17,23 @@ public class UniverseLoader {
 			
 			if(value == null)
 				break;
-			
-			String name = value.name;
-			
-			switch(name) {
-			case "planet-0":
-				Gdx.app.log("UniverseLoader", "NEW PLANET");
-				
-				float r = value.get(0).getFloat("radius");
+
+            String name = value.name.split("-")[0];
+
+            switch (name) {
+                case "planet":
+                    Gdx.app.log("UniverseLoader", "NEW PLANET");
+
+                    float r = value.get(0).getFloat("radius");
 				float x = value.get(0).getFloat("x");
 				float y = value.get(0).getFloat("y");
 				
 				universe.createPlanet(x, y, r);
 				
 				break;
-			case "player_details":
-				float dx = value.get(0).getFloat("x");
-				float dy = value.get(0).getFloat("y");
+                case "playerstuff":
+                    float dx = value.get(0).getFloat("x");
+                    float dy = value.get(0).getFloat("y");
 				
 				Gdx.app.log("UniverseLoader", "PLAYER DEETS");
 				

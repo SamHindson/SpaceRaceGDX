@@ -16,11 +16,12 @@ public class SmallBombarder extends Ship {
 	private ParticleEffect particleEffect;
 
 	public SmallBombarder(float x, float y) {
-		super(x, y, 32, 32, 30000, 50, "runt");
+        super(x, y, 32, 32, 3000, 50, "runt");
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/runtflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
+        particleEffect.allowCompletion();
 
 		pCooldown = 0.02f;
 		dx = 0;
@@ -80,8 +81,8 @@ public class SmallBombarder extends Ship {
 
 	@Override
 	protected float getImpactThreshhold() {
-		return 250;
-	}
+        return 25;
+    }
 
 	@Override
 	public void firePrimary() {

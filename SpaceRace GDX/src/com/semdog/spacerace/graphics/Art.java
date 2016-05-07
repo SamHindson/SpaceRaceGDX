@@ -1,12 +1,12 @@
 package com.semdog.spacerace.graphics;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+
+import java.util.HashMap;
 
 public class Art {
 	private static HashMap<String, Texture> artwork;
@@ -23,12 +23,14 @@ public class Art {
 		artwork.put("error", new Texture(errorPix));
 		
 		artwork.put("pixel_red", createPixel(Color.RED));
-		artwork.put("pixel_orange", createPixel(Color.ORANGE));
-		artwork.put("pixel_yellow", createPixel(Color.YELLOW));
+        artwork.put("pixel_lightred", createPixel(new Color(1f, 0.5f, 0.5f, 1.f)));
+        artwork.put("pixel_orange", createPixel(Color.ORANGE));
+        artwork.put("pixel_yellow", createPixel(Color.YELLOW));
 		artwork.put("pixel_green", createPixel(Color.GREEN));
 		artwork.put("pixel_blue", createPixel(Color.BLUE));
 		artwork.put("pixel_purple", createPixel(Color.PURPLE));
-	}
+        artwork.put("pixel_gray", createPixel(Color.GRAY));
+    }
 
 	private static Texture createPixel(Color color) {
 		Pixmap pix = new Pixmap(1, 1, Format.RGB565);

@@ -9,12 +9,17 @@ import com.semdog.spacerace.universe.Universe;
 public class Explosion extends Effect {
 	private ParticleEffect effect;
 
-	public Explosion(float x, float y) {
-		this.x = x;
-		this.y = y;
+    private float dx, dy;
+
+    public Explosion(float x, float y, float dx, float dy) {
+        this.x = x;
+        this.y = y;
+
+        this.dx = dx;
+        this.dy = dy;
 
 		effect = new ParticleEffect();
-		effect.load(Gdx.files.internal("assets/effects/explosion2.p"), Gdx.files.internal("assets/effects"));
+        effect.load(Gdx.files.internal("assets/effects/explosion3.p"), Gdx.files.internal("assets/effects"));
 
 		effect.setPosition(x, y);
 		effect.start();
@@ -27,8 +32,11 @@ public class Explosion extends Effect {
 	}
 
 	public void update(float dt) {
-		effect.update(dt);
-	}
+        x += dx * dt;
+        y += dy * dt;
+        effect.update(dt);
+        effect.setPosition(x, y);
+    }
 
 	@Override
 	public boolean isAlive() {

@@ -5,8 +5,8 @@ import com.semdog.spacerace.universe.Universe;
 public class Carbine extends Weapon {
 
 	public Carbine() {
-		super("Carbine", 500, false, 0.5f, 30, "carbine");
-	}
+        super("Carbine", 32, false, 0.05f, 27, "carbine");
+    }
 
 	@Override
 	protected void fire() {

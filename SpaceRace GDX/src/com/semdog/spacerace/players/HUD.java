@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
+import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.universe.Universe;
 
@@ -79,6 +80,34 @@ public class HUD {
             subtitleFont.setColor(new Color((int) (MathUtils.random() * Integer.MAX_VALUE)));
             subtitleFont.draw(spriteBatch, "PRESS {E} TO BOARD", Gdx.graphics.getWidth() / 2.f - 169.0f, Gdx.graphics.getHeight() * 0.4f - 10.5f);
         }
+
+        int size = owner.getPrimarySigns().getSigns().values().size();
+        int boxSize = 2 * (size + 1) + 30 * size;
+        spriteBatch.draw(Art.get("pixel_gray"), 1, 1, 220, 8 + 30 * size);
+
+        int h = 0;
+        for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
+            if (vitality.getType() == VitalSigns.Type.CONTINUOUS) {
+                spriteBatch.draw(Art.get("pixel_blue"), 3, 30 * h + h * 2, 216.f * (vitality.getValue() / vitality.getMaxValue()), 30);
+            } else {
+                float maxParts = vitality.getMaxValue();
+                float partCount = vitality.getValue();
+                float interblockSpaces = 2 * (maxParts - 1);
+                float blockTotal = 216 - interblockSpaces;
+                float blockWidth = blockTotal / maxParts;
+                float interval = blockWidth + 2;
+
+                for (int j = 0; j < partCount; j++) {
+                    spriteBatch.draw(Art.get("pixel_green"), 3 + j * interval, 30 * h + 2, blockWidth, 28);
+                }
+            }
+            h++;
+        }
+
+        /*if(owner.isAlive()) {
+            spriteBatch.draw(Art.get("pixel_lightred"), 6, 6, 190.f * (owner.getHealth() / 200.f), 40);
+            spriteBatch.draw(Art.get("pixel_red"), 6, 6, 190.f * (owner.getHealth() / 200.f), 30);
+        }*/
     }
 
     public void setDead(DeathCause reason, boolean respawnable) {

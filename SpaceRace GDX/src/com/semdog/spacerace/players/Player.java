@@ -19,10 +19,10 @@ import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.vehicles.Ship;
-import com.semdog.spacerace.weapons.Carbine;
+import com.semdog.spacerace.weapons.SMG;
 import com.semdog.spacerace.weapons.Weapon;
 
-public class Player {
+public class Player implements Vitality {
 
 	private Team team = Team.PINK;
 
@@ -55,6 +55,10 @@ public class Player {
 
 	private Ship boardingShip;
 
+    private VitalSigns primarySigns, secondarySigns;
+
+    private int grenadeCount;
+
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
 
@@ -72,15 +76,40 @@ public class Player {
 
 		bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
-		weapon = new Carbine();
-		weapon.pickup(this);
+        weapon = new SMG();
+        weapon.pickup(this);
 
-		// textureAtlas.dispose();
-	}
+        grenadeCount = 5;
 
-	public boolean isPilotingShip() {
-		return pilotingShip;
-	}
+        primarySigns = new VitalSigns();
+        primarySigns.addItem("health", this);
+        primarySigns.addItem("ammo", weapon);
+        primarySigns.addItem("grenades", new GrenadeHolder());
+        // textureAtlas.dispose();
+    }
+
+    public VitalSigns getPrimarySigns() {
+        return primarySigns;
+    }
+
+    @Override
+    public float getValue() {
+        return health;
+    }
+
+    @Override
+    public float getMaxValue() {
+        return 200;
+    }
+
+    @Override
+    public VitalSigns.Type getType() {
+        return VitalSigns.Type.CONTINUOUS;
+    }
+
+    public boolean isPilotingShip() {
+        return pilotingShip;
+    }
 
 	public void setShip(Ship ship) {
 		pilotingShip = true;
@@ -93,9 +122,13 @@ public class Player {
 		return team;
 	}
 
-	public void update(float dt, OrthographicCamera camera) {
-		if (alive) {
-			if (pilotingShip) {
+    public float getHealth() {
+        return health;
+    }
+
+    public void update(float dt, OrthographicCamera camera) {
+        if (alive) {
+            if (pilotingShip) {
 				ship.updateControls(dt);
 
 				if (Gdx.input.isKeyJustPressed(Keys.E)) {
@@ -197,16 +230,18 @@ public class Player {
 				if (weapon != null)
 					weapon.update(dt, a);
 
-				if (Gdx.input.isKeyJustPressed(Keys.G)) {
-					float gx = x + 10 * MathUtils.cos(a);
-					float gy = y + 10 * MathUtils.sin(a);
+                if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0) {
+                    float gx = x + 10 * MathUtils.cos(a);
+                    float gy = y + 10 * MathUtils.sin(a);
 
-					float gdx = 375 * MathUtils.cos(a) + dx;
-					float gdy = 375 * MathUtils.sin(a) + dy;
+                    float gdx = 400 * MathUtils.cos(a) + dx;
+                    float gdy = 400 * MathUtils.sin(a) + dy;
 
 					new Grenade(gx, gy, gdx, gdy, 10, environment);
-				}
-			}
+
+                    grenadeCount--;
+                }
+            }
 		}
 	}
 
@@ -282,10 +317,14 @@ public class Player {
 		this.x = x;
 		this.y = y;
 		alive = true;
-		
-		for(Planet planet : planets) {
-			if(planet.inRange(x, y)) {
-				environment = planet;
+
+        health = 200;
+
+        weapon.reset();
+
+        for (Planet planet : planets) {
+            if (planet.inRange(x, y)) {
+                environment = planet;
 				return;
 			}
 		}
@@ -326,4 +365,26 @@ public class Player {
 	public void setEnvironment(Planet planet) {
 		environment = planet;
 	}
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    class GrenadeHolder implements Vitality {
+
+        @Override
+        public float getValue() {
+            return grenadeCount;
+        }
+
+        @Override
+        public float getMaxValue() {
+            return 5;
+        }
+
+        @Override
+        public VitalSigns.Type getType() {
+            return VitalSigns.Type.DISCRETE;
+        }
+    }
 }

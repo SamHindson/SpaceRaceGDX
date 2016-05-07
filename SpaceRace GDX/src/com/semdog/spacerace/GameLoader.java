@@ -7,9 +7,9 @@ public class GameLoader {
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = config.width * 9 / 16;
-		config.title = "SPACERACE!";
+        config.width = 1280;
+        config.height = config.width * 9 / 16;
+        config.title = "SPACERACE!";
 		config.samples = 4;
 		config.resizable = false;
 		new LwjglApplication(new RaceGame(), config);

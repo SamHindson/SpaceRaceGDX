@@ -53,12 +53,12 @@ public class Planet {
 	public void draw(ShapeRenderer shapeRenderer) {
 		shapeRenderer.setColor(color);
 		shapeRenderer.circle(x, y, radius, 100);
-		
-		for(int h = 0; h < dustBalls; h++) {
-			shapeRenderer.setColor(dustColors[h]);
+
+		/*for(int h = 0; h < dustBalls; h++) {
+            shapeRenderer.setColor(dustColors[h]);
 			shapeRenderer.circle(ballX[h], ballY[h], ballR[h]);
-		}
-	}
+		}*/
+    }
 
 	public float getX() {
 		return x;

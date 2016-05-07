@@ -21,7 +21,6 @@ import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.Player;
-import com.semdog.spacerace.vehicles.CrapLander;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.vehicles.SmallBombarder;
 import com.semdog.spacerace.weapons.Bullet;
@@ -111,9 +110,11 @@ public class Universe {
 		soundManager.init();
 
 		isLoading = false;
-		
-		new UniverseLoader().load(this);
-	}
+
+        new SmallBombarder(200, 600);
+
+        new UniverseLoader().load(this);
+    }
 
 	public boolean isLoading() {
 		return isLoading;
@@ -315,12 +316,29 @@ public class Universe {
 		effects.add(effect);
 
 		if (effect instanceof Explosion && cameraShake < 5) {
-			float d = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
-					((Explosion) effect).getY());
-			cameraShake += ((1000.f) / d - 5);
-			//cameraShake = 5;
-		}
-	}
+
+
+            //cameraShake = 5;
+
+            for (int i = 0; i < masses.size; i++) {
+                Mass mass = masses.get(i);
+                float distance = Vector2.dst(mass.getX(), mass.getY(), ((Explosion) effect).getX(),
+                        ((Explosion) effect).getY());
+                if (distance < 300) {
+                    float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                    mass.doDamage(damage, DeathCause.EXPLOSION);
+                }
+            }
+
+            float distance = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
+                    ((Explosion) effect).getY());
+            if (distance < 300) {
+                float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                player.doDamage(damage, DeathCause.EXPLOSION);
+                System.out.println("Player distance:\t" + distance);
+            }
+        }
+    }
 
 	public void playerKilled(Player player, DeathCause cause) {
 		player.die();
@@ -365,9 +383,9 @@ public class Universe {
 
 	public void playSound(String name, float x, float y, float volume) {
 		float d = Vector2.dst(x, y, player.getX(), player.getY());
-		
-		if (d < 2000) {
-			float v = -0.0005f * d + 1;
+
+        if (d < 500) {
+            float v = -0.002f * d + 1;
 
 			float u = x - player.getX();
 			float pan = (float) Math.atan(u);
@@ -379,6 +397,10 @@ public class Universe {
 	public void playerHurt(Player player, float amount, DeathCause cause) {
 		player.doDamage(amount, cause);
 	}
+
+    public void createPlanet(float x, float y, float radius) {
+        planets.add(new Planet(x, y, radius));
+    }
 
 	private class InputManager implements InputProcessor {
 
@@ -444,6 +466,7 @@ public class Universe {
 			load("shrap3.ogg");
 			load("runt.wav");
 			load("carbine.wav");
+            load("smg.wav");
 
 			load("runtgun.wav");
 			load("playerhit1.wav");
@@ -451,6 +474,8 @@ public class Universe {
 			load("playerhit3.wav");
 			load("playerhit4.wav");
 			load("playerhit5.wav");
+
+            load("neet.wav");
 
 			looping = new HashMap<>();
 		}
@@ -484,9 +509,5 @@ public class Universe {
 				looping.remove(name);
 			}
 		}
-	}
-
-	public void createPlanet(float x, float y, float radius) {
-		planets.add(new Planet(x, y, radius));
 	}
 }

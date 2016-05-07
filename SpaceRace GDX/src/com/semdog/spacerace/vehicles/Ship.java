@@ -50,7 +50,6 @@ public abstract class Ship extends Mass {
 		totalFuel = currentFuel = fuel;
 
 		this.power = power;
-		this.environment = environment;
 
 		sprite = new Sprite(Art.get(textureName));
 		sprite.setOriginCenter();
@@ -122,7 +121,7 @@ public abstract class Ship extends Mass {
 
 	protected void explode(DeathCause cause) {
 		Gdx.app.log("Ship", "BOOOOM!");
-		Universe.currentUniverse.addEffect(new Explosion(x, y));
+        Universe.currentUniverse.addEffect(new Explosion(x, y, dx, dy));
 
 		if (pilot != null) {
 			Universe.currentUniverse.playerKilled(pilot, cause);
