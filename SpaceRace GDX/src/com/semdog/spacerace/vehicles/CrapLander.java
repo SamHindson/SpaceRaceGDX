@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.universe.Planet;
-import com.semdog.spacerace.universe.Universe;
 
 public class CrapLander extends Ship {
 
@@ -66,7 +65,7 @@ public class CrapLander extends Ship {
 	}
 	
 	@Override
-	protected float getImpactThreshhold() {
+	protected float getImpactThreshold() {
 		return 200;
 	}
 

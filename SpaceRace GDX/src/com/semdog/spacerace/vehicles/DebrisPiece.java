@@ -52,7 +52,7 @@ class DebrisPiece extends Mass {
 	}
 
 	@Override
-	protected float getImpactThreshhold() {
+	protected float getImpactThreshold() {
 		return 0;
 	}
 

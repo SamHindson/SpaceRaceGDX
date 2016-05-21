@@ -231,8 +231,8 @@ public class Player implements Vitality {
 					weapon.update(dt, a);
 
                 if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0) {
-                    float gx = x + 10 * MathUtils.cos(a);
-                    float gy = y + 10 * MathUtils.sin(a);
+					float gx = x + 30 * MathUtils.cos(a);
+					float gy = y + 30 * MathUtils.sin(a);
 
                     float gdx = 400 * MathUtils.cos(a) + dx;
                     float gdy = 400 * MathUtils.sin(a) + dy;

@@ -18,7 +18,7 @@ public class Squar extends Mass {
     }
 
     @Override
-    protected float getImpactThreshhold() {
+    protected float getImpactThreshold() {
         return 0;
     }
 

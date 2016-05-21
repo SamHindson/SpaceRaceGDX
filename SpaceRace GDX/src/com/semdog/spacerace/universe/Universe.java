@@ -208,8 +208,6 @@ public class Universe {
 				player.setBoarding(false, null);
 		}
 
-		player.update(dt, camera);
-
 		hud.update(dt);
 
 		if (cameraShake > 0) {
@@ -232,6 +230,8 @@ public class Universe {
 		for (Bullet bullet : bullets) {
 			bullet.updatePhysics(dt, planets);
 		}
+
+		player.update(dt, camera);
 	}
 
 	public void render() {

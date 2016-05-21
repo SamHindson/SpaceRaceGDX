@@ -2,7 +2,6 @@ package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.JsonReader;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.universe.Universe;
 
@@ -10,6 +9,8 @@ public class PlayScreen extends RaceScreen {
 
 	private Universe universe;
 	private Thread physicsThread;
+
+	private boolean startedPhysics = false;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
@@ -21,8 +22,9 @@ public class PlayScreen extends RaceScreen {
 
 	@Override
 	public void update(float dt) {
-		if (!universe.isLoading())
+		if (!universe.isLoading()) {
 			universe.tick(dt);
+		}
 	}
 
 	@Override
@@ -56,6 +58,8 @@ public class PlayScreen extends RaceScreen {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				} else {
+					Gdx.app.log("PhysicsRunnable", "Universe is still loading!");
 				}
 			}
 		}

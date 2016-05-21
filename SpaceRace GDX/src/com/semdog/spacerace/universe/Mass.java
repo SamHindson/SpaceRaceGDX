@@ -29,6 +29,8 @@ public abstract class Mass {
 	protected Rectangle bounds;
     protected float currentHealth, maxHealth;
 
+	protected boolean loaded = false;
+
 	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment) {
 		this.x = x;
 		this.y = y;
@@ -106,10 +108,17 @@ public abstract class Mass {
 		environment = planet;
 	}
 
-	protected abstract float getImpactThreshhold();
+	protected abstract float getImpactThreshold();
 
+	/**
+	 * A method that does some useful stuff regarding the mass, like checking
+	 * whether it's on the planet surface and whether it's got its stuff loaded
+	 */
 	public void checkState() {
 		onSurface(environment);
+
+		if (!loaded)
+			load();
 	}
 
 	protected boolean onSurface(Planet planet) {
@@ -133,6 +142,10 @@ public abstract class Mass {
 	protected void handlePlanetCollision(float speed, boolean withPlanet) {
 		onSurface = true;
 		dx = dy = 0;
+	}
+
+	protected void load() {
+		loaded = true;
 	}
 
 	public float getX() {
@@ -202,7 +215,7 @@ public abstract class Mass {
 					float r = (getRadius(a1) + m.getRadius(a2));
 					float i = (d - r) / 2.f;
 
-					if (v > getImpactThreshhold()) {
+					if (v > getImpactThreshold()) {
 						die(DeathCause.SHIP);
 					}
 

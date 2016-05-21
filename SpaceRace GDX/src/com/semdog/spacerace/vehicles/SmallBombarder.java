@@ -80,9 +80,9 @@ public class SmallBombarder extends Ship {
 	}
 
 	@Override
-	protected float getImpactThreshhold() {
-        return 25;
-    }
+	protected float getImpactThreshold() {
+		return 250;
+	}
 
 	@Override
 	public void firePrimary() {

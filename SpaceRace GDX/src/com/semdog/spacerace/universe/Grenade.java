@@ -29,26 +29,33 @@ public class Grenade extends Mass {
 
 	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment) {
 		super(x, y, dx, dy, 2, 2, mass, environment);
-		sprite = new Sprite(Art.get("grenade"));
-		sprite.setSize(2, 2);
-		sprite.setOriginCenter();
 
 		bounds = new Rectangle(x, y, 1, 1);
 
         trail = new ParticleEffect();
-        trail.load(Gdx.files.internal("assets/effects/grenadetrail.p"), Gdx.files.internal("assets/effects"));
         trail.setPosition(x, y);
     }
 
 	@Override
+	protected void load() {
+		trail.load(Gdx.files.internal("assets/effects/grenadetrail.p"), Gdx.files.internal("assets/effects"));
+		sprite = new Sprite(Art.get("grenade"));
+		sprite.setSize(2, 2);
+		sprite.setOriginCenter();
+		super.load();
+	}
+
+	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
-		if(sprite == null && alive) {
-			Gdx.app.error("Grenade", "BIG MISTAKE!!!");
-		}
 
-        trail.setPosition(x, y);
-        trail.update(dt);
+		if (loaded) {
+			trail.setPosition(x, y);
+			trail.update(dt);
+
+			sprite.rotate(dt * 2000);
+			sprite.setPosition(x, y);
+		}
 
         beepTimer += dt;
         timer += dt;
@@ -57,21 +64,20 @@ public class Grenade extends Mass {
             beepTimer = 0;
             Universe.currentUniverse.playSound("neet", x, y, -0.9f);
         }
-
-		sprite.rotate(dt * 2000);
-		sprite.setPosition(x, y);
 		bounds.set(x, y, 1, 1);
 	}
 
 
     @Override
-    protected float getImpactThreshhold() {
+	protected float getImpactThreshold() {
 		return 0;
 	}
 
 	public void render(SpriteBatch batch) {
-        trail.draw(batch);
-        sprite.draw(batch);
+		if (loaded) {
+			trail.draw(batch);
+			sprite.draw(batch);
+		}
 
         if (timer > 5) {
             explode();
