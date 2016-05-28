@@ -121,7 +121,7 @@ public abstract class Ship extends Mass {
 
 	protected void explode(DeathCause cause) {
 		Gdx.app.log("Ship", "BOOOOM!");
-        Universe.currentUniverse.addEffect(new Explosion(x, y, dx, dy));
+        Universe.currentUniverse.addEffect(new Explosion(x, y));
 
 		if (pilot != null) {
 			Universe.currentUniverse.playerKilled(pilot, cause);

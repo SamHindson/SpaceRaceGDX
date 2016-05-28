@@ -25,32 +25,32 @@ public class MenuScreen extends RaceScreen {
 		
 		batch = new SpriteBatch();
 		
-		button1 = new Button("Singleplayer", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 50, () -> {
-			game.changeScreen("play");
+		button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 50, () -> {
+			game.changeScreen("playmenu");
 		});
 		button1.setColors(Colors.PLANETYELLOW, Color.BLUE);
 		
-		button2 = new Button("Multiplayer", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.45f, 200, 50, () -> {
+		button2 = new Button("Multiplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.48f, 200, 50, () -> {
 			System.out.println("Dogs!");
 		});
 		button2.setColors(Colors.PLANETBLUE, Color.YELLOW);
 		
-		button3 = new Button("Settings", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.35f, 200, 50, () -> {
+		button3 = new Button("Settings", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.41f, 200, 50, () -> {
 			game.changeScreen("settings");
 		});
 		button3.setColors(Colors.PLANETORANGE, Color.GREEN);
 		
-		button4 = new Button("Help", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.25f, 200, 50, () -> {
+		button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.34f, 200, 50, () -> {
 			System.out.println("Halp");
 		});
 		button4.setColors(Colors.PLANETPINK, Color.WHITE);
 		
-		button5 = new Button("Quit", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.15f, 200, 50, () -> {
+		button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.27f, 200, 50, () -> {
 			Gdx.app.exit();
 		});
 		button5.setColors(Colors.PLANETGREEN, Color.DARK_GRAY);
 		
-		secretButton = new Button("???", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {
+		secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {
 			Gdx.app.exit();
 		});
 		secretButton.setColors(Color.ORANGE, Color.GREEN);

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.players.DeathCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.weapons.Bullet;
@@ -72,6 +73,12 @@ public class SmallBombarder extends Ship {
 	public void render(SpriteBatch batch) {
 		particleEffect.draw(batch);
 		super.render(batch);
+	}
+	
+	@Override
+	protected void explode(DeathCause cause) {
+		super.explode(cause);
+		Universe.currentUniverse.stopSound("runt");
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class RaceGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		screen = new PlayScreen(this);
+		screen = new SingleplayerMenu(this);
 	}
 
 	@Override
@@ -29,6 +29,9 @@ public class RaceGame extends ApplicationAdapter {
 		} else if(name.equals("menu")) {
 			screen.dispose();
 			screen = new MenuScreen(this);
+		} else if(name.equals("playmenu")) {
+			screen.dispose();
+			screen = new SingleplayerMenu(this);
 		}
 	}
 }

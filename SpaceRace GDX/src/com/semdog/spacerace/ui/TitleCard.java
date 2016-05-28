@@ -21,7 +21,7 @@ public class TitleCard implements Disposable {
 	public TitleCard(int size, float x, float y) {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = size == 0 ? 36 : 48;
+		parameter.size = size == 0 ? 36 : 72;
 		titleFont = generator.generateFont(parameter);
 		generator.dispose();
 		
@@ -31,20 +31,17 @@ public class TitleCard implements Disposable {
 	}
 	
 	public void draw(SpriteBatch batch) {
-		int k = 0;
-		int m = 0;
-		
 		if(size == 0) {
-			k = 20;
-			m = 18;
+			titleFont.setColor(Colors.PLANETRED);
+			titleFont.draw(batch, "Space", x, y);
+			titleFont.setColor(Colors.PLANETYELLOW);
+			titleFont.draw(batch, "Race!", x + 54, y - 40);
 		} else {
-			k = 26;
+			titleFont.setColor(Colors.PLANETRED);
+			titleFont.draw(batch, "Space", x - 200, y + 50);
+			titleFont.setColor(Colors.PLANETYELLOW);
+			titleFont.draw(batch, "Race!", x - 92, y - 30);
 		}
-		
-		titleFont.setColor(Colors.PLANETRED);
-		titleFont.draw(batch, "Space", x - 150, y + k);
-		titleFont.setColor(Colors.PLANETYELLOW);
-		titleFont.draw(batch, "Race!", x - 78 - m, y - k);
 	}
 
 	@Override

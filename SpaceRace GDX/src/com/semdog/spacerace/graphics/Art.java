@@ -30,6 +30,8 @@ public class Art {
 		artwork.put("pixel_blue", createPixel(Color.BLUE));
 		artwork.put("pixel_purple", createPixel(Color.PURPLE));
         artwork.put("pixel_gray", createPixel(Color.GRAY));
+        artwork.put("pixel_white", createPixel(Color.WHITE));
+        artwork.put("pixel_pink", createPixel(new Color(1, 0, 110.f/225.f, 1.f)));
     }
 
 	private static Texture createPixel(Color color) {
