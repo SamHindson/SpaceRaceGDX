@@ -32,6 +32,12 @@ public class Art {
         artwork.put("pixel_gray", createPixel(Color.GRAY));
         artwork.put("pixel_white", createPixel(Color.WHITE));
         artwork.put("pixel_pink", createPixel(new Color(1, 0, 110.f/225.f, 1.f)));
+        artwork.put("grenade_gold", createPixel(new Color(0xf4c520ff)));
+        artwork.put("life_red", createPixel(new Color(0xff4b4fff)));
+        artwork.put("carbine_orange", createPixel(new Color(0xffb54bff)));
+        artwork.put("smg_blue", createPixel(new Color(0x4bb1ffff)));
+        artwork.put("runt_green", createPixel(new Color(0x4bb37eff)));
+        artwork.put("rubbish_purple", createPixel(new Color(0x9b4bffff)));
     }
 
 	private static Texture createPixel(Color color) {

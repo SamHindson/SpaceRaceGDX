@@ -7,8 +7,7 @@ package com.semdog.spacerace.players;
  */
 public interface Vitality {
     float getValue();
-
     float getMaxValue();
-
-    VitalSigns.Type getType();
+    int getColor();
+    VitalSigns.Type getValueType();
 }

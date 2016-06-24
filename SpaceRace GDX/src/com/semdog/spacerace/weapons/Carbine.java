@@ -13,4 +13,9 @@ public class Carbine extends Weapon {
 		super.fire();
 		Universe.currentUniverse.playSound("carbine", owner.getX(), owner.getY(), 0.3f);
 	}
+
+	@Override
+	public int getColor() {
+		return 0x0DBEB2FF;
+	}
 }

@@ -1,4 +1,4 @@
-package com.semdog.spacerace;
+package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.screens.RaceScreen;
 import com.semdog.spacerace.ui.ListView;
+import com.semdog.spacerace.ui.ListViewListener;
+import com.semdog.spacerace.ui.RaceInfoViewer;
 import com.semdog.spacerace.ui.TitleCard;
 
-public class SingleplayerMenu extends RaceScreen {
+public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
 	private SpriteBatch batch;
 
@@ -22,6 +23,7 @@ public class SingleplayerMenu extends RaceScreen {
 	private BitmapFont subtitleFont;
 
 	private ListView raceChooser;
+	private RaceInfoViewer raceViewer;
 
 	public SingleplayerMenu(RaceGame game) {
 		super(game);
@@ -41,7 +43,9 @@ public class SingleplayerMenu extends RaceScreen {
 
 		raceChooser = new ListView(100, 100, 250, 420, new Color(1.f, 0, 110f / 255f, 1),
 				new Color(178f / 255f, 0, 1, 1), 5);
+		raceChooser.setListener(this);
 		
+		raceViewer = new RaceInfoViewer(350, 100, (Gdx.graphics.getWidth() - 100 - 250 - 100), 420);
 	}
 
 	@Override
@@ -63,12 +67,18 @@ public class SingleplayerMenu extends RaceScreen {
 		drawTitle(batch);
 
 		raceChooser.draw(batch);
+		raceViewer.draw(batch);
 		batch.end();
 	}
 
 	@Override
 	public void dispose() {
 
+	}
+
+	@Override
+	public void itemSelected(int index) {
+		Gdx.app.log("SingleplayerMenu", "Thingy was a choosd' " + index);
 	}
 
 }

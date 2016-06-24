@@ -13,4 +13,9 @@ public class SMG extends Weapon {
         super.fire();
         Universe.currentUniverse.playSound("smg", owner.getX(), owner.getY(), 0.3f);
     }
+
+	@Override
+	public int getColor() {
+		return 0x8075FFFF;
+	}
 }

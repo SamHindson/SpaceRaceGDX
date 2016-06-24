@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.Colors;
 
 /**
  * This class is going to be absolutely mental. A UI element which displays
@@ -14,10 +15,13 @@ import com.semdog.spacerace.graphics.Art;
 
 public class ListView {
 	private Texture block;
+	
+	private ListViewListener listener;
 
 	private int x, y, width, height;
 	private int maxItems;
 
+	@SuppressWarnings("unused")
 	private Color borderColor, itemColor;
 
 	private Button up, down;
@@ -41,14 +45,14 @@ public class ListView {
 		this.borderColor = borderColor;
 		this.itemColor = itemColor;
 
-		up = new Button("^", true, x + width / 2, y + height - 25, width - 10, 40, () -> {
+		up = new Button("^", true, x + width / 2, y + height - 20, width, 40, () -> {
 			if (page != 0)
 				page--;
 
 			recomposeItems();
 		});
 		up.setColors(borderColor, Color.WHITE);
-		down = new Button("V", true, x + width / 2, y + 25, width - 10, 40, () -> {
+		down = new Button("V", true, x + width / 2, y + 20, width, 40, () -> {
 			if (page != pageCount - 1)
 				page++;
 
@@ -64,8 +68,8 @@ public class ListView {
 
 	// TODO fix this stupid button placement
 	private void recomposeItems() {
-		int buttonHeight = (height - 111 + 2 * maxItems) / maxItems;
-		int usableSpace = height - 10 - 80;
+		int usableSpace = height - 80;
+		int buttonHeight = usableSpace / maxItems;
 
 		items = new Button[maxItems];
 
@@ -77,17 +81,17 @@ public class ListView {
 				return;
 
 			Button butt = new Button(titles[k + maxItems * page], true, x + width / 2,
-					height - k * buttonHeight + 21 - 2 * k, width - 10 - 2, (usableSpace - 2 * (maxItems - 1)) / 5,
+					y + height - 40 - (buttonHeight/2) - (k * buttonHeight), width - 10, buttonHeight,
 					() -> {
 						itemChosen(titleIndex);
 					});
-			butt.setColors(itemColor, Color.WHITE);
+			butt.setColors(Colors.getRandom(), Color.WHITE);
 			items[k] = butt;
 		}
 	}
 
 	public void itemChosen(int index) {
-		System.out.println(index);
+		listener.itemSelected(index);
 	}
 
 	public void update(float dt) {
@@ -105,12 +109,17 @@ public class ListView {
 		batch.draw(block, x, y, width, height);
 		batch.setColor(Color.BLACK);
 		batch.draw(block, x + 5, y + 5, width - 10, height - 10);
-		up.draw(batch);
-		down.draw(batch);
 
 		for (Button item : items) {
 			if (item != null)
 				item.draw(batch);
 		}
+		
+		up.draw(batch);
+		down.draw(batch);
+	}
+
+	public void setListener(ListViewListener listener) {
+		this.listener = listener;
 	}
 }

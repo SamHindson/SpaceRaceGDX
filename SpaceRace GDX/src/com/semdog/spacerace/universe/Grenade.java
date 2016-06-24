@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Explosion;
-import com.semdog.spacerace.players.DeathCause;
+import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 
 /***
@@ -27,8 +27,8 @@ public class Grenade extends Mass {
 
     private ParticleEffect trail;
 
-	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment) {
-		super(x, y, dx, dy, 2, 2, mass, environment);
+	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment, String id) {
+		super(x, y, dx, dy, 2, 2, mass, environment, id);
 
 		bounds = new Rectangle(x, y, 1, 1);
 
@@ -50,11 +50,11 @@ public class Grenade extends Mass {
 		super.update(dt, gravitySources);
 
 		if (loaded) {
-			trail.setPosition(x, y);
+			trail.setPosition(position.x, position.y);
 			trail.update(dt);
 
 			sprite.rotate(dt * 2000);
-			sprite.setPosition(x, y);
+			sprite.setPosition(position.x, position.y);
 		}
 
         beepTimer += dt;
@@ -62,11 +62,15 @@ public class Grenade extends Mass {
 
         if (beepTimer > 0.1f) {
             beepTimer = 0;
-            Universe.currentUniverse.playSound("neet", x, y, -0.9f);
+            Universe.currentUniverse.playSound("neet", position.x, position.y, -0.9f);
         }
-		bounds.set(x, y, 1, 1);
+		bounds.set(position.x, position.y, 1, 1);
 	}
-
+	
+	@Override
+	protected void handleMassCollision() {
+		explode();
+	}
 
     @Override
 	protected float getImpactThreshold() {
@@ -87,27 +91,27 @@ public class Grenade extends Mass {
 	@Override
     protected void handlePlanetCollision(float speed, boolean e) {
         if (!exploded) {
-            float surfaceAngle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
-            float velocityAngle = MathUtils.atan2(dy, dx);
+            float surfaceAngle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
+            float velocityAngle = MathUtils.atan2(velocity.y, velocity.x);
             float impactAngle = -(MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
-            dx *= MathUtils.cos(impactAngle);
-            dy *= MathUtils.sin(impactAngle);
-            x += dx * 0.016f;
-            y += dy * 0.016f;
+            velocity.x *= MathUtils.cos(impactAngle);
+            velocity.y *= MathUtils.sin(impactAngle);
+            position.x += velocity.x * 0.016f;
+            position.y += velocity.y * 0.016f;
         }
     }
 
 	@Override
 	protected void hitPlayer(Player player) {
 		if (!exploded) {
-			Universe.currentUniverse.playerKilled(player, DeathCause.EXPLOSION);
+			Universe.currentUniverse.playerKilled(player, DamageCause.EXPLOSION);
 			explode();
 		}
 	}
 
 	private void explode() {
 		exploded = true;
-        Universe.currentUniverse.addEffect(new Explosion(x, y));
+        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
     }
 
 	@Override
@@ -123,5 +127,10 @@ public class Grenade extends Mass {
 	@Override
 	protected float getHeight() {
 		return 1;
+	}
+
+	@Override
+	public String getID() {
+		return "grenade";
 	}
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.semdog.spacerace.players.DeathCause;
+import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.weapons.Bullet;
@@ -16,24 +16,23 @@ import com.semdog.spacerace.weapons.Bullet;
 public class SmallBombarder extends Ship {
 	private ParticleEffect particleEffect;
 
-	public SmallBombarder(float x, float y) {
-        super(x, y, 32, 32, 3000, 50, "runt");
+	public SmallBombarder(float x, float y, String id) {
+		super(x, y, 32, 32, 10000, 400, "runt", id);
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/runtflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
-        particleEffect.allowCompletion();
+		particleEffect.allowCompletion();
 
 		pCooldown = 0.02f;
-		dx = 0;
-		
+
 		setMaxHealth(100);
 	}
 
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
-		particleEffect.setPosition(x, y);
+		particleEffect.setPosition(position.x, position.y);
 		particleEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90);
 		particleEffect.update(dt);
 	}
@@ -49,10 +48,11 @@ public class SmallBombarder extends Ship {
 
 		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 1) {
 			currentFuel -= power * dt;
-			dx -= 250 * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
-			dy += 250 * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
+			velocity.x -= getCurrentPower() * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
+			velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
 			particleEffect.start();
-			Universe.currentUniverse.loopSound("runt", x, y, -1f);
+			Universe.currentUniverse.loopSound("runt", position.x, position.y, -1f);
+			Universe.currentUniverse.setCameraShake(2);
 		} else {
 			particleEffect.allowCompletion();
 			Universe.currentUniverse.stopSound("runt");
@@ -74,9 +74,9 @@ public class SmallBombarder extends Ship {
 		particleEffect.draw(batch);
 		super.render(batch);
 	}
-	
+
 	@Override
-	protected void explode(DeathCause cause) {
+	protected void explode(DamageCause cause) {
 		super.explode(cause);
 		Universe.currentUniverse.stopSound("runt");
 	}
@@ -93,11 +93,12 @@ public class SmallBombarder extends Ship {
 
 	@Override
 	public void firePrimary() {
-		float xo = width * MathUtils.sin(-r * MathUtils.degreesToRadians);
-		float yo = width * MathUtils.cos(-r * MathUtils.degreesToRadians);
-		Universe.currentUniverse.playSound("runtgun", x, y, 0.1f);
-		Universe.currentUniverse.addBullet(
-				new Bullet(x + xo, y + yo, dx, dy, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 10));
+		for (float i = -2; i <= 2; i++) {
+			Universe.currentUniverse
+					.addBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f),
+							position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x, velocity.y,
+							r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 1));
+		}
 	}
 
 	@Override
@@ -105,4 +106,18 @@ public class SmallBombarder extends Ship {
 
 	}
 
+	@Override
+	public int getColor() {
+		return 0x3FDD4DFF;
+	} 
+	
+	@Override
+	public void setDy(float dy) {
+		super.setDy(dy);
+	}
+	
+	@Override
+	public void setDx(float dx) {
+		super.setDx(dx);
+	}
 }

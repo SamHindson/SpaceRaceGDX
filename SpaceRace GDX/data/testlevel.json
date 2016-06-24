@@ -1,30 +1,57 @@
 {
-	"name" : "yeeeaaahhh",
-	"planet-0" : [
+	"name": "yeeeaaahhh",
+	"description": "Well this is embarassing.",
+	"planet-0": [
 		{
-          "radius": 500,
-			"x" : 0,
-			"y" : 0
+			"id": "home",
+			"radius": 500,
+			"x": 0,
+			"y": 0
 		}
 	],
-  "planet-1": [
-    {
-      "radius": 150,
-      "x": 0,
-      "y": 1600
-    }
-  ],
-	
-	"runt" : [
+	"healthpack": [
 		{
-          "x": 600,
-			"y" : 0
+			"orbiter": false,
+			"x": -550,
+			"y": 0
 		}
 	],
-  "playerstuff": [
+	"playerstuff": [
 		{
-			"x" : 12,
-          "y": 600
+			"x": 0,
+			"y": 510
 		}
-	]
+	],
+	"runt": [
+		{
+			"x": -750,
+			"y": 0,
+			"id": "bruh"
+		}
+		{
+			"setDy": 200
+		}
+	],
+	"runt": [
+		{
+			"x": 100,
+			"y": 500,
+			"id": "dude"
+		}
+		{
+			"setDy": 0
+		}
+	],
+	"playercriteria": [
+		{
+			"boolean-isAlive": true,
+			"string-getShipID": "bruh"
+		}
+	],
+	"mission": [
+		{
+			"timelimit": 2014,
+			"suddendeath": true
+		}
+	],
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.misc.Tools;
-import com.semdog.spacerace.players.DeathCause;
+import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
@@ -19,15 +19,14 @@ class DebrisPiece extends Mass {
 	private Sprite sprite;
 	private float rotationalSpeed;
 
-	private float w, h;
-
 	private int bounces;
 
 	DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
-		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 10, 10, 50, environment);
+		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 10,
+				MathUtils.random(ship.getWidth() / 2), MathUtils.random(ship.getHeight() / 2), environment, "debris");
 
-		int w = (int) MathUtils.random(ship.getWidth() / 2);
-		int h = (int) MathUtils.random(ship.getHeight() / 2);
+		int w = (int) getWidth();
+		int h = (int) getHeight();
 
 		int tx = MathUtils.random((int) ship.getWidth() - 4);
 		int ty = MathUtils.random((int) ship.getHeight() - 4);
@@ -39,15 +38,12 @@ class DebrisPiece extends Mass {
 		rotationalSpeed = MathUtils.random(0, 720);
 
 		shouldCollide = false;
-
-		this.w = w;
-		this.h = h;
 	}
 
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
-		sprite.setPosition(x, y);
+		sprite.setPosition(position.x, position.y);
 		sprite.rotate(rotationalSpeed * dt);
 	}
 
@@ -67,43 +63,39 @@ class DebrisPiece extends Mass {
 	}
 
 	/***
-	 * Debris pieces are to bounce twice before exploding into a puff of colored smoke.
-	 * This function works out if it is strong enough to bounce and, if so, how it bounces.
+	 * Debris pieces are to bounce twice before exploding into a puff of colored
+	 * smoke. This function works out if it is strong enough to bounce and, if
+	 * so, how it bounces.
 	 */
 	@Override
 	protected void handlePlanetCollision(float speed, boolean planet) {
-        if (bounces < 3) {
-            float surfaceAngle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
-            float velocityAngle = MathUtils.atan2(dy, dx);
-            float impactAngle = (MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
-            dx *= MathUtils.cos(impactAngle);
-            dy *= MathUtils.sin(impactAngle);
-            x += dx * 0.016f;
-            y += dy * 0.016f;
-            bounces++;
-        } else {
+		if (bounces < 3) {
+			float surfaceAngle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
+			float velocityAngle = MathUtils.atan2(velocity.x, velocity.y);
+			float impactAngle = (MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
+			velocity.x *= MathUtils.cos(impactAngle);
+			velocity.y *= MathUtils.sin(impactAngle);
+			position.x += velocity.x * 0.016f;
+			position.y += velocity.y * 0.016f;
+			bounces++;
+		} else {
 			alive = false;
 			super.handlePlanetCollision(speed, true);
-			Universe.currentUniverse.addEffect(new DustPuff(x, y, environment.getColor()));
-			Universe.currentUniverse.playSound("shrap" + Tools.decide("1", "2", "3"), x, y, 0.2f);
+			Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, environment.getColor()));
+			Universe.currentUniverse.playSound("shrap" + Tools.decide("1", "2", "3"), position.x, position.y, 0.2f);
 		}
 	}
 
 	@Override
-	protected float getWidth() {
-		return w;
-	}
-
-	@Override
-	protected float getHeight() {
-		return h;
-	}
-
-	@Override
 	protected void hitPlayer(Player player) {
-		Universe.currentUniverse.playerHurt(player, getVelocity(), DeathCause.DEBRIS);
-		Universe.currentUniverse.addEffect(new DustPuff(x, y, Colors.PLANETRED));
+		Universe.currentUniverse.playerHurt(player, getVelocity().len(), DamageCause.DEBRIS);
+		Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.PLANETRED));
 		alive = false;
+	}
+	
+	@Override
+	public String getID() {
+		return "debris";
 	}
 
 }

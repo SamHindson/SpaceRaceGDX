@@ -2,6 +2,7 @@ package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.graphics.Colors;
@@ -10,8 +11,11 @@ import java.util.Random;
 
 public class Planet {
 	
-	private float radius, x, y;
+	private Vector2 position;
+	private float radius;
 	private float mass;
+	
+	private String id;
 	
 	private Color color;
 	
@@ -20,12 +24,13 @@ public class Planet {
 	private float[] ballX, ballY, ballR;
 	private Color[] dustColors;
 	
-	public Planet(float x, float y, float radius) {
-		this.x = x;
-		this.y = y;
+	public Planet(String id, float x, float y, float radius) {
+		position = new Vector2(x, y);
 		this.radius = radius;
 		
-		mass = MathUtils.PI * radius * radius;
+		this.id = id;
+		
+		mass = 1000000;
 		
 		System.out.println("Planet mass: " + mass);
 		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
@@ -51,21 +56,22 @@ public class Planet {
 	}
 	
 	public void draw(ShapeRenderer shapeRenderer) {
+		shapeRenderer.set(ShapeType.Filled);
 		shapeRenderer.setColor(color);
-		shapeRenderer.circle(x, y, radius, 100);
+		shapeRenderer.circle(position.x, position.y, radius, 100);
 
-		/*for(int h = 0; h < dustBalls; h++) {
+		for(int h = 0; h < dustBalls; h++) {
             shapeRenderer.setColor(dustColors[h]);
 			shapeRenderer.circle(ballX[h], ballY[h], ballR[h]);
-		}*/
+		}
     }
 
 	public float getX() {
-		return x;
+		return position.x;
 	}
 	
 	public float getY() {
-		return y;
+		return position.y;
 	}
 	
 	public float getSOI() {
@@ -89,6 +95,14 @@ public class Planet {
 	}
 
 	public boolean inRange(float x2, float y2) {
-		return Vector2.dst(x, y, x2, y2) < getSOI();
+		return Vector2.dst(position.x, position.y, x2, y2) < getSOI();
+	}
+
+	public String getID() {
+		return id;
+	}
+
+	public Vector2 getPosition() {
+		return position;
 	}
 }

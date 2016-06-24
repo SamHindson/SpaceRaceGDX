@@ -17,6 +17,10 @@ public class VitalSigns {
     public void addItem(String id, Vitality vitality) {
         signs.put(id, vitality);
     }
+    
+    public void removeItem(String id) {
+    	signs.remove(id);
+    }
 
     public Vitality get(String id) {
         return signs.get(id);

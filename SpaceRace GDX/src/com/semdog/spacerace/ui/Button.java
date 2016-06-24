@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.semdog.spacerace.graphics.Colors;
 
 public class Button {
 	private static BitmapFont font16, font10;
@@ -40,6 +39,7 @@ public class Button {
 	private boolean hovered, held;
 
 	private Color buttonColor, textColor;
+	@SuppressWarnings("unused")
 	private boolean darkHover;
 	private String text;
 

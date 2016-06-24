@@ -38,7 +38,7 @@ public abstract class Weapon implements Vitality {
     }
 
     @Override
-    public VitalSigns.Type getType() {
+    public VitalSigns.Type getValueType() {
         return VitalSigns.Type.CONTINUOUS;
     }
 
@@ -74,8 +74,9 @@ public abstract class Weapon implements Vitality {
     }
 
 	protected void fire() {
-		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle);
-		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle);
+		float inaccuracy = MathUtils.random(-0.3f, 0.3f);
+		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle + inaccuracy);
+		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle + inaccuracy);
 		Universe.currentUniverse.addBullet(new Bullet(ax, ay, owner.getDX(), owner.getDY(), aimAngle, damage));
 		ammoleft--;
 	}

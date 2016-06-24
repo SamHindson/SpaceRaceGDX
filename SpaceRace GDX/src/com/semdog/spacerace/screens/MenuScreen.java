@@ -15,7 +15,7 @@ public class MenuScreen extends RaceScreen {
 	
 	private SpriteBatch batch;
 	
-	private float titleOffset;
+	//private float titleOffset;
 	
 	private Button button1, button2, button3, button4, button5, secretButton;
 	private TitleCard titleCard;

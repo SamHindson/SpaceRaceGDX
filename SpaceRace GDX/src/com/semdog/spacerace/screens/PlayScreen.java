@@ -4,19 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.universe.Universe;
+import com.semdog.spacerace.universe.UniverseLoader;
 
 public class PlayScreen extends RaceScreen {
 
 	private Universe universe;
 	private Thread physicsThread;
-
-	private boolean startedPhysics = false;
+	private PhysicsRunnable runnable;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
 
 		universe = new Universe();
-		physicsThread = new Thread(new PhysicsRunnable(), "SpaceRace! Physics Thread");
+		new UniverseLoader().load(universe);
+		runnable = new PhysicsRunnable();
+		physicsThread = new Thread(runnable, "SpaceRace! Physics Thread");
 		physicsThread.start();
 	}
 
@@ -37,7 +39,8 @@ public class PlayScreen extends RaceScreen {
 
 	@Override
 	public void dispose() {
-
+		runnable.stop();
+		System.out.println("ENT");
 	}
 
 	private class PhysicsRunnable implements Runnable {

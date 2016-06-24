@@ -8,13 +8,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.universe.Planet;
+import com.semdog.spacerace.universe.Universe;
 
-public class CrapLander extends Ship {
+public class RubbishLander extends Ship {
 
 	private ParticleEffect particleEffect;
 
-	public CrapLander(float x, float y) {
-		super(x, y, 32, 32, 10000, 1000, "tinyship");
+	public RubbishLander(float x, float y, String id) {
+		super(x, y, 32, 32, 3000, 250, "tinyship", id);
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
@@ -22,14 +23,12 @@ public class CrapLander extends Ship {
 		particleEffect.allowCompletion();
 		
 		System.out.println("GUD");
-
-		//dy = (float) -Math.sqrt((2 * Universe.GRAVITY * environment.getMass()) / y);
 	}
 
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
-		particleEffect.setPosition(x, y);
+		particleEffect.setPosition(position.x, position.y);
 		particleEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90);
 		particleEffect.update(dt);
 	}
@@ -56,9 +55,10 @@ public class CrapLander extends Ship {
 
 		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 0) {
 			currentFuel -= power * dt;
-			dx -= 155 * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
-			dy += 155 * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
+			velocity.x -= getCurrentPower() * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
+			velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
 			particleEffect.start();
+			Universe.currentUniverse.setCameraShake(1);
 		} else {
 			particleEffect.allowCompletion();
 		}
@@ -66,7 +66,7 @@ public class CrapLander extends Ship {
 	
 	@Override
 	protected float getImpactThreshold() {
-		return 200;
+		return 350;
 	}
 
 	@Override
@@ -77,6 +77,11 @@ public class CrapLander extends Ship {
 	@Override
 	public void fireSecondary() {
 		System.out.println("Werent you listening");
+	}
+
+	@Override
+	public int getColor() {
+		return 0xAF2BBFFF;
 	}
 
 }

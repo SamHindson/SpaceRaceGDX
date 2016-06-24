@@ -35,7 +35,8 @@ public class Bullet {
 			if(d < planet.getRadius()) {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
 				float py = planet.getY() + MathUtils.sin(a) * planet.getRadius();
-				Universe.currentUniverse.addEffect(new DustPuff(px, py, planet.getColor()));
+				if(MathUtils.randomBoolean(0.1f))
+					Universe.currentUniverse.addEffect(new DustPuff(px, py, planet.getColor()));
 				Universe.currentUniverse.playSound("bulletground", x, y, 0.5f);
 				age = life + 1;
 			}
@@ -45,7 +46,7 @@ public class Bullet {
 
 	public void draw(ShapeRenderer renderer) {
 		renderer.setColor(Color.WHITE);
-		renderer.line(x, y, x - dx * 0.005f, y - dy * 0.005f);
+		renderer.line(x, y, x - dx * 0.001f, y - dy * 0.001f);
 	}
 
 	public boolean alive() {

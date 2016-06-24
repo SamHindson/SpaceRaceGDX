@@ -14,15 +14,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.collectables.Collectable;
+import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.universe.Collideable;
+import com.semdog.spacerace.universe.Goalobject;
 import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.vehicles.Ship;
-import com.semdog.spacerace.weapons.SMG;
+import com.semdog.spacerace.weapons.Carbine;
 import com.semdog.spacerace.weapons.Weapon;
 
-public class Player implements Vitality {
+public class Player implements Vitality, Collideable {
 
 	private Team team = Team.PINK;
 
@@ -39,14 +43,15 @@ public class Player implements Vitality {
 	private boolean pilotingShip = false;
 	private Ship ship;
 
-	// private Sprite sprite;
 	private Animation animation;
 	private TextureRegion idleTexture;
 	private float animTime = 0f;
 
-	private float x, y, dx, dy, wx, wy;
+	private float wx, wy;
 	private float ax, ay, a;
 
+	private Vector2 position, velocity;
+	
 	private Rectangle bounds;
 
 	private Weapon weapon;
@@ -55,15 +60,15 @@ public class Player implements Vitality {
 
 	private Ship boardingShip;
 
-    private VitalSigns primarySigns, secondarySigns;
+	private VitalSigns primarySigns;
 
-    private int grenadeCount;
+	private int grenadeCount;
 
 	public Player(float x, float y, Planet planet) {
 		environment = planet;
 
-		this.x = x;
-		this.y = y;
+		position = new Vector2(x, y);
+		velocity = new Vector2();
 
 		TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
 
@@ -71,110 +76,133 @@ public class Player implements Vitality {
 
 		idleTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/graphics/idledude.png")));
 
-		// sprite = new Sprite(textureAtlas.findRegion("02"));
-		// sprite.setSize(20, 20);
-
 		bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
-        weapon = new SMG();
-        weapon.pickup(this);
+		weapon = new Carbine();
+		weapon.pickup(this);
 
-        grenadeCount = 5;
+		grenadeCount = 5;
 
-        primarySigns = new VitalSigns();
-        primarySigns.addItem("health", this);
-        primarySigns.addItem("ammo", weapon);
-        primarySigns.addItem("grenades", new GrenadeHolder());
-        // textureAtlas.dispose();
-    }
+		primarySigns = new VitalSigns();
+		primarySigns.addItem("health", this);
+		primarySigns.addItem("ammo", weapon);
+		primarySigns.addItem("grenades", new GrenadeHolder());
+	}
 
-    public VitalSigns getPrimarySigns() {
-        return primarySigns;
-    }
+	public VitalSigns getPrimarySigns() {
+		return primarySigns;
+	}
 
-    @Override
-    public float getValue() {
-        return health;
-    }
+	@Override
+	public float getValue() {
+		return health;
+	}
 
-    @Override
-    public float getMaxValue() {
-        return 200;
-    }
+	@Override
+	public float getMaxValue() {
+		return 200;
+	}
 
-    @Override
-    public VitalSigns.Type getType() {
-        return VitalSigns.Type.CONTINUOUS;
-    }
+	@Override
+	public VitalSigns.Type getValueType() {
+		return VitalSigns.Type.CONTINUOUS;
+	}
 
-    public boolean isPilotingShip() {
-        return pilotingShip;
-    }
+	public boolean isPilotingShip() {
+		return pilotingShip;
+	}
 
 	public void setShip(Ship ship) {
 		pilotingShip = true;
 		boarding = false;
 		this.ship = ship;
 		ship.setPilot(this);
+
+		primarySigns.addItem("shipfuel", ship);
+		primarySigns.removeItem("ammo");
+		primarySigns.removeItem("grenades");
 	}
 
 	public Team getTeam() {
 		return team;
 	}
 
-    public float getHealth() {
-        return health;
-    }
+	public float getHealth() {
+		return health;
+	}
 
-    public void update(float dt, OrthographicCamera camera) {
-        if (alive) {
-            if (pilotingShip) {
+	public void update(float dt, OrthographicCamera camera, boolean controllable, Array<Planet> planets) {
+		if (alive) {
+			if (pilotingShip && controllable) {
 				ship.updateControls(dt);
 
-				if (Gdx.input.isKeyJustPressed(Keys.E)) {
+				if (Gdx.input.isKeyJustPressed(Keys.E) && controllable) {
 					pilotingShip = false;
-					x = ship.getX();
-					y = ship.getY();
-					dx = ship.getDx();
-					dy = ship.getDy();
+					float shipAngle = ship.getAngleAroundEnvironment();
+					position.x = ship.getX() + 30 * MathUtils.sin(shipAngle);
+					position.y = ship.getY() + 30 * MathUtils.cos(shipAngle);
+					velocity.x = ship.getDx();
+					velocity.y = ship.getDy();
 					ship.setPilot(null);
+					ship = null;
 					Universe.currentUniverse.playUISound("egress");
+					primarySigns.removeItem("shipfuel");
+					primarySigns.addItem("ammo", weapon);
+					primarySigns.addItem("grenades", new GrenadeHolder());
 				}
 			} else {
 				animTime += dt;
 
-				distance = Vector2.dst(environment.getX(), environment.getY(), x, y);
-				angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
+				for (int r = 0; r < planets.size; r++) {
+					Planet planet = planets.get(r);
+					float d = Vector2.dst(planet.getX(), planet.getY(), position.x, position.y);
+					if (d < planet.getSOI()) {
+						environment = planet;
+						break;
+					}
+				}
+
+				distance = Vector2.dst(environment.getX(), environment.getY(), position.x, position.y);
+				angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
 
 				if (environment != null) {
-					onGround = distance < environment.getRadius() + 10;
-
 					if (!onGround) {
-						float force = (float) (Universe.GRAVITY * 100 * environment.getMass() / Math.pow(distance, 2));
-						float ax = -dt * force * MathUtils.cos(angle);
-						float ay = -dt * force * MathUtils.sin(angle);
+						float force = (float) (Universe.GRAVITY * environment.getMass() / Math.pow(distance, 2));
+						float ax = -force * MathUtils.cos(angle);
+						float ay = -force * MathUtils.sin(angle);
 
-						ax /= 100;
-						ay /= 100;
+						velocity.x += ax * dt;
+						velocity.y += ay * dt;
 
-						dx += ax * dt * 100;
-						dy += ay * dt * 100;
+						if (distance < environment.getRadius() + 10) {
+							float vx = -velocity.x * MathUtils.cos(angle);
+							float vy = -velocity.y * MathUtils.sin(angle);
+							vx = vx < 0 ? 0 : vx;
+							vy = vy < 0 ? 0 : vy;
+							float v = Vector2.len(vx, vy);
+							if (v > 200) {
+								doDamage((v / getImpactThreshhold()) * 50, DamageCause.FALLING);
+								onGround = true;
+							}
+							position.x = environment.getX() + (environment.getRadius() + 10) * MathUtils.cos(angle);
+							position.y = environment.getY() + (environment.getRadius() + 10) * MathUtils.sin(angle);
+						}
 					} else {
-						dx = 0;
-						dy = 0;
+						velocity.set(Vector2.Zero);
 					}
+					onGround = distance < environment.getRadius() + 10;
 				}
 
 				sprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
 
-				if (Gdx.input.isKeyPressed(Keys.A)) {
+				if (Gdx.input.isKeyPressed(Keys.A) && controllable) {
 					// Move anti-clockwise around planet
 					float speed = sprinting ? -300 : -100;
 					wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
 					wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
 					lefting = true;
 					righting = false;
-				} else if (Gdx.input.isKeyPressed(Keys.D)) {
+				} else if (Gdx.input.isKeyPressed(Keys.D) && controllable) {
 					// Move clockwise around planet
 					float speed = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 300 : 100;
 					wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
@@ -188,37 +216,35 @@ public class Player implements Vitality {
 					lefting = righting = false;
 				}
 
-				if (Gdx.input.isKeyPressed(Keys.SPACE) && onGround) {
+				if (Gdx.input.isKeyJustPressed(Keys.SPACE) && onGround && controllable) {
 					// Jump!
 
 					// Works out which direction is up and shoots the player
 					// there
-					float jx = 10000 * MathUtils.cos(angle);
-					float jy = 10000 * MathUtils.sin(angle);
+					float jx = 5500 * MathUtils.cos(angle);
+					float jy = 5500 * MathUtils.sin(angle);
 
-					dx += jx * dt;
-					dy += jy * dt;
+					velocity.add(jx * dt, jy * dt);
 
 					onGround = false;
 
 					Universe.currentUniverse.playUISound("jump");
 				}
 
-				if (boarding && Gdx.input.isKeyJustPressed(Keys.E)) {
+				if (boarding && Gdx.input.isKeyJustPressed(Keys.E) && controllable) {
 					pilotingShip = true;
 					setShip(boardingShip);
 					boardingShip = null;
 
+					onGround = false;
+
 					Universe.currentUniverse.playUISound("ingress");
 				}
 
-				x += dx * dt;
-				y += dy * dt;
+				position.add(velocity.x * dt, velocity.y * dt);
+				position.add(wx * dt, wy * dt);
 
-				x += wx * dt;
-				y += wy * dt;
-
-				bounds.setPosition(x - 10, y - 10);
+				bounds.setPosition(position.x - 10, position.y - 10);
 
 				// AIMING
 				ax = Gdx.input.getX();
@@ -230,36 +256,41 @@ public class Player implements Vitality {
 				if (weapon != null)
 					weapon.update(dt, a);
 
-                if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0) {
-					float gx = x + 30 * MathUtils.cos(a);
-					float gy = y + 30 * MathUtils.sin(a);
+				if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0 && controllable) {
+					float gx = position.x + 30 * MathUtils.cos(a);
+					float gy = position.y + 30 * MathUtils.sin(a);
 
-                    float gdx = 400 * MathUtils.cos(a) + dx;
-                    float gdy = 400 * MathUtils.sin(a) + dy;
+					float gdx = 400 * MathUtils.cos(a) + velocity.x;
+					float gdy = 400 * MathUtils.sin(a) + velocity.y;
 
-					new Grenade(gx, gy, gdx, gdy, 10, environment);
+					new Grenade(gx, gy, gdx, gdy, 10, environment, "grenade");
 
-                    grenadeCount--;
-                }
-            }
+					grenadeCount--;
+				}
+			}
 		}
+	}
+
+	private float getImpactThreshhold() {
+		return 1000;
+	}
+
+	public boolean isOnGround() {
+		return pilotingShip ? ship.isOnGround() : onGround;
 	}
 
 	public void draw(SpriteBatch batch) {
 		if (!pilotingShip) {
 			if (alive) {
-				// batch.draw(animation.getKeyFrame(0, true), x - 10, y - 10,
-				// 10,
-				// 10, 20, 20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
 				float m = sprinting ? 3 : 1;
 				if (righting)
-					batch.draw(animation.getKeyFrame(animTime * m, true), x - 10, y - 10, 10, 10, 20, 20, 1, 1,
+					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
 				else if (lefting)
-					batch.draw(animation.getKeyFrame(animTime * m, true), x - 10, y - 10, 10, 10, 20, 20, -1, 1,
+					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, -1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
 				else
-					batch.draw(idleTexture, x - 10, y - 10, 10, 10, 20, 20, 1, 1,
+					batch.draw(idleTexture, position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
 			}
 		}
@@ -267,23 +298,22 @@ public class Player implements Vitality {
 
 	public void debugDraw(ShapeRenderer sr) {
 		sr.setColor(Color.BLUE);
-		// sr.rect(x - 10, y - 10, 20, 20);
 	}
 
 	public float getX() {
-		return pilotingShip ? ship.getX() : (x + dx * Gdx.graphics.getDeltaTime());
+		return (pilotingShip && ship != null) ? ship.getX() : (position.x + velocity.x * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getY() {
-		return pilotingShip ? ship.getY() : (y + dy * Gdx.graphics.getDeltaTime());
+		return (pilotingShip && ship != null) ? ship.getY() : (position.y + velocity.y * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getFX() {
-		return pilotingShip ? ship.getX() : (x + dx * Gdx.graphics.getDeltaTime());
+		return (pilotingShip && ship != null) ? ship.getX() : (position.x + velocity.x * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getFY() {
-		return pilotingShip ? ship.getY() : (y + dy * Gdx.graphics.getDeltaTime());
+		return (pilotingShip && ship != null) ? ship.getY() : (position.y + velocity.y * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getDa() {
@@ -298,33 +328,39 @@ public class Player implements Vitality {
 		alive = false;
 		// weapon = null;
 		ship = null;
+		primarySigns.removeItem("shipfuel");
 		pilotingShip = false;
 	}
 
 	public float getAngle() {
-		return pilotingShip ? ship.getAngle() : (angle - MathUtils.PI / 2) % MathUtils.PI2;
+		return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2) % MathUtils.PI2;
 	}
 
 	public float getDX() {
-		return dx;
+		return velocity.x;
 	}
 
 	public float getDY() {
-		return dy;
+		return velocity.y;
 	}
 
 	public void spawn(float x, float y, Array<Planet> planets) {
-		this.x = x;
-		this.y = y;
+		position.set(x, y);
+		velocity.set(Vector2.Zero);
 		alive = true;
 
-        health = 200;
+		health = 200;
 
-        weapon.reset();
+		grenadeCount = 5;
 
-        for (Planet planet : planets) {
-            if (planet.inRange(x, y)) {
-                environment = planet;
+		weapon.reset();
+
+		primarySigns.addItem("ammo", weapon);
+		primarySigns.addItem("grenades", new GrenadeHolder());
+
+		for (Planet planet : planets) {
+			if (planet.inRange(x, y)) {
+				environment = planet;
 				return;
 			}
 		}
@@ -339,13 +375,14 @@ public class Player implements Vitality {
 		return boarding;
 	}
 
-	public void doDamage(float amount, DeathCause cause) {
+	public void doDamage(float amount, DamageCause cause) {
 		if (alive) {
 			health -= amount;
 
 			Universe.currentUniverse.playUISound("playerhit" + Tools.decide(1, 2, 3, 4, 5));
 
 			if (health < 0) {
+				System.out.println("Player is dead!");
 				health = 0;
 				alive = false;
 				Universe.currentUniverse.playerKilled(this, cause);
@@ -354,37 +391,86 @@ public class Player implements Vitality {
 	}
 
 	public void addSpeed(float dx2, float dy2) {
-		dx += dx2;
-		dy += dy2;
+		velocity.x += dx2;
+		velocity.y += dy2;
 	}
 
 	public float getVelocity() {
-		return Vector2.dst(0, 0, dx, dy);
+		return Vector2.dst(0, 0, velocity.x, velocity.y);
 	}
 
 	public void setEnvironment(Planet planet) {
 		environment = planet;
 	}
 
-    public boolean isAlive() {
-        return alive;
-    }
+	public String getEnvironmentID() {
+		return (environment != null) ? environment.getID() : "???";
+	}
 
-    class GrenadeHolder implements Vitality {
+	public boolean isAlive() {
+		return alive;
+	}
 
-        @Override
-        public float getValue() {
-            return grenadeCount;
-        }
+	class GrenadeHolder implements Vitality {
 
-        @Override
-        public float getMaxValue() {
-            return 5;
-        }
+		@Override
+		public int getColor() {
+			return 0xFFB626FF;
+		}
 
-        @Override
-        public VitalSigns.Type getType() {
-            return VitalSigns.Type.DISCRETE;
-        }
-    }
+		@Override
+		public float getValue() {
+			return grenadeCount;
+		}
+
+		@Override
+		public float getMaxValue() {
+			return 5;
+		}
+
+		@Override
+		public VitalSigns.Type getValueType() {
+			return VitalSigns.Type.DISCRETE;
+		}
+	}
+
+	@Override
+	public int getColor() {
+		return 0xD62F61FF;
+	}
+
+	@Override
+	public void collectCollectible(Collectable collectable) {
+		//	Yeah baby!
+	}
+
+	@Override
+	public boolean canCollect(Collectable collectable) {
+		return alive && health < 200;
+	}
+
+	@Override
+	public String getType() {
+		return "player";
+	}
+
+	public void replenishHealth() {
+		health = 200;
+	}
+	
+	public String getShipID() {
+		return pilotingShip ? ((Goalobject)ship).getID() : "???";
+	}
+
+	public void addSpeed(Vector2 added) {
+		velocity.add(added);
+	}
+	
+	public float getPerigee() {
+		return pilotingShip ? ship.getPerigee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[6];
+	}
+	
+	public float getApogee() {
+		return pilotingShip ? ship.getApogee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
+	}
 }
