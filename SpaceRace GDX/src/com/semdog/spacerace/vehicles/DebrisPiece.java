@@ -43,6 +43,10 @@ class DebrisPiece extends Mass {
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
+		
+		if(sprite == null)
+			return;
+		
 		sprite.setPosition(position.x, position.y);
 		sprite.rotate(rotationalSpeed * dt);
 	}

@@ -10,7 +10,7 @@ import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
 public class Bullet {
-	private float x, y, dx, dy, age, life = 5;
+	private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
 	
 	private int damage;
 
@@ -22,9 +22,10 @@ public class Bullet {
 		this.damage = damage;
 	}
 
-	public void updatePhysics(float dt, Array<Planet> planets) {
+	public void updatePhysics(float dt) {
 		x += dx * dt;
 		y += dy * dt;
+		age += dt;
 	}
 	
 	public void checkCollisions(Array<Planet> planets) {
@@ -46,7 +47,7 @@ public class Bullet {
 
 	public void draw(ShapeRenderer renderer) {
 		renderer.setColor(Color.WHITE);
-		renderer.line(x, y, x - dx * 0.001f, y - dy * 0.001f);
+		renderer.line(x, y, x - dx * 0.01f, y - dy * 0.01f);
 	}
 
 	public boolean alive() {

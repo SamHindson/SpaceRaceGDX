@@ -38,7 +38,7 @@ public class Squar extends Mass {
 	}
 
 	@Override
-	protected void die(DamageCause reason) {
+	public void die(DamageCause reason) {
 		age = 0;
 	}
 

@@ -132,6 +132,7 @@ public class Player implements Vitality, Collideable {
 	}
 
 	public void update(float dt, OrthographicCamera camera, boolean controllable, Array<Planet> planets) {
+		//getApogee();
 		if (alive) {
 			if (pilotingShip && controllable) {
 				ship.updateControls(dt);

@@ -11,12 +11,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.collectables.Collectable;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
@@ -28,7 +32,7 @@ import com.semdog.spacerace.ui.RaceEndScreen;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Bullet;
 
-public class Universe {
+public class Universe implements Disposable {
 	public static final float GRAVITY = 30f;
 	public static Universe currentUniverse;
 
@@ -71,11 +75,18 @@ public class Universe {
 	private float cameraShake = 0;
 
 	private boolean isLoading = true;
-	
+
 	@SuppressWarnings("unused")
 	private boolean suddenDeath;
 
 	private Overlay raceEnd;
+
+	private boolean shownEnd = false;
+
+	// TEST FEATURES
+	FrameBuffer frameBuffer;
+	SpriteBatch frameBufferBatch;
+	ShaderProgram shaderProgram;
 
 	public Universe() {
 		currentUniverse = this;
@@ -132,11 +143,22 @@ public class Universe {
 
 		raceEnd = new RaceEndScreen();
 		playerEnabled = false;
-		
+
 		collectables = new Array<>();
-		
+
 		collideables = new Array<>();
 		collideables.add(player);
+
+		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 2),
+				(int) (Gdx.graphics.getHeight() / 2), true);
+		frameBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		frameBufferBatch = new SpriteBatch();
+
+		shaderProgram = new ShaderProgram(Gdx.files.internal("assets/shaders/shader.vsh"),
+				Gdx.files.internal("assets/shaders/shader.fsh"));
+		System.out.println(shaderProgram.isCompiled() ? "Yeah!" : shaderProgram.getLog());
+		frameBufferBatch.setShader(shaderProgram);
+		ShaderProgram.pedantic = false;
 	}
 
 	public GoalChecker getGoalChecker() {
@@ -146,11 +168,11 @@ public class Universe {
 	public boolean isLoading() {
 		return isLoading;
 	}
-	
+
 	private Mass getMass(int i) {
 		try {
 			return masses.get(i);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			Gdx.app.error("Universe", "Mass is not good!");
 			return null;
 		}
@@ -158,7 +180,7 @@ public class Universe {
 
 	public void tick(float dt) {
 		age += dt;
-		
+
 		if (desiredZoom >= 5) {
 			desiredZoom = 5;
 		} else if (desiredZoom <= 0.25f) {
@@ -171,13 +193,14 @@ public class Universe {
 		camera.zoom += deltaZoom;
 
 		for (int i = 0; i < bullets.size; i++) {
-			bullets.get(i).checkCollisions(planets);
+			if (bullets.get(i) != null)
+				bullets.get(i).checkCollisions(planets);
 		}
 
 		for (int i = 0; i < masses.size; i++) {
 			getMass(i).checkCollisions(masses);
 
-			if (!player.isPilotingShip())
+			if (!player.isPilotingShip() && getMass(i) != null)
 				getMass(i).checkPlayerCollision(player);
 		}
 
@@ -195,8 +218,8 @@ public class Universe {
 		for (int i = 0; i < masses.size; i++) {
 			getMass(i).checkState();
 		}
-		
-		for(int i = 0; i < collectables.size; i++) {
+
+		for (int i = 0; i < collectables.size; i++) {
 			collectables.get(i).update(collideables, dt);
 		}
 
@@ -216,7 +239,7 @@ public class Universe {
 		float da = (desiredRot - cameraRot) / 10.f;
 		cameraRot += da;
 		camera.rotate(-da * MathUtils.radiansToDegrees);
-		
+
 		followingPlayer = true;
 
 		if (followingPlayer) {
@@ -267,20 +290,22 @@ public class Universe {
 
 		goalChecker.update(player);
 
-		if (goalChecker.isVictory()) {
+		if (goalChecker.isVictory() && !shownEnd) {
 			playerEnabled = false;
+			shownEnd = true;
 			raceEnd.setText("Victory!", "Race completed in ample time.");
 			raceEnd.setShowing(true);
+			playUISound("victory");
 			hud.hideAll();
 		}
 
 		raceEnd.update(dt);
-		
-		if(countingDown) {
+
+		if (countingDown) {
 			countdown -= dt * 5;
-			hud.setText("Get ready!", "[" + (int)countdown + "]");
-			
-			if(countdown <= 0) {
+			hud.setText("Get ready!", "[" + (int) countdown + "]");
+
+			if (countdown <= 0) {
 				countingDown = false;
 				playerEnabled = true;
 				hud.hideMessage();
@@ -289,10 +314,11 @@ public class Universe {
 			}
 		} else {
 			timeLeft -= dt;
-			hud.setCountdownValue((int)timeLeft);
-			
-			if(timeLeft <= 0) {
+			hud.setCountdownValue((int) timeLeft);
+
+			if (timeLeft <= 0 && !shownEnd) {
 				playerEnabled = false;
+				shownEnd = true;
 				raceEnd.setText("Failure!", "You're not a clever smart boy.");
 				raceEnd.setShowing(true);
 			}
@@ -304,8 +330,10 @@ public class Universe {
 			masses.get(i).update(dt, planets);
 		}
 
-		for (Bullet bullet : bullets) {
-			bullet.updatePhysics(dt, planets);
+		for (int i = 0; i < bullets.size; i++) {
+			if (bullets.get(i) != null) {
+				bullets.get(i).updatePhysics(dt);
+			}
 		}
 
 		player.update(dt, camera, playerEnabled, planets);
@@ -316,6 +344,7 @@ public class Universe {
 	}
 
 	public void render() {
+		frameBuffer.begin();
 		universeBatch.begin();
 
 		stars.draw(universeBatch);
@@ -329,8 +358,8 @@ public class Universe {
 		}
 
 		player.draw(universeBatch);
-		
-		for(int i = 0; i < collectables.size; i++) {
+
+		for (int i = 0; i < collectables.size; i++) {
 			collectables.get(i).draw(universeBatch);
 		}
 
@@ -343,9 +372,10 @@ public class Universe {
 		for (int i = 0; i < planets.size; i++) {
 			planets.get(i).draw(universeShapeRenderer);
 		}
-		for (int i = 0; i < masses.size; i++) {
-			getMass(i).debugRender(universeShapeRenderer);
-		}
+		/*
+		 * for (int i = 0; i < masses.size; i++) {
+		 * getMass(i).debugRender(universeShapeRenderer); }
+		 */
 		planets.get(0).draw(universeShapeRenderer);
 		player.debugDraw(universeShapeRenderer);
 		universeShapeRenderer.end();
@@ -356,6 +386,12 @@ public class Universe {
 		}
 		raceEnd.draw(hudBatch);
 		hudBatch.end();
+		frameBuffer.end();
+
+		frameBufferBatch.begin();
+		frameBufferBatch.draw(frameBuffer.getColorBufferTexture(), 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(),
+				-Gdx.graphics.getHeight());
+		frameBufferBatch.end();
 	}
 
 	public void finalizeState() {
@@ -449,7 +485,7 @@ public class Universe {
 	}
 
 	public void playUISound(String name) {
-		soundManager.playSound(name, 0.3f, 0);
+		soundManager.playSound(name, 3f, 0);
 	}
 
 	public void loopSound(String name, float x, float y, float volume) {
@@ -469,7 +505,7 @@ public class Universe {
 		float d = Vector2.dst(x, y, player.getX(), player.getY());
 
 		if (d < 500) {
-			float v = -0.002f * d + 1;
+			float v = 3f / (d + 3);
 
 			float u = x - player.getX();
 			float pan = (float) Math.atan(u);
@@ -484,12 +520,12 @@ public class Universe {
 
 	public void createPlanet(String id, float x, float y, float radius) {
 		planets.add(new Planet(id, x, y, radius));
-		
-		for(Collectable collectable : collectables) {
+
+		for (Collectable collectable : collectables) {
 			collectable.reposition(planets);
 		}
 	}
-	
+
 	public float getAge() {
 		return age;
 	}
@@ -570,6 +606,8 @@ public class Universe {
 
 			load("neet.wav");
 
+			load("victory.wav");
+
 			looping = new HashMap<>();
 		}
 
@@ -624,5 +662,18 @@ public class Universe {
 	public void addCollectable(Collectable collectable) {
 		collectable.reposition(planets);
 		collectables.add(collectable);
+	}
+
+	@Override
+	public void dispose() {
+		planets.clear();
+		masses.clear();
+		bullets.clear();
+		collectables.clear();
+		collideables.clear();
+		hud.dispose();
+		universeBatch.dispose();
+		hudBatch.dispose();
+		universeShapeRenderer.dispose();
 	}
 }

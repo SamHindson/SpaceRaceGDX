@@ -12,6 +12,7 @@ import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.players.Vitality;
+import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
@@ -79,7 +80,7 @@ public abstract class Ship extends Mass implements Vitality {
 		if (pilot == null) {
 			beepTime += dt;
 
-			if (beepTime > 0.5f) {
+			if (beepTime > 7.7f) {
 				beepTime = 0;
 				Universe.currentUniverse.playSound("beep", position.x, position.y, 0.5f);
 			}
@@ -127,7 +128,7 @@ public abstract class Ship extends Mass implements Vitality {
 		return height;
 	}
 
-	protected void die(DamageCause reason) {
+	public void die(DamageCause reason) {
 		super.die(reason);
 		explode(reason);
 	}
@@ -191,6 +192,16 @@ public abstract class Ship extends Mass implements Vitality {
 	@Override
 	public String getID() {
 		return id;
+	}
+	
+	@Override
+	protected void handleMassCollision(Mass mass) {
+		super.handleMassCollision(mass);
+		
+		if(mass instanceof Grenade) {
+			System.out.println("Collided with grenade!");
+			((Grenade)mass).explode();
+		}
 	}
 }
 

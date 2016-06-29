@@ -9,6 +9,14 @@
 			"y": 0
 		}
 	],
+	"planet-1": [
+		{
+			"id": "bruh",
+			"radius": 500,
+			"x": 5000,
+			"y": 0
+		}
+	],
 	"healthpack": [
 		{
 			"orbiter": false,
@@ -45,7 +53,8 @@
 	"playercriteria": [
 		{
 			"boolean-isAlive": true,
-			"string-getShipID": "bruh"
+			"string-getEnvironmentID": "bruh",
+			"boolean-isOnGround": true
 		}
 	],
 	"mission": [

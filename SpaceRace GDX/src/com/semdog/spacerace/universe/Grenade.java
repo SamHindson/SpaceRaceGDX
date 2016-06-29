@@ -68,7 +68,8 @@ public class Grenade extends Mass {
 	}
 	
 	@Override
-	protected void handleMassCollision() {
+	protected void handleMassCollision(Mass mass) {
+		Gdx.app.log("Grenade", "Hit a mass!");
 		explode();
 	}
 
@@ -109,9 +110,10 @@ public class Grenade extends Mass {
 		}
 	}
 
-	private void explode() {
+	public void explode() {
 		exploded = true;
         Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+        die(DamageCause.EXPLOSION);
     }
 
 	@Override
@@ -132,5 +134,10 @@ public class Grenade extends Mass {
 	@Override
 	public String getID() {
 		return "grenade";
+	}
+	
+	@Override
+	public void die(DamageCause reason) {
+		super.die(reason);
 	}
 }

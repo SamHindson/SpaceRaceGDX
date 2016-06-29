@@ -24,7 +24,7 @@ public class SmallBombarder extends Ship {
 		particleEffect.setPosition(x, y);
 		particleEffect.allowCompletion();
 
-		pCooldown = 0.02f;
+		pCooldown = 0.025f;
 
 		setMaxHealth(100);
 	}
@@ -93,12 +93,11 @@ public class SmallBombarder extends Ship {
 
 	@Override
 	public void firePrimary() {
-		for (float i = -2; i <= 2; i++) {
-			Universe.currentUniverse
-					.addBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f),
-							position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x, velocity.y,
-							r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 1));
-		}
+		float i = MathUtils.random(-2f, 2f);
+		Universe.currentUniverse
+				.addBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f),
+						position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x,
+						velocity.y, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 5));
 	}
 
 	@Override
@@ -109,13 +108,13 @@ public class SmallBombarder extends Ship {
 	@Override
 	public int getColor() {
 		return 0x3FDD4DFF;
-	} 
-	
+	}
+
 	@Override
 	public void setDy(float dy) {
 		super.setDy(dy);
 	}
-	
+
 	@Override
 	public void setDx(float dx) {
 		super.setDx(dx);

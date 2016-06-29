@@ -181,7 +181,7 @@ public abstract class Mass implements Goalobject {
 		return alive;
 	}
 
-	protected void die(DamageCause reason) {
+	public void die(DamageCause reason) {
 		alive = false;
 	}
 
@@ -228,7 +228,7 @@ public abstract class Mass implements Goalobject {
 					float r = (getRadius(a1) + m.getRadius(a2));
 					float i = (d - r) / 2.f;
 
-					handleMassCollision();
+					handleMassCollision(m);
 
 					if (v > getImpactThreshold()) {
 						die(DamageCause.DEBRIS);
@@ -249,7 +249,7 @@ public abstract class Mass implements Goalobject {
 		}
 	}
 
-	protected void handleMassCollision() {
+	protected void handleMassCollision(Mass mass) {
 
 	}
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.universe.Universe;
@@ -18,7 +19,7 @@ import com.semdog.spacerace.universe.Universe;
  * information, such as if they are busy bleeding out
  */
 
-public class HUD {
+public class HUD implements Disposable {
 	private Player owner;
 	private String title, subtitle;
 	private boolean showingMessage = false;
@@ -49,6 +50,8 @@ public class HUD {
 		parameter.size = 45;
 		countdownFont = generator.generateFont(parameter);
 		generator.dispose();
+		
+		title = subtitle = "";
 	}
 
 	public void update(float dt) {
@@ -149,13 +152,7 @@ public class HUD {
 			respawnCounter = 6;
 		}
 
-		setText(getDeathDesc(), reason.getDetails());
-	}
-
-	private String getDeathDesc() {
-		String[] descs = { "You're dead now", "You're dead.", "You've been murdered", "You got got", "Rekt.", "RIP",
-				"GG", "Press F to Pay Respects." };
-		return (String) Tools.decide(descs);
+		setText(LifeAndDeath.getRandomCondolence(), reason.getDetails());
 	}
 
 	public void displayMessage() {
@@ -195,5 +192,11 @@ public class HUD {
 	
 	public void showTimer() {
 		showingTimer = true;
+	}
+
+	@Override
+	public void dispose() {
+		titleFont.dispose();
+		subtitleFont.dispose();
 	}
 }
