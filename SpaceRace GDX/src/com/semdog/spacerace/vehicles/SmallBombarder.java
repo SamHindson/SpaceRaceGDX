@@ -34,7 +34,7 @@ public class SmallBombarder extends Ship {
 		
 		currentAmmo = maxAmmo;
 
-		setMaxHealth(100);
+		setMaxHealth(500);
 		
 		vitalSigns.addItems(new Vitality() {
 			
@@ -134,7 +134,7 @@ public class SmallBombarder extends Ship {
 		Universe.currentUniverse
 				.addBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f),
 						position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x,
-						velocity.y, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 5));
+						velocity.y, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 5, 0));
 		Universe.currentUniverse.playSound("runtgun", position.x, position.y, 0.5f);
 	}
 

@@ -29,7 +29,7 @@ import com.semdog.spacerace.universe.Universe;
 public abstract class Ship extends Mass {
 
 	protected Player pilot;
-	protected Sprite sprite;
+	protected Sprite sprite, silhouette;
 	protected float totalFuel, currentFuel;
 	protected float r, width, height;
 	protected float power;
@@ -65,6 +65,7 @@ public abstract class Ship extends Mass {
 		this.power = power;
 
 		sprite = new Sprite(Art.get(textureName));
+		silhouette = new Sprite(Art.get(textureName + "_sil"));
 		sprite.setOriginCenter();
 		width = sprite.getWidth();
 		height = sprite.getHeight();
@@ -183,6 +184,11 @@ public abstract class Ship extends Mass {
 				Universe.currentUniverse.playSound("beep", position.x, position.y, 0.5f);
 			}
 		}
+		
+		if(ouchTime > 0) {
+			silhouette.setRotation(r);
+			silhouette.setPosition(position.x - width / 2, position.y - height / 2);
+		}
 	}
 
 	protected float getCurrentPower() {
@@ -210,6 +216,11 @@ public abstract class Ship extends Mass {
 		//	sprite.setColor(MathUtils.random());
 		
 		sprite.draw(batch);
+		
+		if(ouchTime > 0) {
+			silhouette.setAlpha(MathUtils.random(0.5f, 1));
+			silhouette.draw(batch);
+		}
 
 		//if (boostActive)
 		//	sprite.setColor(Color.WHITE);

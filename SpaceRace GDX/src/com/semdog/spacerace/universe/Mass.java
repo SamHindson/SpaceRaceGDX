@@ -16,6 +16,7 @@ import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.vehicles.DebrisPiece;
 import com.semdog.spacerace.vehicles.Ship;
+import com.semdog.spacerace.weapons.Bullet;
 
 public abstract class Mass implements Goalobject {
 	protected static Texture texture;
@@ -32,6 +33,8 @@ public abstract class Mass implements Goalobject {
 	protected boolean shouldCollide;
 	protected Rectangle bounds;
 	protected float currentHealth, maxHealth;
+	
+	protected float ouchTime;
 
 	protected boolean loaded = false;
 
@@ -78,6 +81,7 @@ public abstract class Mass implements Goalobject {
 	}
 
 	public void doDamage(float amount, DamageCause reason) {
+		ouchTime = 1;
 		Universe.currentUniverse.playSound("shiphurt", position.x, position.y, 1.f);
 		if (currentHealth <= amount) {
 			currentHealth = 0;
@@ -96,8 +100,8 @@ public abstract class Mass implements Goalobject {
 		for (int i = 0; i < gravitySources.size; i++) {
 			Planet planet = gravitySources.get(i);
 			if (inRange(planet) && !onGround) {
-				
-				if(planet != environment)
+
+				if (planet != environment)
 					setEnvironment(planet);
 
 				float force = (float) (Universe.GRAVITY * planet.getMass() / Math.pow(distance(planet), 2));
@@ -113,10 +117,15 @@ public abstract class Mass implements Goalobject {
 		position.y += velocity.y * dt;
 
 		bounds.setPosition(position.x - getWidth() / 2, position.y - getHeight() / 2);
+		
+		if(ouchTime > 0) {
+			ouchTime -= dt * 5f;
+		} else {
+			ouchTime = 0;
+		}
 	}
 
 	protected void setEnvironment(Planet planet) {
-		System.out.println("Yae");
 		environment = planet;
 	}
 
@@ -216,26 +225,25 @@ public abstract class Mass implements Goalobject {
 
 	public void debugRender(ShapeRenderer renderer) {
 		renderer.setColor(getOrbitColor(this));
-		//renderer.set(ShapeType.Line);
 		renderer.rect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-		
+
 		float semiminor = getSemiminor();
 		float semimajor = getSemimajor();
 		float f = (float) Math.sqrt(semimajor * semimajor - semiminor * semiminor);
 
-		//Gdx.gl20.glLineWidth(3);
+		// Gdx.gl20.glLineWidth(3);
 		renderer.identity();
 		renderer.translate(environment.getPosition().x, environment.getPosition().y, 0);
 		renderer.rotate(0, 0, 1, getOrbitAngle() * MathUtils.radiansToDegrees + 90);
 		renderer.ellipse((-semiminor), (-semimajor - f), semiminor * 2, semimajor * 2);
 		renderer.identity();
-		renderer.setColor(Color.WHITE);		
-		//Gdx.gl20.glLineWidth(1);
+		renderer.setColor(Color.WHITE);
+		// Gdx.gl20.glLineWidth(1);
 	}
-	
+
 	protected void findEnvironment() {
-		for(Planet planet : Universe.currentUniverse.getPlanets()) {
-			if(planet.inRange(position.x, position.y)) {
+		for (Planet planet : Universe.currentUniverse.getPlanets()) {
+			if (planet.inRange(position.x, position.y)) {
 				environment = planet;
 				return;
 			}
@@ -281,7 +289,7 @@ public abstract class Mass implements Goalobject {
 	}
 
 	protected void handleMassCollision(Mass mass) {
-		
+
 	}
 
 	public float getRadius(float angle) {
@@ -326,48 +334,65 @@ public abstract class Mass implements Goalobject {
 		return OrbitalHelper.computeOrbit(environment.getPosition(), getPosition(), getVelocity(),
 				environment.getMass())[5];
 	}
-	
+
 	public float getSemiminor() {
 		return OrbitalHelper.computeOrbit(environment.getPosition(), getPosition(), getVelocity(),
 				environment.getMass())[4];
 	}
-	
+
 	public float getSemimajor() {
 		return OrbitalHelper.computeOrbit(environment.getPosition(), getPosition(), getVelocity(),
 				environment.getMass())[3];
 	}
-	
+
 	public float getTrueAnomaly() {
 		return OrbitalHelper.computeOrbit(environment.getPosition(), getPosition(), getVelocity(),
 				environment.getMass())[7];
 	}
 
 	private float getOrbitAngle() {
-		return getTrueAnomaly() - MathUtils.PI + MathUtils.atan2(position.y - environment.getPosition().y, position.x - environment.getPosition().x);
+		return getTrueAnomaly() - MathUtils.PI
+				+ MathUtils.atan2(position.y - environment.getPosition().y, position.x - environment.getPosition().x);
 	}
-	
-	protected static Color[] orbitColors = {
-		Color.WHITE,
-		Color.LIGHT_GRAY,
-		Color.GRAY,
-		Color.DARK_GRAY,
-	};
-	
+
+	protected static Color[] orbitColors = { Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY, };
+
 	protected static Color getOrbitColor(Mass mass) {
 		Color color = Color.GRAY;
-		
-		if(mass instanceof Ship) {
-			if(((Ship)mass).hasPilot()) {
+
+		if (mass instanceof Ship) {
+			if (((Ship) mass).hasPilot()) {
 				return Color.WHITE;
 			} else {
 				return Color.GRAY;
 			}
-		} else if(mass instanceof Grenade) {
+		} else if (mass instanceof Grenade) {
 			return Color.LIGHT_GRAY;
-		} else if(mass instanceof DebrisPiece) {
+		} else if (mass instanceof DebrisPiece) {
 			return Color.DARK_GRAY;
 		}
-		
+
 		return color;
+	}
+
+	public boolean contians(Bullet bullet) {
+		float accuracy = 5;
+
+		float ox = bullet.getX();
+		float oy = bullet.getY();
+
+		float fx = bullet.getX() + (bullet.getDx() * 0.01f);
+		float fy = bullet.getY() + (bullet.getDy() * 0.01f);
+
+		for (float i = 0; i <= accuracy; i++) {
+			float px = MathUtils.lerp(ox, fx, i/accuracy);
+			float py = MathUtils.lerp(oy, fy, i/accuracy);
+
+			if (bounds.contains(px, py)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

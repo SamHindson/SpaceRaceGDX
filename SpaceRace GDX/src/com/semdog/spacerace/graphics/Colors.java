@@ -3,6 +3,11 @@ package com.semdog.spacerace.graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.semdog.spacerace.misc.Tools;
 
+/**
+ * TODO phase this out
+ * @author Sam
+ */
+
 public class Colors {
 	public static final Color P_RED = new Color(0xd32f2fff);
 	public static final Color P_ORANGE = new Color(0xE64A19ff);
@@ -20,6 +25,7 @@ public class Colors {
 	public static final Color V_PLAYERHEALTH = new Color(0xD62F61FF);
 	public static final Color V_SMGAMMO = new Color(0x8075FFFF);
 	public static final Color V_CARBINEAMMO = new Color(0x0DBEB2FF);
+	public static final Color V_SHOTGUNAMMO = new Color(0xFAFAFAFF);
 	public static final Color V_PLAYERGRENADES = new Color(0xFFB626FF);
 	public static final Color V_BOOST = new Color(0x46B1C9FF);
 	

@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.collectables.Collectable;
+import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.DamageCause;
@@ -66,6 +67,8 @@ public class Universe implements Disposable {
 
 	private float cameraX, cameraY, desiredCX, desiredCY;
 	private boolean followingPlayer = true, lockedRotation = true;
+	
+	private float injuryAlpha;
 
 	@SuppressWarnings("unused")
 	private float zoom;
@@ -218,7 +221,8 @@ public class Universe implements Disposable {
 			Mass mass = getMass(i);
 			for (int j = 0; j < bullets.size; j++) {
 				Bullet bullet = bullets.get(j);
-				if (mass.getBounds().contains(bullet.getX(), bullet.getY())) {
+				if (mass.contians(bullet)) {
+					System.out.println("OPCH");
 					mass.doDamage(bullet.getDamage(), DamageCause.BULLET);
 					bullet.die();
 				}
@@ -312,7 +316,7 @@ public class Universe implements Disposable {
 		raceEnd.update(dt);
 
 		if (countingDown) {
-			countdown -= dt * 50;
+			countdown -= dt * 5000;
 			hud.setText("Get ready!", "[" + (int) countdown + "]");
 
 			if (countdown <= 0) {
@@ -332,6 +336,13 @@ public class Universe implements Disposable {
 				raceEnd.setText("Failure!", "You're not a clever smart boy.");
 				raceEnd.setShowing(true);
 			}
+		}
+		
+		if(injuryAlpha > 0) {
+			injuryAlpha *= 0.5f;
+			
+			if(injuryAlpha < 0.05f)
+				injuryAlpha = 0;
 		}
 	}
 
@@ -397,6 +408,11 @@ public class Universe implements Disposable {
 			hud.draw(hudBatch);
 		}
 		raceEnd.draw(hudBatch);
+		
+		hudBatch.setColor(1f, 1f, 1f, injuryAlpha);
+		hudBatch.draw(Art.get("pixel_white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		hudBatch.setColor(Color.WHITE);
+		
 		hudBatch.end();
 		frameBuffer.end();
 
@@ -462,7 +478,7 @@ public class Universe implements Disposable {
 					((Explosion) effect).getY());
 			if (distance < 300) {
 				float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-				player.doDamage(damage, DamageCause.EXPLOSION);
+				playerHurt(player, damage, DamageCause.EXPLOSION);
 				cameraShake = 5 / (0.01f * distance + 1);
 			}
 		}
@@ -529,6 +545,7 @@ public class Universe implements Disposable {
 	}
 
 	public void playerHurt(Player player, float amount, DamageCause cause) {
+		injuryAlpha = amount / 200.f;
 		player.doDamage(amount, cause);
 	}
 

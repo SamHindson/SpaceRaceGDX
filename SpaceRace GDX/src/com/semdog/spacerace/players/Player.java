@@ -25,7 +25,7 @@ import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.vehicles.Ship;
-import com.semdog.spacerace.weapons.Carbine;
+import com.semdog.spacerace.weapons.SMG;
 import com.semdog.spacerace.weapons.Weapon;
 
 public class Player implements Collideable {
@@ -81,7 +81,7 @@ public class Player implements Collideable {
 
 		bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
-		weapon = new Carbine();
+		weapon = new SMG();
 		weapon.pickup(this);
 
 		grenadeCount = 5;
@@ -332,8 +332,6 @@ public class Player implements Collideable {
 				}
 			}
 		}
-		
-		Gdx.app.log("Player", getVelocity() + "");
 	}
 
 	private float getImpactThreshhold() {

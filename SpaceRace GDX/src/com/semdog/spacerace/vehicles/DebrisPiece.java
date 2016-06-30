@@ -25,7 +25,7 @@ public class DebrisPiece extends Mass {
 	private int bounces;
 
 	DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
-		super(x, y, dx + MathUtils.random(50) - 25, dy + MathUtils.random(50) - 25, 10,
+		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 10,
 				MathUtils.random(ship.getWidth() / 2), MathUtils.random(ship.getHeight() / 2), environment, "debris");
 
 		int w = (int) getWidth();
@@ -78,8 +78,9 @@ public class DebrisPiece extends Mass {
 	}
 
 	@Override
-	public void checkCollisions(Array<Mass> masses) {
-
+	protected void handleMassCollision(Mass mass) {
+		if(!(mass instanceof DebrisPiece))
+			super.handleMassCollision(mass);
 	}
 
 	/***

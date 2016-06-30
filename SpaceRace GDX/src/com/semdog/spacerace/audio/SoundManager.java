@@ -26,6 +26,7 @@ public class SoundManager {
 		load("runt.wav");
 		load("carbine.wav");
 		load("smg.wav");
+		load("shotgun.wav");
 
 		load("runtgun.wav");
 		load("playerhit1.wav");

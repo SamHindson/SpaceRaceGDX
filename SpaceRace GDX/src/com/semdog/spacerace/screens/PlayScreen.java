@@ -25,9 +25,11 @@ public class PlayScreen extends RaceScreen {
 
 	@Override
 	public void update(float dt) {
+		float t = 1;
+		
 		if (!universe.isLoading()) {
-			universe.tick(dt);
-			universe.tickPhysics(dt);
+			universe.tick(t * dt);
+			universe.tickPhysics(t * dt);
 			universe.finalizeState();
 		}
 		

@@ -3,6 +3,7 @@ package com.semdog.spacerace.weapons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.effects.DustPuff;
@@ -11,15 +12,16 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Bullet {
 	private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
-
+	
 	private int damage;
 
-	public Bullet(float x, float y, float dx, float dy, float angle, int damage) {
+	public Bullet(float x, float y, float dx, float dy, float angle, int damage, float inaccuracy) {
 		this.x = x;
 		this.y = y;
-		this.dx = 1000 * MathUtils.cos(angle) + dx;
-		this.dy = 1000 * MathUtils.sin(angle) + dy;
+		this.dx = 3500 * MathUtils.cos(angle + inaccuracy) + dx;
+		this.dy = 3500 * MathUtils.sin(angle + inaccuracy) + dy;
 		this.damage = damage;
+		
 	}
 
 	public void updatePhysics(float dt) {
@@ -46,7 +48,11 @@ public class Bullet {
 
 	public void draw(ShapeRenderer renderer) {
 		renderer.setColor(Color.WHITE);
-		renderer.line(x, y, x - dx * 0.01f, y - dy * 0.01f);
+		renderer.line(x, y, x + dx * 0.005f, y + dy * 0.005f);
+		//renderer.point(x, y, 0);
+		//renderer.point(x + dx * 0.01f, y + dy * 0.01f, 0);
+		//System.out.println(x + ", " + y);
+		//System.out.println(dx + ", " + dy);
 	}
 
 	public boolean alive() {
@@ -59,6 +65,14 @@ public class Bullet {
 
 	public float getY() {
 		return y;
+	}
+	
+	public float getDx() {
+		return dx;
+	}
+	
+	public float getDy() {
+		return dy;
 	}
 
 	public int getDamage() {

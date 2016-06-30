@@ -9,22 +9,25 @@ import com.semdog.spacerace.players.Vitality;
 import com.semdog.spacerace.universe.Universe;
 
 public abstract class Weapon implements Vitality {
-    protected String name;
+    protected String name, fireSound;
     protected boolean automatic;
 	protected float fireDelay, currentWait;
 	protected int damage;
 	protected Player owner;
 	protected float aimAngle;
     protected int clipSize, ammoleft;
+    protected float inacurracy;
     private boolean justFired = false;
 
-	public Weapon(String name, int clipSize, boolean automatic, float fireDelay, int damage, String fireSound) {
+	public Weapon(String name, int clipSize, boolean automatic, float fireDelay, int damage, String fireSound, float inaccuracy) {
 		this.name = name;
 		this.clipSize = clipSize;
 		this.ammoleft = clipSize;
 		this.automatic = automatic;
 		this.fireDelay = fireDelay;
 		this.damage = damage;
+		this.inacurracy = inaccuracy;
+		this.fireSound = fireSound;
 	}
 
     @Override
@@ -58,9 +61,10 @@ public abstract class Weapon implements Vitality {
                 }
             } else {
                 if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-                    if (!justFired && ammoleft > 0) {
+                    if (!justFired && ammoleft > 0 && currentWait > fireDelay) {
                         justFired = true;
                         fire();
+                        currentWait = 0;
                     }
                 } else {
                     justFired = false;
@@ -74,10 +78,11 @@ public abstract class Weapon implements Vitality {
     }
 
 	protected void fire() {
-		float inaccuracy = MathUtils.random(-0.3f, 0.3f);
-		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle + inaccuracy);
-		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle + inaccuracy);
-		Universe.currentUniverse.addBullet(new Bullet(ax, ay, owner.getDX(), owner.getDY(), aimAngle, damage));
+        Universe.currentUniverse.playSound(fireSound, owner.getX(), owner.getY(), 0.3f);
+		float inaccuracy = MathUtils.random(-inacurracy, inacurracy);
+		float ax = owner.getX() + 10 * MathUtils.cos(aimAngle);
+		float ay = owner.getY() + 10 * MathUtils.sin(aimAngle);
+		Universe.currentUniverse.addBullet(new Bullet(ax, ay, owner.getDX(), owner.getDY(), aimAngle, damage, inaccuracy));
 		ammoleft--;
 	}
 	
