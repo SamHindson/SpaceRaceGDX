@@ -3,18 +3,24 @@ package com.semdog.spacerace.vehicles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.players.DamageCause;
+import com.semdog.spacerace.players.Vitality;
+import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.weapons.Bullet;
 
 public class SmallBombarder extends Ship {
 	private ParticleEffect particleEffect;
+	
+	private int maxAmmo = 128, currentAmmo;
 
 	public SmallBombarder(float x, float y, String id) {
 		super(x, y, 32, 32, 10000, 400, "runt", id);
@@ -25,8 +31,38 @@ public class SmallBombarder extends Ship {
 		particleEffect.allowCompletion();
 
 		pCooldown = 0.025f;
+		
+		currentAmmo = maxAmmo;
 
 		setMaxHealth(100);
+		
+		vitalSigns.addItems(new Vitality() {
+			
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+			
+			@Override
+			public float getValue() {
+				return currentAmmo;
+			}
+			
+			@Override
+			public float getMaxValue() {
+				return maxAmmo;
+			}
+			
+			@Override
+			public String getID() {
+				return "bombarderammo";
+			}
+			
+			@Override
+			public Color getColor() {
+				return Colors.V_SHIPAMMO;
+			}
+		});
 	}
 
 	@Override
@@ -62,7 +98,8 @@ public class SmallBombarder extends Ship {
 		sRest += dt;
 
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			if (pRest > pCooldown) {
+			if (pRest > pCooldown && currentAmmo > 0) {
+				currentAmmo--;
 				firePrimary();
 				pRest = 0;
 			}
@@ -98,16 +135,12 @@ public class SmallBombarder extends Ship {
 				.addBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f),
 						position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x,
 						velocity.y, r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 5));
+		Universe.currentUniverse.playSound("runtgun", position.x, position.y, 0.5f);
 	}
 
 	@Override
 	public void fireSecondary() {
 
-	}
-
-	@Override
-	public int getColor() {
-		return 0x3FDD4DFF;
 	}
 
 	@Override
@@ -118,5 +151,10 @@ public class SmallBombarder extends Ship {
 	@Override
 	public void setDx(float dx) {
 		super.setDx(dx);
+	}
+	
+	@Override
+	public void orbit(float direction) {
+		super.orbit(direction);
 	}
 }

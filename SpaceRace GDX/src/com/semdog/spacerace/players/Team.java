@@ -10,7 +10,7 @@ import com.semdog.spacerace.graphics.Colors;
  */
 
 public enum Team {
-    PINK(Colors.PLANETPINK), BLUE(Colors.PLANETBLUE);
+    PINK(Colors.P_PINK), BLUE(Colors.P_BLUE);
 
     Color teamColor;
 

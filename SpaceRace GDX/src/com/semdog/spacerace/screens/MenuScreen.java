@@ -28,27 +28,27 @@ public class MenuScreen extends RaceScreen {
 		button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 50, () -> {
 			game.changeScreen("playmenu");
 		});
-		button1.setColors(Colors.PLANETYELLOW, Color.BLUE);
+		button1.setColors(Colors.P_YELLOW, Color.BLUE);
 		
 		button2 = new Button("Multiplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.48f, 200, 50, () -> {
 			System.out.println("Dogs!");
 		});
-		button2.setColors(Colors.PLANETBLUE, Color.YELLOW);
+		button2.setColors(Colors.P_BLUE, Color.YELLOW);
 		
 		button3 = new Button("Settings", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.41f, 200, 50, () -> {
 			game.changeScreen("settings");
 		});
-		button3.setColors(Colors.PLANETORANGE, Color.GREEN);
+		button3.setColors(Colors.P_ORANGE, Color.GREEN);
 		
 		button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.34f, 200, 50, () -> {
 			System.out.println("Halp");
 		});
-		button4.setColors(Colors.PLANETPINK, Color.WHITE);
+		button4.setColors(Colors.P_PINK, Color.WHITE);
 		
 		button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.27f, 200, 50, () -> {
 			Gdx.app.exit();
 		});
-		button5.setColors(Colors.PLANETGREEN, Color.DARK_GRAY);
+		button5.setColors(Colors.P_GREEN, Color.DARK_GRAY);
 		
 		secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {
 			Gdx.app.exit();

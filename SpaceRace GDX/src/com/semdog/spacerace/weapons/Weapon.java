@@ -80,4 +80,17 @@ public abstract class Weapon implements Vitality {
 		Universe.currentUniverse.addBullet(new Bullet(ax, ay, owner.getDX(), owner.getDY(), aimAngle, damage));
 		ammoleft--;
 	}
+	
+	public int getAmmoLeft() {
+		return ammoleft;
+	}
+
+	public float getMaxAmmo() {
+		return clipSize;
+	}
+	
+	@Override
+	public String getID() {
+		return "ammo";
+	}
 }

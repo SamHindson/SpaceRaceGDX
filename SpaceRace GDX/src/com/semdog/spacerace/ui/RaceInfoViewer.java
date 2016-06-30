@@ -43,7 +43,7 @@ public class RaceInfoViewer {
 		
 		block = Art.get("pixel_white");
 		
-		borderColor = Colors.PLANETBLUE;
+		borderColor = Colors.P_BLUE;
 	}
 	
 	public void draw(SpriteBatch batch) {

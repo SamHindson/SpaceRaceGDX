@@ -10,23 +10,25 @@ import com.semdog.spacerace.universe.UniverseLoader;
 public class PlayScreen extends RaceScreen {
 
 	private Universe universe;
-	private Thread physicsThread;
-	private PhysicsRunnable runnable;
+	//private Thread physicsThread;
+	//private PhysicsRunnable runnable;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
 
 		universe = new Universe();
 		new UniverseLoader().load(universe);
-		runnable = new PhysicsRunnable();
-		physicsThread = new Thread(runnable, "SpaceRace! Physics Thread");
-		physicsThread.start();
+		//runnable = new PhysicsRunnable();
+		//physicsThread = new Thread(runnable, "SpaceRace! Physics Thread");
+		//physicsThread.start();
 	}
 
 	@Override
 	public void update(float dt) {
 		if (!universe.isLoading()) {
 			universe.tick(dt);
+			universe.tickPhysics(dt);
+			universe.finalizeState();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE))
@@ -43,7 +45,7 @@ public class PlayScreen extends RaceScreen {
 
 	@Override
 	public void dispose() {
-		runnable.stop();
+		//runnable.stop();
 		universe.dispose();
 		System.out.println("Done disposiong");
 	}
@@ -55,11 +57,18 @@ public class PlayScreen extends RaceScreen {
 		@Override
 		public void run() {
 			running = true;
+			
+			long lastTime = System.currentTimeMillis();
+			long thisTime = System.currentTimeMillis();
+			float dt = 0;
 
 			while (running) {
 				if (!universe.isLoading()) {
-					universe.tickPhysics(0.016f);
+					thisTime = System.currentTimeMillis();
+					dt = (thisTime - lastTime) / 1000.f;
+					universe.tickPhysics(dt);
 					universe.finalizeState();
+					lastTime = thisTime;
 
 					try {
 						Thread.sleep(16);

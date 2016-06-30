@@ -31,14 +31,14 @@ public class TitleCard implements Disposable {
 	
 	public void draw(SpriteBatch batch) {
 		if(size == 0) {
-			titleFont.setColor(Colors.PLANETRED);
+			titleFont.setColor(Colors.P_RED);
 			titleFont.draw(batch, "Space", x, y);
-			titleFont.setColor(Colors.PLANETYELLOW);
+			titleFont.setColor(Colors.P_YELLOW);
 			titleFont.draw(batch, "Race!", x + 54, y - 40);
 		} else {
-			titleFont.setColor(Colors.PLANETRED);
+			titleFont.setColor(Colors.P_RED);
 			titleFont.draw(batch, "Space", x - 200, y + 50);
-			titleFont.setColor(Colors.PLANETYELLOW);
+			titleFont.setColor(Colors.P_YELLOW);
 			titleFont.draw(batch, "Race!", x - 92, y - 30);
 		}
 	}

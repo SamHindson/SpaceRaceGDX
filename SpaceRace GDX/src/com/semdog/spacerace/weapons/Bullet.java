@@ -11,7 +11,7 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Bullet {
 	private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
-	
+
 	private int damage;
 
 	public Bullet(float x, float y, float dx, float dy, float angle, int damage) {
@@ -27,22 +27,21 @@ public class Bullet {
 		y += dy * dt;
 		age += dt;
 	}
-	
+
 	public void checkCollisions(Array<Planet> planets) {
-		for(Planet planet : planets) {
+		for (Planet planet : planets) {
 			float d = Vector2.dst(planet.getX(), planet.getY(), x, y);
 			float a = MathUtils.atan2(y - planet.getY(), x - planet.getX());
-						
-			if(d < planet.getRadius()) {
+
+			if (d < planet.getRadius()) {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
 				float py = planet.getY() + MathUtils.sin(a) * planet.getRadius();
-				if(MathUtils.randomBoolean(0.1f))
+				if (MathUtils.randomBoolean(0.1f))
 					Universe.currentUniverse.addEffect(new DustPuff(px, py, planet.getColor()));
-				Universe.currentUniverse.playSound("bulletground", x, y, 0.5f);
 				age = life + 1;
 			}
 		}
-		
+
 	}
 
 	public void draw(ShapeRenderer renderer) {
@@ -53,15 +52,15 @@ public class Bullet {
 	public boolean alive() {
 		return age < life;
 	}
-	
+
 	public float getX() {
 		return x;
 	}
-	
+
 	public float getY() {
 		return y;
 	}
-	
+
 	public int getDamage() {
 		return damage;
 	}

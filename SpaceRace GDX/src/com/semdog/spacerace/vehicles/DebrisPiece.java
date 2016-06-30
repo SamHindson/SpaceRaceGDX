@@ -3,6 +3,7 @@ package com.semdog.spacerace.vehicles;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Colors;
@@ -14,15 +15,17 @@ import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
-class DebrisPiece extends Mass {
+public class DebrisPiece extends Mass {
 
 	private Sprite sprite;
 	private float rotationalSpeed;
+	
+	private float age, life;
 
 	private int bounces;
 
 	DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
-		super(x, y, dx + MathUtils.random(500) - 250, dy + MathUtils.random(500) - 250, 10,
+		super(x, y, dx + MathUtils.random(50) - 25, dy + MathUtils.random(50) - 25, 10,
 				MathUtils.random(ship.getWidth() / 2), MathUtils.random(ship.getHeight() / 2), environment, "debris");
 
 		int w = (int) getWidth();
@@ -38,16 +41,29 @@ class DebrisPiece extends Mass {
 		rotationalSpeed = MathUtils.random(0, 720);
 
 		shouldCollide = false;
+		
+		life = MathUtils.random(5, 15);
 	}
-
+	
+	@Override
+	public void debugRender(ShapeRenderer renderer) {
+		//	Do nothing
+	}
+	
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
 		
+		age += dt;
+		
+		if(age > life) {
+			die(DamageCause.OLDAGE);
+		}
+		
 		if(sprite == null)
 			return;
 		
-		sprite.setPosition(position.x, position.y);
+		sprite.setPosition(position.x - width / 2, position.y - height / 2);
 		sprite.rotate(rotationalSpeed * dt);
 	}
 
@@ -93,7 +109,7 @@ class DebrisPiece extends Mass {
 	@Override
 	protected void hitPlayer(Player player) {
 		Universe.currentUniverse.playerHurt(player, getVelocity().len(), DamageCause.DEBRIS);
-		Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.PLANETRED));
+		Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_RED));
 		alive = false;
 	}
 	

@@ -1,9 +1,10 @@
 package com.semdog.spacerace.weapons;
 
+import com.badlogic.gdx.graphics.Color;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.universe.Universe;
 
 public class SMG extends Weapon {
-
     public SMG() {
         super("SMG", 128, true, 0.05f, 7, "smg");
     }
@@ -15,7 +16,7 @@ public class SMG extends Weapon {
     }
 
 	@Override
-	public int getColor() {
-		return 0x8075FFFF;
+	public Color getColor() {
+		return Colors.V_SMGAMMO;
 	}
 }

@@ -8,29 +8,33 @@ import java.util.HashMap;
  * A little class to hold all of the player's necessary HUD information
  */
 public class VitalSigns {
-    private HashMap<String, Vitality> signs;
+	private HashMap<String, Vitality> signs;
 
-    public VitalSigns() {
-        signs = new HashMap<>();
-    }
+	public VitalSigns() {
+		signs = new HashMap<>();
+	}
 
-    public void addItem(String id, Vitality vitality) {
-        signs.put(id, vitality);
-    }
-    
-    public void removeItem(String id) {
-    	signs.remove(id);
-    }
+	public void addItems(Vitality... vitalities) {
+		for (Vitality vitality : vitalities) {
+			signs.put(vitality.getID(), vitality);
+		}
+	}
 
-    public Vitality get(String id) {
-        return signs.get(id);
-    }
+	public void removeItems(String... ids) {
+		for (String id : ids) {
+			signs.remove(id);
+		}
+	}
 
-    public HashMap<String, Vitality> getSigns() {
-        return signs;
-    }
+	public Vitality get(String id) {
+		return signs.get(id);
+	}
 
-    public enum Type {
-        DISCRETE, CONTINUOUS
-    }
+	public HashMap<String, Vitality> getSigns() {
+		return signs;
+	}
+
+	public enum Type {
+		DISCRETE, CONTINUOUS
+	}
 }

@@ -1,11 +1,9 @@
 package com.semdog.spacerace.universe;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,10 +15,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.collectables.Collectable;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
@@ -54,8 +54,6 @@ public class Universe implements Disposable {
 	private HUD hud;
 	private Player player;
 
-	private SoundManager soundManager;
-
 	private SpriteBatch hudBatch;
 
 	private SpriteBatch universeBatch;
@@ -82,6 +80,7 @@ public class Universe implements Disposable {
 	private Overlay raceEnd;
 
 	private boolean shownEnd = false;
+	private boolean gogglesActive = false;
 
 	// TEST FEATURES
 	FrameBuffer frameBuffer;
@@ -134,9 +133,6 @@ public class Universe implements Disposable {
 		camera.zoom = 1.5f;
 		camera.update();
 
-		soundManager = new SoundManager();
-		soundManager.init();
-
 		isLoading = false;
 
 		goalChecker = new GoalChecker();
@@ -149,8 +145,8 @@ public class Universe implements Disposable {
 		collideables = new Array<>();
 		collideables.add(player);
 
-		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 2),
-				(int) (Gdx.graphics.getHeight() / 2), true);
+		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 1.5),
+				(int) (Gdx.graphics.getHeight() / 3), true);
 		frameBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		frameBufferBatch = new SpriteBatch();
 
@@ -159,6 +155,10 @@ public class Universe implements Disposable {
 		System.out.println(shaderProgram.isCompiled() ? "Yeah!" : shaderProgram.getLog());
 		frameBufferBatch.setShader(shaderProgram);
 		ShaderProgram.pedantic = false;
+	}
+	
+	public Array<Planet> getPlanets() {
+		return planets;
 	}
 
 	public GoalChecker getGoalChecker() {
@@ -191,6 +191,16 @@ public class Universe implements Disposable {
 
 		zoom += deltaZoom;
 		camera.zoom += deltaZoom;
+
+		if (!gogglesActive && Gdx.input.isKeyPressed(Keys.Q)) {
+			gogglesActive = true;
+			playUISound("goggleson");
+		} else if (gogglesActive && !Gdx.input.isKeyPressed(Keys.Q)) {
+			gogglesActive = false;
+			playUISound("gogglesoff");
+		}
+		
+		//gogglesActive = true;
 
 		for (int i = 0; i < bullets.size; i++) {
 			if (bullets.get(i) != null)
@@ -302,7 +312,7 @@ public class Universe implements Disposable {
 		raceEnd.update(dt);
 
 		if (countingDown) {
-			countdown -= dt * 5;
+			countdown -= dt * 50;
 			hud.setText("Get ready!", "[" + (int) countdown + "]");
 
 			if (countdown <= 0) {
@@ -364,18 +374,20 @@ public class Universe implements Disposable {
 		}
 
 		universeBatch.end();
-		universeShapeRenderer.setAutoShapeType(true);
-		universeShapeRenderer.begin();
+		// universeShapeRenderer.set();
+		universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
 		for (int i = 0; i < bullets.size; i++) {
 			bullets.get(i).draw(universeShapeRenderer);
 		}
 		for (int i = 0; i < planets.size; i++) {
 			planets.get(i).draw(universeShapeRenderer);
 		}
-		/*
-		 * for (int i = 0; i < masses.size; i++) {
-		 * getMass(i).debugRender(universeShapeRenderer); }
-		 */
+
+		if(gogglesActive)
+			for (int i = 0; i < masses.size; i++)
+				getMass(i).debugRender(universeShapeRenderer);
+			
+
 		planets.get(0).draw(universeShapeRenderer);
 		player.debugDraw(universeShapeRenderer);
 		universeShapeRenderer.end();
@@ -440,7 +452,9 @@ public class Universe implements Disposable {
 						((Explosion) effect).getY());
 				if (distance < 300) {
 					float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-					mass.doDamage(damage, DamageCause.EXPLOSION);
+
+					if (mass.isAlive())
+						mass.doDamage(damage, DamageCause.EXPLOSION);
 				}
 			}
 
@@ -485,7 +499,7 @@ public class Universe implements Disposable {
 	}
 
 	public void playUISound(String name) {
-		soundManager.playSound(name, 3f, 0);
+		SoundManager.playSound(name, 3f, 0);
 	}
 
 	public void loopSound(String name, float x, float y, float volume) {
@@ -494,11 +508,11 @@ public class Universe implements Disposable {
 		float u = x - player.getX();
 		float pan = (float) Math.atan(u);
 
-		soundManager.loopSound(name, v + volume, pan);
+		SoundManager.loopSound(name, v + volume, pan);
 	}
 
 	public void stopSound(String name) {
-		soundManager.stopSound(name);
+		SoundManager.stopSound(name);
 	}
 
 	public void playSound(String name, float x, float y, float volume) {
@@ -510,7 +524,7 @@ public class Universe implements Disposable {
 			float u = x - player.getX();
 			float pan = (float) Math.atan(u);
 
-			soundManager.playSound(name, v, pan);
+			SoundManager.playSound(name, v, pan);
 		}
 	}
 
@@ -539,6 +553,7 @@ public class Universe implements Disposable {
 
 		@Override
 		public boolean keyUp(int keycode) {
+
 			return false;
 		}
 
@@ -573,73 +588,6 @@ public class Universe implements Disposable {
 			return false;
 		}
 
-	}
-
-	class SoundManager {
-		HashMap<String, Sound> clips;
-		HashMap<String, Long> looping;
-
-		void init() {
-			clips = new HashMap<>();
-			load("explosion1.ogg");
-			load("explosion2.ogg");
-			load("explosion3.ogg");
-			load("beep.wav");
-			load("jump.ogg");
-			load("egress.ogg");
-			load("ingress.ogg");
-			load("bulletground.wav");
-			load("shrap1.ogg");
-			load("shrap2.ogg");
-			load("shrap3.ogg");
-			load("runt.wav");
-			load("carbine.wav");
-			load("smg.wav");
-
-			load("runtgun.wav");
-			load("playerhit1.wav");
-			load("playerhit2.wav");
-			load("playerhit3.wav");
-			load("playerhit4.wav");
-			load("playerhit5.wav");
-			load("healthget.wav");
-
-			load("neet.wav");
-
-			load("victory.wav");
-
-			looping = new HashMap<>();
-		}
-
-		void load(String name) {
-			System.out.println(name);
-			clips.put(name.split("[.]")[0], Gdx.audio.newSound(Gdx.files.internal("assets/audio/" + name)));
-		}
-
-		void playSound(String name, float volume, float pan) {
-			if (clips.containsKey(name)) {
-				clips.get(name).play(volume, 1, pan);
-			} else {
-				Gdx.app.error("Universe", "No spund: " + name);
-			}
-		}
-
-		void loopSound(String name, float volume, float pan) {
-			if (!looping.containsKey(name)) {
-				if (clips.containsKey(name)) {
-					looping.put(name, clips.get(name).loop(volume, 1, pan));
-				} else {
-					Gdx.app.error("Universe", "No! " + name);
-				}
-			}
-		}
-
-		void stopSound(String name) {
-			if (looping.containsKey(name)) {
-				clips.get(name).stop(looping.get(name));
-				looping.remove(name);
-			}
-		}
 	}
 
 	public void setCameraShake(float cameraShake) {

@@ -30,7 +30,7 @@ public class Planet {
 		
 		this.id = id;
 		
-		mass = 1000000;
+		mass = radius * radius * 5f;
 		
 		System.out.println("Planet mass: " + mass);
 		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
@@ -56,7 +56,7 @@ public class Planet {
 	}
 	
 	public void draw(ShapeRenderer shapeRenderer) {
-		shapeRenderer.set(ShapeType.Filled);
+		//shapeRenderer.set(ShapeType.Filled);
 		shapeRenderer.setColor(color);
 		shapeRenderer.circle(position.x, position.y, radius, 100);
 

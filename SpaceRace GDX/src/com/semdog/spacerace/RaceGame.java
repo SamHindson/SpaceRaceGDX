@@ -2,6 +2,8 @@ package com.semdog.spacerace;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.semdog.spacerace.audio.SoundManager;
+import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.screens.MenuScreen;
 import com.semdog.spacerace.screens.PlayScreen;
 import com.semdog.spacerace.screens.RaceScreen;
@@ -13,6 +15,12 @@ public class RaceGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		Gdx.app.log("RaceGame", "Welcome! Loading bits and pieces...");
+		Art.initialize();
+		Gdx.app.log("RaceGame", "Loaded Graphics...");
+		SoundManager.initialize();		
+		Gdx.app.log("RaceGame", "Loaded Audio...");
+		Gdx.app.log("RaceGame", "Finisce!");
 		screen = new PlayScreen(this);
 	}
 

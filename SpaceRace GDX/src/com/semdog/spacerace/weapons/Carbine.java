@@ -1,5 +1,7 @@
 package com.semdog.spacerace.weapons;
 
+import com.badlogic.gdx.graphics.Color;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.universe.Universe;
 
 public class Carbine extends Weapon {
@@ -15,7 +17,7 @@ public class Carbine extends Weapon {
 	}
 
 	@Override
-	public int getColor() {
-		return 0x0DBEB2FF;
+	public Color getColor() {
+		return Colors.V_CARBINEAMMO;
 	}
 }

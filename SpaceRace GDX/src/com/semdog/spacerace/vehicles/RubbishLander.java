@@ -78,10 +78,4 @@ public class RubbishLander extends Ship {
 	public void fireSecondary() {
 		System.out.println("Werent you listening");
 	}
-
-	@Override
-	public int getColor() {
-		return 0xAF2BBFFF;
-	}
-
 }

@@ -1,5 +1,6 @@
 package com.semdog.spacerace.vehicles;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,9 +8,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
+import com.semdog.spacerace.players.VitalSigns;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.players.Vitality;
 import com.semdog.spacerace.universe.Grenade;
@@ -23,26 +26,28 @@ import com.semdog.spacerace.universe.Universe;
  * @author Sam
  */
 
-public abstract class Ship extends Mass implements Vitality {
+public abstract class Ship extends Mass {
 
 	protected Player pilot;
 	protected Sprite sprite;
 	protected float totalFuel, currentFuel;
 	protected float r, width, height;
 	protected float power;
-	protected float boostPower;
+	protected float boostPower = 300;
 
 	protected float beepTime;
 
 	protected int pAmmo, sAmmo;
 	protected boolean pAutomatic, sAutomatic;
 	protected float pCooldown, sCooldown, pRest, sRest;
-	
+
 	private boolean initialized;
-	
-	protected Boost boost;
+
 	protected boolean boostActive = false;
-	protected float boostTime = 0;
+	protected float boostTime = 30, boostRemaining;
+
+	protected VitalSigns vitalSigns;
+	protected Vitality vFuel, vBoost, vHealth;
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, String textureName, String id) {
 		this(x, y, w, h, fuel, power, 0, 0, textureName, id);
@@ -67,8 +72,93 @@ public abstract class Ship extends Mass implements Vitality {
 		Universe.currentUniverse.addShip(this);
 
 		beepTime = MathUtils.random();
-		
+
 		this.id = id;
+
+		vitalSigns = new VitalSigns();
+		vFuel = new Vitality() {
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public float getValue() {
+				return currentFuel;
+			}
+
+			@Override
+			public float getMaxValue() {
+				return totalFuel;
+			}
+
+			@Override
+			public Color getColor() {
+				return Colors.V_FUEL;
+			}
+
+			@Override
+			public String getID() {
+				return "fuel";
+			}
+		};
+
+		vHealth = new Vitality() {
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public float getValue() {
+				return currentHealth;
+			}
+
+			@Override
+			public float getMaxValue() {
+				return maxHealth;
+			}
+
+			@Override
+			public Color getColor() {
+				return Colors.V_SHIPHEALTH;
+			}
+
+			@Override
+			public String getID() {
+				return "shiphealth";
+			}
+		};
+
+		vBoost = new Vitality() {
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public float getValue() {
+				return boostRemaining;
+			}
+
+			@Override
+			public float getMaxValue() {
+				return boostTime;
+			}
+
+			@Override
+			public Color getColor() {
+				return Colors.V_BOOST;
+			}
+
+			@Override
+			public String getID() {
+				return "boost";
+			}
+		};
+
+		vitalSigns.addItems(vHealth, vFuel);
+		setBoostActive(true);
 	}
 
 	@Override
@@ -76,7 +166,15 @@ public abstract class Ship extends Mass implements Vitality {
 		super.update(dt, gravitySources);
 		sprite.setRotation(r);
 		sprite.setPosition(position.x - width / 2, position.y - height / 2);
-		
+
+		if (boostActive) {
+			boostRemaining -= dt;
+
+			if (boostRemaining <= 0) {
+				setBoostActive(false);
+			}
+		}
+
 		if (pilot == null) {
 			beepTime += dt;
 
@@ -86,7 +184,7 @@ public abstract class Ship extends Mass implements Vitality {
 			}
 		}
 	}
-	
+
 	protected float getCurrentPower() {
 		return power + boostPower;
 	}
@@ -95,11 +193,12 @@ public abstract class Ship extends Mass implements Vitality {
 	protected void setEnvironment(Planet planet) {
 		super.setEnvironment(planet);
 
-		if(!initialized) {
+		if (!initialized) {
 			initialized = true;
-			r = (-MathUtils.PI / 2 + MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX())) * MathUtils.radiansToDegrees;
+			r = (-MathUtils.PI / 2 + MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX()))
+					* MathUtils.radiansToDegrees;
 		}
-		
+
 		if (pilot != null) {
 			pilot.setEnvironment(planet);
 		}
@@ -107,7 +206,13 @@ public abstract class Ship extends Mass implements Vitality {
 
 	@Override
 	public void render(SpriteBatch batch) {
+		//if (boostActive)
+		//	sprite.setColor(MathUtils.random());
+		
 		sprite.draw(batch);
+
+		//if (boostActive)
+		//	sprite.setColor(Color.WHITE);
 	}
 
 	public abstract void updateControls(float dt);
@@ -115,7 +220,7 @@ public abstract class Ship extends Mass implements Vitality {
 	public float getAngle() {
 		return r * MathUtils.degreesToRadians;
 	}
-	
+
 	public float getAngleAroundEnvironment() {
 		return MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
 	}
@@ -130,7 +235,19 @@ public abstract class Ship extends Mass implements Vitality {
 
 	public void die(DamageCause reason) {
 		super.die(reason);
+		alive = false;
 		explode(reason);
+	}
+
+	public void setBoostActive(boolean boostActive) {
+		this.boostActive = boostActive;
+
+		if (boostActive) {
+			vitalSigns.addItems(vBoost);
+			boostRemaining = 30;
+		} else {
+			vitalSigns.removeItems("boost");
+		}
 	}
 
 	@Override
@@ -139,17 +256,15 @@ public abstract class Ship extends Mass implements Vitality {
 	}
 
 	protected void explode(DamageCause cause) {
-        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+		Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
 
 		if (pilot != null) {
 			Universe.currentUniverse.playerKilled(pilot, cause);
 		}
 
-		for (int k = 0; k < 15; k++) {
+		for (int k = 0; k < 30; k++) {
 			new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
 		}
-
-		alive = false;
 	}
 
 	@Override
@@ -169,62 +284,41 @@ public abstract class Ship extends Mass implements Vitality {
 	public Texture getTexture() {
 		return sprite.getTexture();
 	}
-	
-	@Override
-	public float getValue() {
-		return currentFuel;
-	}
-
-	@Override
-	public float getMaxValue() {
-		return totalFuel;
-	}
-
-	@Override
-	public Type getValueType() {
-		return Type.CONTINUOUS;
-	}
 
 	public float getAltitude() {
 		return Vector2.dst(position.x, position.y, environment.getX(), environment.getY());
 	}
-	
+
 	@Override
 	public String getID() {
 		return id;
 	}
-	
+
 	@Override
 	protected void handleMassCollision(Mass mass) {
 		super.handleMassCollision(mass);
-		
-		if(mass instanceof Grenade) {
+
+		if (mass instanceof Grenade) {
 			System.out.println("Collided with grenade!");
-			((Grenade)mass).explode();
+			((Grenade) mass).explode();
 		}
 	}
-}
 
-class Boost implements Vitality {
-
-	@Override
-	public float getValue() {
-		return 0;
+	public VitalSigns getVitalSigns() {
+		return vitalSigns;
 	}
 
-	@Override
-	public float getMaxValue() {
-		return 10;
-	}
-
-	@Override
-	public int getColor() {
-		return 0x7CAFC4FF;
-	}
-
-	@Override
-	public Type getValueType() {
-		return Type.CONTINUOUS;
+	public boolean hasPilot() {
+		return pilot != null;
 	}
 	
+	public void orbit(float direction) {
+		System.out.println("Nice! Environment: " + environment);
+		if(environment == null)
+			findEnvironment();
+		angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
+		float v = (float)Math.sqrt(Universe.GRAVITY * environment.getMass() / distance(environment)) * -direction;
+		velocity.x = MathUtils.sin(angle) * v;
+		velocity.y = MathUtils.cos(angle) * v;
+	}
 }

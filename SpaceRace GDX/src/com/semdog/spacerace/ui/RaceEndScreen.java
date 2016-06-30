@@ -19,8 +19,8 @@ public class RaceEndScreen extends Overlay {
 				null);
 		exit = new Button("Exit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.3f, 200, 75, null);
 
-		retry.setColors(Colors.PLANETBLUE, Color.WHITE);
-		exit.setColors(Colors.PLANETYELLOW, Color.WHITE);
+		retry.setColors(Colors.P_BLUE, Color.WHITE);
+		exit.setColors(Colors.P_BLUE, Color.WHITE);
 
 		showing = false;
 	}

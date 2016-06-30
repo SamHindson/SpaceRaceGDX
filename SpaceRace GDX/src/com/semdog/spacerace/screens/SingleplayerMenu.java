@@ -61,7 +61,7 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 		batch.begin();
 		titleCard.draw(batch);
 
-		subtitleFont.setColor(Colors.PLANETBLUE);
+		subtitleFont.setColor(Colors.P_BLUE);
 		subtitleFont.draw(batch, "Singleplayer", 100, Gdx.graphics.getHeight() - 90);
 
 		drawTitle(batch);

@@ -15,8 +15,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.collectables.Collectable;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Goalobject;
 import com.semdog.spacerace.universe.Grenade;
@@ -26,7 +28,7 @@ import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Carbine;
 import com.semdog.spacerace.weapons.Weapon;
 
-public class Player implements Vitality, Collideable {
+public class Player implements Collideable {
 
 	private Team team = Team.PINK;
 
@@ -51,7 +53,7 @@ public class Player implements Vitality, Collideable {
 	private float ax, ay, a;
 
 	private Vector2 position, velocity;
-	
+
 	private Rectangle bounds;
 
 	private Weapon weapon;
@@ -61,6 +63,7 @@ public class Player implements Vitality, Collideable {
 	private Ship boardingShip;
 
 	private VitalSigns primarySigns;
+	private Vitality vHealth, vAmmo, vGrenades;
 
 	private int grenadeCount;
 
@@ -84,28 +87,95 @@ public class Player implements Vitality, Collideable {
 		grenadeCount = 5;
 
 		primarySigns = new VitalSigns();
-		primarySigns.addItem("health", this);
-		primarySigns.addItem("ammo", weapon);
-		primarySigns.addItem("grenades", new GrenadeHolder());
+		vHealth = new Vitality() {
+
+			@Override
+			public String getID() {
+				return "playerhealth";
+			}
+
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public float getValue() {
+				return health;
+			}
+
+			@Override
+			public float getMaxValue() {
+				return 200;
+			}
+
+			@Override
+			public Color getColor() {
+				return Colors.V_PLAYERHEALTH;
+			}
+		};
+
+		vAmmo = new Vitality() {
+
+			@Override
+			public String getID() {
+				return "ammo";
+			}
+
+			@Override
+			public Type getValueType() {
+				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public float getValue() {
+				return weapon.getAmmoLeft();
+			}
+
+			@Override
+			public float getMaxValue() {
+				return weapon.getMaxAmmo();
+			}
+
+			@Override
+			public Color getColor() {
+				return weapon.getColor();
+			}
+		};
+
+		vGrenades = new Vitality() {
+
+			@Override
+			public String getID() {
+				return "grenades";
+			}
+
+			@Override
+			public Type getValueType() {
+				return Type.DISCRETE;
+			}
+
+			@Override
+			public float getValue() {
+				return grenadeCount;
+			}
+
+			@Override
+			public float getMaxValue() {
+				return 5;
+			}
+
+			@Override
+			public Color getColor() {
+				return Colors.V_PLAYERGRENADES;
+			}
+		};
+
+		primarySigns.addItems(vHealth, vAmmo, vGrenades);
 	}
 
 	public VitalSigns getPrimarySigns() {
-		return primarySigns;
-	}
-
-	@Override
-	public float getValue() {
-		return health;
-	}
-
-	@Override
-	public float getMaxValue() {
-		return 200;
-	}
-
-	@Override
-	public VitalSigns.Type getValueType() {
-		return VitalSigns.Type.CONTINUOUS;
+		return pilotingShip ? ship.getVitalSigns() : primarySigns;
 	}
 
 	public boolean isPilotingShip() {
@@ -117,10 +187,6 @@ public class Player implements Vitality, Collideable {
 		boarding = false;
 		this.ship = ship;
 		ship.setPilot(this);
-
-		primarySigns.addItem("shipfuel", ship);
-		primarySigns.removeItem("ammo");
-		primarySigns.removeItem("grenades");
 	}
 
 	public Team getTeam() {
@@ -132,7 +198,6 @@ public class Player implements Vitality, Collideable {
 	}
 
 	public void update(float dt, OrthographicCamera camera, boolean controllable, Array<Planet> planets) {
-		//getApogee();
 		if (alive) {
 			if (pilotingShip && controllable) {
 				ship.updateControls(dt);
@@ -147,9 +212,6 @@ public class Player implements Vitality, Collideable {
 					ship.setPilot(null);
 					ship = null;
 					Universe.currentUniverse.playUISound("egress");
-					primarySigns.removeItem("shipfuel");
-					primarySigns.addItem("ammo", weapon);
-					primarySigns.addItem("grenades", new GrenadeHolder());
 				}
 			} else {
 				animTime += dt;
@@ -261,8 +323,8 @@ public class Player implements Vitality, Collideable {
 					float gx = position.x + 30 * MathUtils.cos(a);
 					float gy = position.y + 30 * MathUtils.sin(a);
 
-					float gdx = 400 * MathUtils.cos(a) + velocity.x;
-					float gdy = 400 * MathUtils.sin(a) + velocity.y;
+					float gdx = 200 * MathUtils.cos(a) + velocity.x;
+					float gdy = 200 * MathUtils.sin(a) + velocity.y;
 
 					new Grenade(gx, gy, gdx, gdy, 10, environment, "grenade");
 
@@ -270,6 +332,8 @@ public class Player implements Vitality, Collideable {
 				}
 			}
 		}
+		
+		Gdx.app.log("Player", getVelocity() + "");
 	}
 
 	private float getImpactThreshhold() {
@@ -285,11 +349,11 @@ public class Player implements Vitality, Collideable {
 			if (alive) {
 				float m = sprinting ? 3 : 1;
 				if (righting)
-					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1,
-							getAngle() * MathUtils.radiansToDegrees);
+					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
+							20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
 				else if (lefting)
-					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, -1, 1,
-							getAngle() * MathUtils.radiansToDegrees);
+					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
+							20, -1, 1, getAngle() * MathUtils.radiansToDegrees);
 				else
 					batch.draw(idleTexture, position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1,
 							getAngle() * MathUtils.radiansToDegrees);
@@ -327,10 +391,12 @@ public class Player implements Vitality, Collideable {
 
 	public void die() {
 		alive = false;
-		// weapon = null;
 		ship = null;
-		primarySigns.removeItem("shipfuel");
-		pilotingShip = false;
+
+		if (pilotingShip) {
+			primarySigns.removeItems("shipfuel");
+			pilotingShip = false;
+		}
 	}
 
 	public float getAngle() {
@@ -355,9 +421,6 @@ public class Player implements Vitality, Collideable {
 		grenadeCount = 5;
 
 		weapon.reset();
-
-		primarySigns.addItem("ammo", weapon);
-		primarySigns.addItem("grenades", new GrenadeHolder());
 
 		for (Planet planet : planets) {
 			if (planet.inRange(x, y)) {
@@ -396,8 +459,8 @@ public class Player implements Vitality, Collideable {
 		velocity.y += dy2;
 	}
 
-	public float getVelocity() {
-		return Vector2.dst(0, 0, velocity.x, velocity.y);
+	public Vector2 getVelocity() {
+		return pilotingShip ? ship.getVelocity() : velocity;
 	}
 
 	public void setEnvironment(Planet planet) {
@@ -412,37 +475,9 @@ public class Player implements Vitality, Collideable {
 		return alive;
 	}
 
-	class GrenadeHolder implements Vitality {
-
-		@Override
-		public int getColor() {
-			return 0xFFB626FF;
-		}
-
-		@Override
-		public float getValue() {
-			return grenadeCount;
-		}
-
-		@Override
-		public float getMaxValue() {
-			return 5;
-		}
-
-		@Override
-		public VitalSigns.Type getValueType() {
-			return VitalSigns.Type.DISCRETE;
-		}
-	}
-
-	@Override
-	public int getColor() {
-		return 0xD62F61FF;
-	}
-
 	@Override
 	public void collectCollectible(Collectable collectable) {
-		//	Yeah baby!
+		// Yeah baby!
 	}
 
 	@Override
@@ -458,20 +493,22 @@ public class Player implements Vitality, Collideable {
 	public void replenishHealth() {
 		health = 200;
 	}
-	
+
 	public String getShipID() {
-		return pilotingShip ? ((Goalobject)ship).getID() : "???";
+		return pilotingShip ? ((Goalobject) ship).getID() : "???";
 	}
 
 	public void addSpeed(Vector2 added) {
 		velocity.add(added);
 	}
-	
+
 	public float getPerigee() {
-		return pilotingShip ? ship.getPerigee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[6];
+		return pilotingShip ? ship.getPerigee()
+				: OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[6];
 	}
-	
+
 	public float getApogee() {
-		return pilotingShip ? ship.getApogee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
+		return pilotingShip ? ship.getApogee()
+				: OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
 	}
 }
