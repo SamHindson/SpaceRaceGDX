@@ -28,6 +28,7 @@ public abstract class Weapon implements Vitality {
 		this.damage = damage;
 		this.inacurracy = inaccuracy;
 		this.fireSound = fireSound;
+		currentWait = fireDelay;
 	}
 
     @Override

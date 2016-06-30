@@ -32,13 +32,15 @@ public class Planet {
 		
 		mass = radius * radius * 5f;
 		
+		System.out.println(x + ", " + y + "RABBITS");
+		
 		System.out.println("Planet mass: " + mass);
 		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
 		
 		color = Colors.getRandom();
 		
 		dustMaker = new Random((int)(x + y + radius));
-		dustBalls = dustMaker.nextInt(20);
+		dustBalls = 100;
 		ballX = new float[dustBalls];
 		ballY = new float[dustBalls];
 		ballR = new float[dustBalls];
@@ -62,7 +64,7 @@ public class Planet {
 
 		for(int h = 0; h < dustBalls; h++) {
             shapeRenderer.setColor(dustColors[h]);
-			shapeRenderer.circle(ballX[h], ballY[h], ballR[h]);
+			shapeRenderer.circle(position.x + ballX[h], position.y + ballY[h], ballR[h]);
 		}
     }
 

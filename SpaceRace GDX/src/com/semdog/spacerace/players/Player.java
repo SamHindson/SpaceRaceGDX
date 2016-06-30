@@ -25,6 +25,7 @@ import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.vehicles.Ship;
+import com.semdog.spacerace.weapons.RocketLauncher;
 import com.semdog.spacerace.weapons.SMG;
 import com.semdog.spacerace.weapons.Weapon;
 
@@ -72,6 +73,8 @@ public class Player implements Collideable {
 
 		position = new Vector2(x, y);
 		velocity = new Vector2();
+		
+		Gdx.app.log("Player", "Player created at " + position);
 
 		TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
 
@@ -81,7 +84,7 @@ public class Player implements Collideable {
 
 		bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
-		weapon = new SMG();
+		weapon = new RocketLauncher();
 		weapon.pickup(this);
 
 		grenadeCount = 5;
@@ -196,8 +199,13 @@ public class Player implements Collideable {
 	public float getHealth() {
 		return health;
 	}
+	
+	public Vector2 getPosition() {
+		return pilotingShip ? ship.getPosition() : position;
+	}
 
 	public void update(float dt, OrthographicCamera camera, boolean controllable, Array<Planet> planets) {
+		//Gdx.app.log("Player", "Player at " + getPosition());
 		if (alive) {
 			if (pilotingShip && controllable) {
 				ship.updateControls(dt);
@@ -225,10 +233,9 @@ public class Player implements Collideable {
 					}
 				}
 
-				distance = Vector2.dst(environment.getX(), environment.getY(), position.x, position.y);
-				angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
-
 				if (environment != null) {
+					distance = Vector2.dst(environment.getX(), environment.getY(), position.x, position.y);
+					angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
 					if (!onGround) {
 						float force = (float) (Universe.GRAVITY * environment.getMass() / Math.pow(distance, 2));
 						float ax = -force * MathUtils.cos(angle);
@@ -413,6 +420,8 @@ public class Player implements Collideable {
 		position.set(x, y);
 		velocity.set(Vector2.Zero);
 		alive = true;
+		
+		Gdx.app.log("Player", "Player respawned at " + position);
 
 		health = 200;
 
@@ -508,5 +517,14 @@ public class Player implements Collideable {
 	public float getApogee() {
 		return pilotingShip ? ship.getApogee()
 				: OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
+	}
+
+	public Planet getEnvironment() {
+		return environment;
+	}
+
+	public void kickBack(float angle, float force) {
+		System.out.println(force * MathUtils.sin(angle) + ", " + force * MathUtils.cos(angle));
+		velocity.add(force * MathUtils.sin(angle), force * MathUtils.cos(angle));
 	}
 }

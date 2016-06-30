@@ -1,5 +1,6 @@
 package com.semdog.spacerace.vehicles;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -216,6 +217,8 @@ public abstract class Ship extends Mass {
 		//	sprite.setColor(MathUtils.random());
 		
 		sprite.draw(batch);
+		
+		Gdx.app.log("Mass", position + "");
 		
 		if(ouchTime > 0) {
 			silhouette.setAlpha(MathUtils.random(0.5f, 1));

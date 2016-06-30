@@ -19,21 +19,18 @@ import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Bullet;
 
 public abstract class Mass implements Goalobject {
-	protected static Texture texture;
-
-	static {
-		texture = new Texture(Gdx.files.internal("assets/test.png"));
-	}
 
 	protected Vector2 position, velocity;
 	protected float mass, angle;
 	protected float width, height;
 	protected boolean onGround, alive = true;
 	protected Planet environment;
-	protected boolean shouldCollide;
+	protected boolean shouldCollide, gravityEnabled = true;
 	protected Rectangle bounds;
 	protected float currentHealth, maxHealth;
 	
+	protected float age;
+
 	protected float ouchTime;
 
 	protected boolean loaded = false;
@@ -63,7 +60,7 @@ public abstract class Mass implements Goalobject {
 	}
 
 	public Mass(float x, float y, float dx, float dy, float mass, Planet environment, String id) {
-		this(x, y, dx, dy, mass, 0, 0, environment, id);
+		this(x, y, dx, dy, mass, 1, 1, environment, id);
 	}
 
 	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, String id) {
@@ -76,6 +73,8 @@ public abstract class Mass implements Goalobject {
 	}
 
 	public boolean isOnGround() {
+		if(environment == null)
+			return false;
 		return Vector2.dst(position.x, position.y, environment.getX(), environment.getY()) <= environment.getRadius()
 				+ 5;
 	}
@@ -96,20 +95,24 @@ public abstract class Mass implements Goalobject {
 		if (environment != null) {
 			angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
 		}
+		
+		age += dt;
 
-		for (int i = 0; i < gravitySources.size; i++) {
-			Planet planet = gravitySources.get(i);
-			if (inRange(planet) && !onGround) {
+		if (gravityEnabled) {
+			for (int i = 0; i < gravitySources.size; i++) {
+				Planet planet = gravitySources.get(i);
+				if (inRange(planet) && !onGround) {
 
-				if (planet != environment)
-					setEnvironment(planet);
+					if (planet != environment)
+						setEnvironment(planet);
 
-				float force = (float) (Universe.GRAVITY * planet.getMass() / Math.pow(distance(planet), 2));
-				float ax = -force * MathUtils.cos(angle);
-				float ay = -force * MathUtils.sin(angle);
+					float force = (float) (Universe.GRAVITY * planet.getMass() / Math.pow(distance(planet), 2));
+					float ax = -force * MathUtils.cos(angle);
+					float ay = -force * MathUtils.sin(angle);
 
-				velocity.x += ax * dt;
-				velocity.y += ay * dt;
+					velocity.x += ax * dt;
+					velocity.y += ay * dt;
+				}
 			}
 		}
 
@@ -117,8 +120,8 @@ public abstract class Mass implements Goalobject {
 		position.y += velocity.y * dt;
 
 		bounds.setPosition(position.x - getWidth() / 2, position.y - getHeight() / 2);
-		
-		if(ouchTime > 0) {
+
+		if (ouchTime > 0) {
 			ouchTime -= dt * 5f;
 		} else {
 			ouchTime = 0;
@@ -231,14 +234,14 @@ public abstract class Mass implements Goalobject {
 		float semimajor = getSemimajor();
 		float f = (float) Math.sqrt(semimajor * semimajor - semiminor * semiminor);
 
-		// Gdx.gl20.glLineWidth(3);
+		//Gdx.gl20.glLineWidth(3);
 		renderer.identity();
 		renderer.translate(environment.getPosition().x, environment.getPosition().y, 0);
 		renderer.rotate(0, 0, 1, getOrbitAngle() * MathUtils.radiansToDegrees + 90);
 		renderer.ellipse((-semiminor), (-semimajor - f), semiminor * 2, semimajor * 2);
 		renderer.identity();
 		renderer.setColor(Color.WHITE);
-		// Gdx.gl20.glLineWidth(1);
+		//Gdx.gl20.glLineWidth(1);*/
 	}
 
 	protected void findEnvironment() {
@@ -385,8 +388,8 @@ public abstract class Mass implements Goalobject {
 		float fy = bullet.getY() + (bullet.getDy() * 0.01f);
 
 		for (float i = 0; i <= accuracy; i++) {
-			float px = MathUtils.lerp(ox, fx, i/accuracy);
-			float py = MathUtils.lerp(oy, fy, i/accuracy);
+			float px = MathUtils.lerp(ox, fx, i / accuracy);
+			float py = MathUtils.lerp(oy, fy, i / accuracy);
 
 			if (bounds.contains(px, py)) {
 				return true;

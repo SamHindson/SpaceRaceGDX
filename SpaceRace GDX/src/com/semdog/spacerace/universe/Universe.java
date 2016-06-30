@@ -25,6 +25,7 @@ import com.semdog.spacerace.collectables.Collectable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.Player;
@@ -67,7 +68,7 @@ public class Universe implements Disposable {
 
 	private float cameraX, cameraY, desiredCX, desiredCY;
 	private boolean followingPlayer = true, lockedRotation = true;
-	
+
 	private float injuryAlpha;
 
 	@SuppressWarnings("unused")
@@ -148,8 +149,8 @@ public class Universe implements Disposable {
 		collideables = new Array<>();
 		collideables.add(player);
 
-		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 1.5),
-				(int) (Gdx.graphics.getHeight() / 3), true);
+		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 1),
+				(int) (Gdx.graphics.getHeight() / 1), true);
 		frameBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		frameBufferBatch = new SpriteBatch();
 
@@ -159,7 +160,7 @@ public class Universe implements Disposable {
 		frameBufferBatch.setShader(shaderProgram);
 		ShaderProgram.pedantic = false;
 	}
-	
+
 	public Array<Planet> getPlanets() {
 		return planets;
 	}
@@ -198,12 +199,11 @@ public class Universe implements Disposable {
 		if (!gogglesActive && Gdx.input.isKeyPressed(Keys.Q)) {
 			gogglesActive = true;
 			playUISound("goggleson");
+			System.out.println("Putting goggles on!");
 		} else if (gogglesActive && !Gdx.input.isKeyPressed(Keys.Q)) {
 			gogglesActive = false;
 			playUISound("gogglesoff");
 		}
-		
-		//gogglesActive = true;
 
 		for (int i = 0; i < bullets.size; i++) {
 			if (bullets.get(i) != null)
@@ -281,7 +281,7 @@ public class Universe implements Disposable {
 			for (int k = 0; k < ships.size; k++) {
 				Ship ship = ships.get(k);
 
-				if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 50) {
+				if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 500) {
 					player.setBoarding(true, ship);
 					f = false;
 					break;
@@ -337,19 +337,22 @@ public class Universe implements Disposable {
 				raceEnd.setShowing(true);
 			}
 		}
-		
-		if(injuryAlpha > 0) {
+
+		if (injuryAlpha > 0) {
 			injuryAlpha *= 0.5f;
-			
-			if(injuryAlpha < 0.05f)
+
+			if (injuryAlpha < 0.05f)
 				injuryAlpha = 0;
 		}
+		//System.out.println("Done junk...");
 	}
 
 	public void tickPhysics(float dt) {
 		for (int i = 0; i < masses.size; i++) {
 			masses.get(i).update(dt, planets);
 		}
+		
+		//System.out.println("Ticking Physics... " + dt);
 
 		for (int i = 0; i < bullets.size; i++) {
 			if (bullets.get(i) != null) {
@@ -394,10 +397,9 @@ public class Universe implements Disposable {
 			planets.get(i).draw(universeShapeRenderer);
 		}
 
-		if(gogglesActive)
+		if (gogglesActive)
 			for (int i = 0; i < masses.size; i++)
 				getMass(i).debugRender(universeShapeRenderer);
-			
 
 		planets.get(0).draw(universeShapeRenderer);
 		player.debugDraw(universeShapeRenderer);
@@ -408,11 +410,11 @@ public class Universe implements Disposable {
 			hud.draw(hudBatch);
 		}
 		raceEnd.draw(hudBatch);
-		
+
 		hudBatch.setColor(1f, 1f, 1f, injuryAlpha);
 		hudBatch.draw(Art.get("pixel_white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		hudBatch.setColor(Color.WHITE);
-		
+
 		hudBatch.end();
 		frameBuffer.end();
 
@@ -460,26 +462,29 @@ public class Universe implements Disposable {
 	public void addEffect(Effect effect) {
 		effects.add(effect);
 
-		if (effect instanceof Explosion && cameraShake < 5) {
+		if (effect instanceof Explosion) {
+			playSound("explosion" + Tools.decide(1, 2, 3), effect.getX(), effect.getY(), 1);
 
-			for (int i = 0; i < masses.size; i++) {
-				Mass mass = masses.get(i);
-				float distance = Vector2.dst(mass.getX(), mass.getY(), ((Explosion) effect).getX(),
+			if (cameraShake < 5) {
+				for (int i = 0; i < masses.size; i++) {
+					Mass mass = masses.get(i);
+					float distance = Vector2.dst(mass.getX(), mass.getY(), ((Explosion) effect).getX(),
+							((Explosion) effect).getY());
+					if (distance < 300) {
+						float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+
+						if (mass.isAlive())
+							mass.doDamage(damage, DamageCause.EXPLOSION);
+					}
+				}
+
+				float distance = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
 						((Explosion) effect).getY());
 				if (distance < 300) {
 					float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-
-					if (mass.isAlive())
-						mass.doDamage(damage, DamageCause.EXPLOSION);
+					playerHurt(player, damage, DamageCause.EXPLOSION);
+					cameraShake = 5 / (0.01f * distance + 1);
 				}
-			}
-
-			float distance = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
-					((Explosion) effect).getY());
-			if (distance < 300) {
-				float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-				playerHurt(player, damage, DamageCause.EXPLOSION);
-				cameraShake = 5 / (0.01f * distance + 1);
 			}
 		}
 	}
@@ -535,7 +540,7 @@ public class Universe implements Disposable {
 		float d = Vector2.dst(x, y, player.getX(), player.getY());
 
 		if (d < 500) {
-			float v = 3f / (d + 3);
+			float v = 10f / (d + 10) + volume;
 
 			float u = x - player.getX();
 			float pan = (float) Math.atan(u);

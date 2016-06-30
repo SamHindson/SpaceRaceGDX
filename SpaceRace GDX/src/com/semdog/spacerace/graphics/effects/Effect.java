@@ -10,4 +10,12 @@ public abstract class Effect {
 	public abstract void render(SpriteBatch batch);
 	
 	public abstract boolean isAlive();
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
 }

@@ -28,6 +28,7 @@ public class Colors {
 	public static final Color V_SHOTGUNAMMO = new Color(0xFAFAFAFF);
 	public static final Color V_PLAYERGRENADES = new Color(0xFFB626FF);
 	public static final Color V_BOOST = new Color(0x46B1C9FF);
+	public static final Color V_ROCKETAMMO = new Color(0x3454D1FF);
 	
 	public static Color getRandom() {
 		return (Color) Tools.decide(P_BLUE, P_GRAY, P_GREEN, P_ORANGE, P_PURPLE, P_RED, P_WHITE, P_YELLOW);
