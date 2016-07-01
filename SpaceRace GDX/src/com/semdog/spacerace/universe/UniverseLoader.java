@@ -1,13 +1,13 @@
 package com.semdog.spacerace.universe;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.collectables.Health;
 import com.semdog.spacerace.vehicles.RubbishLander;
 import com.semdog.spacerace.vehicles.SmallBombarder;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class UniverseLoader {
 	public void load(Universe universe) {
@@ -54,24 +54,20 @@ public class UniverseLoader {
 				try {
 					String ssname = value.get(1).get(0).name;
 					float ssvalue = value.get(1).getFloat(0);
-					System.out.println(ssname + " ---> " + ssvalue);
 					SmallBombarder.class.getDeclaredMethod(ssname, float.class).invoke(dude, ssvalue);
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NoSuchMethodException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+                } catch (NullPointerException npe) {
+                    Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
+                }
 
 				break;
 			case "rubbish":

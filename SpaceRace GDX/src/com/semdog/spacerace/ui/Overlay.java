@@ -27,12 +27,12 @@ public abstract class Overlay {
 		background = Art.get("pixel_white");
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-				Gdx.files.internal("assets/fonts/VCR_OSD_MONO_1.001.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 64;
-		titleFont = generator.generateFont(parameter);
-		parameter.size = 32;
-		subtitleFont = generator.generateFont(parameter);
+                Gdx.files.internal("assets/fonts/Mohave.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 84;
+        titleFont = generator.generateFont(parameter);
+        parameter.size = 48;
+        subtitleFont = generator.generateFont(parameter);
 
 		title = subtitle = "";
 	}

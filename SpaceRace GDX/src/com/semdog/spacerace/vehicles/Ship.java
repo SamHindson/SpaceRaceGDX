@@ -1,6 +1,5 @@
 package com.semdog.spacerace.vehicles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -41,14 +40,11 @@ public abstract class Ship extends Mass {
 	protected int pAmmo, sAmmo;
 	protected boolean pAutomatic, sAutomatic;
 	protected float pCooldown, sCooldown, pRest, sRest;
-
-	private boolean initialized;
-
 	protected boolean boostActive = false;
 	protected float boostTime = 30, boostRemaining;
-
 	protected VitalSigns vitalSigns;
 	protected Vitality vFuel, vBoost, vHealth;
+    private boolean initialized;
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, String textureName, String id) {
 		this(x, y, w, h, fuel, power, 0, 0, textureName, id);
@@ -218,8 +214,6 @@ public abstract class Ship extends Mass {
 		
 		sprite.draw(batch);
 		
-		Gdx.app.log("Mass", position + "");
-		
 		if(ouchTime > 0) {
 			silhouette.setAlpha(MathUtils.random(0.5f, 1));
 			silhouette.draw(batch);
@@ -276,10 +270,17 @@ public abstract class Ship extends Mass {
 			Universe.currentUniverse.playerKilled(pilot, cause);
 		}
 
-		for (int k = 0; k < 30; k++) {
-			new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
-		}
-	}
+        rud();
+    }
+
+    /**
+     * This code is executed when the ship undergoes a RUD (Rapid Unscheduled Disassembly)
+     */
+    protected void rud() {
+        for (int k = 0; k < 30; k++) {
+            new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
+        }
+    }
 
 	@Override
 	protected void hitPlayer(Player player) {
@@ -335,4 +336,9 @@ public abstract class Ship extends Mass {
 		velocity.x = MathUtils.sin(angle) * v;
 		velocity.y = MathUtils.cos(angle) * v;
 	}
+
+    @Override
+    public Color getColor() {
+        return Colors.V_FUEL;
+    }
 }

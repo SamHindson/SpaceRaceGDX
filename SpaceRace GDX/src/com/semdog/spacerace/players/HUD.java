@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
-import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.universe.Universe;
 
 /**
@@ -20,183 +20,191 @@ import com.semdog.spacerace.universe.Universe;
  */
 
 public class HUD implements Disposable {
-	private Player owner;
-	private String title, subtitle;
-	private boolean showingMessage = false;
-	private boolean showingStats, showingTimer;
+    private Player owner;
+    private String title, subtitle;
+    private boolean showingMessage = false;
+    private boolean showingStats, showingTimer;
 
-	private boolean initialSpawn;
+    private boolean initialSpawn;
 
-	private boolean respawning = false, respawnable = false;
-	private float respawnCounter;
+    private boolean respawning = false, respawnable = false;
+    private float respawnCounter;
 
-	@SuppressWarnings("unused")
-	private boolean countdownActive;
-	private float timeLeft;
+    @SuppressWarnings("unused")
+    private boolean countdownActive;
+    private float timeLeft;
 
-	private BitmapFont titleFont, subtitleFont, countdownFont;
-	private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
+    private BitmapFont titleFont, subtitleFont, countdownFont;
+    private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
 
-	public HUD(Player owner) {
-		this.owner = owner;
+    public HUD(Player owner) {
+        this.owner = owner;
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-				Gdx.files.internal("assets/fonts/VCR_OSD_MONO_1.001.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 64;
-		titleFont = generator.generateFont(parameter);
-		parameter.size = 40;
-		subtitleFont = generator.generateFont(parameter);
-		parameter.size = 45;
-		countdownFont = generator.generateFont(parameter);
-		generator.dispose();
-		
-		title = subtitle = "";
-	}
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+                Gdx.files.internal("assets/fonts/Mohave.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 64;
+        titleFont = generator.generateFont(parameter);
+        parameter.size = 40;
+        subtitleFont = generator.generateFont(parameter);
+        parameter.size = 45;
+        countdownFont = generator.generateFont(parameter);
+        generator.dispose();
 
-	public void update(float dt) {
-		if (respawning) {
-			respawnCounter -= dt;
+        title = subtitle = "";
+    }
 
-			if (respawnCounter <= 0) {
-				respawning = false;
-				showingMessage = false;
+    public void update(float dt) {
+        if (respawning) {
+            respawnCounter -= dt;
 
-				if (initialSpawn) {
-					Universe.currentUniverse.setPlayerEnabled(true);
-					initialSpawn = false;
-				}
+            if (respawnCounter <= 0) {
+                respawning = false;
+                showingMessage = false;
 
-				if (respawnable && !initialSpawn)
-					Universe.currentUniverse.respawnPlayer();
-			}
-		}
-	}
+                if (initialSpawn) {
+                    Universe.currentUniverse.setPlayerEnabled(true);
+                    initialSpawn = false;
+                }
 
-	public void draw(SpriteBatch spriteBatch) {
-		if (respawning) {
-			subtitleFont.setColor(new Color(MathUtils.random(2147483646)));
-			subtitleFont.draw(spriteBatch, "[" + (int) (respawnCounter) + "]", respawnX, respawnY);
-		}
+                if (respawnable && !initialSpawn)
+                    Universe.currentUniverse.respawnPlayer();
+            }
+        }
+    }
 
-		if (showingTimer) {
-			int min = (int) (timeLeft / 60);
-			int sec = (int) (timeLeft % 60);
-			countdownFont.draw(spriteBatch, min + ":" + sec,
-					Gdx.graphics.getWidth() / 2 - 24, Gdx.graphics.getHeight() - 10);
-		}
+    public void draw(SpriteBatch spriteBatch) {
+        if (respawning) {
+            subtitleFont.setColor(new Color(MathUtils.random(2147483646)));
+            subtitleFont.draw(spriteBatch, "[" + (int) (respawnCounter) + "]", respawnX, respawnY);
+        }
 
-		if (owner.isBoarding()) {
-			subtitleFont.setColor(new Color((int) (MathUtils.random() * Integer.MAX_VALUE)));
-			subtitleFont.draw(spriteBatch, "PRESS [E] TO BOARD", Gdx.graphics.getWidth() / 2.f - 169.0f,
-					Gdx.graphics.getHeight() * 0.4f - 10.5f);
-		}
+        if (showingTimer) {
+            int min = (int) (timeLeft / 60);
+            int sec = (int) (timeLeft % 60);
+            String time = String.format("%01d:%02d", min, sec);
 
-		if (showingMessage) {
-			titleFont.draw(spriteBatch, title, titleX, titleY);
-			subtitleFont.setColor(Color.WHITE);
-			subtitleFont.draw(spriteBatch, subtitle, subtitleX, subtitleY);
-		}
+            if (timeLeft < 10) {
+                countdownFont.setColor(Colors.P_RED);
+            }
+            countdownFont.draw(spriteBatch, time,
+                    Gdx.graphics.getWidth() / 2 - 24, Gdx.graphics.getHeight() - 10);
+            if (timeLeft < 10) {
+                countdownFont.setColor(Color.WHITE);
+            }
+        }
 
-		if (showingStats) {
-			int size = owner.getPrimarySigns().getSigns().values().size();
-			spriteBatch.setColor(0, 0, 0, 0.5f);
-			spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 0, 245, 15 + 40 * size);
-			spriteBatch.setColor(Color.WHITE);
-			spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 5, 245, 15 + 40 * size);
-			int h = 0;
-			for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
-				if (vitality.getValueType() == VitalSigns.Type.CONTINUOUS) {
-					spriteBatch.setColor(new Color(vitality.getColor()));
-					spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
-							235.f * (vitality.getValue() / vitality.getMaxValue()), 40);
-					spriteBatch.setColor(0, 0, 0, 0.5f);
-					spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
-							235.f * (vitality.getValue() / vitality.getMaxValue()), 5);
-					spriteBatch.setColor(Color.WHITE);
+        if (owner.isBoarding()) {
+            subtitleFont.setColor(new Color((int) (MathUtils.random() * Integer.MAX_VALUE)));
+            subtitleFont.draw(spriteBatch, "PRESS [E] TO BOARD", Gdx.graphics.getWidth() / 2.f - 169.0f,
+                    Gdx.graphics.getHeight() * 0.4f - 10.5f);
+        }
 
-				} else {
-					float maxParts = vitality.getMaxValue();
-					float partCount = vitality.getValue();
-					float interblockSpaces = 2 * (maxParts - 1);
-					float blockTotal = 235 - interblockSpaces;
-					float blockWidth = blockTotal / maxParts;
-					float interval = blockWidth + 2;
+        if (showingMessage) {
+            titleFont.draw(spriteBatch, title, titleX, titleY);
+            subtitleFont.setColor(Color.WHITE);
+            subtitleFont.draw(spriteBatch, subtitle, subtitleX, subtitleY);
+        }
 
-					for (int j = 0; j < partCount; j++) {
-						spriteBatch.setColor(new Color(vitality.getColor()));
-						spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
-								40 * h + h * 2 + 10, blockWidth, 40);
-						spriteBatch.setColor(0, 0, 0, 0.5f);
-						spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
-								40 * h + h * 2 + 10, blockWidth, 5);
-						spriteBatch.setColor(Color.WHITE);
-					}
-				}
-				h++;
-			}
-		}
-	}
+        if (showingStats) {
+            int size = owner.getPrimarySigns().getSigns().values().size();
+            spriteBatch.setColor(0, 0, 0, 0.5f);
+            spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 0, 245, 15 + 40 * size);
+            spriteBatch.setColor(Color.WHITE);
+            spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 5, 245, 15 + 40 * size);
+            int h = 0;
+            for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
+                if (vitality.getValueType() == VitalSigns.Type.CONTINUOUS) {
+                    spriteBatch.setColor(new Color(vitality.getColor()));
+                    spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
+                            235.f * (vitality.getValue() / vitality.getMaxValue()), 40);
+                    spriteBatch.setColor(0, 0, 0, 0.5f);
+                    spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
+                            235.f * (vitality.getValue() / vitality.getMaxValue()), 5);
+                    spriteBatch.setColor(Color.WHITE);
 
-	public void setCountdownValue(int time) {
-		timeLeft = time;
-	}
+                } else {
+                    float maxParts = vitality.getMaxValue();
+                    float partCount = vitality.getValue();
+                    float interblockSpaces = 2 * (maxParts - 1);
+                    float blockTotal = 235 - interblockSpaces;
+                    float blockWidth = blockTotal / maxParts;
+                    float interval = blockWidth + 2;
 
-	public void setDead(DamageCause reason, boolean respawnable) {
-		this.respawnable = respawnable;
+                    for (int j = 0; j < partCount; j++) {
+                        spriteBatch.setColor(new Color(vitality.getColor()));
+                        spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
+                                40 * h + h * 2 + 10, blockWidth, 40);
+                        spriteBatch.setColor(0, 0, 0, 0.5f);
+                        spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
+                                40 * h + h * 2 + 10, blockWidth, 5);
+                        spriteBatch.setColor(Color.WHITE);
+                    }
+                }
+                h++;
+            }
+        }
+    }
 
-		showingStats = false;
+    public void setCountdownValue(int time) {
+        timeLeft = time;
+    }
 
-		if (respawnable) {
-			respawning = true;
-			respawnCounter = 6;
-		}
+    public void setDead(DamageCause reason, boolean respawnable) {
+        this.respawnable = respawnable;
 
-		setText(LifeAndDeath.getRandomCondolence(), reason.getDetails());
-	}
+        showingStats = false;
 
-	public void displayMessage() {
-		showingMessage = true;
-	}
+        if (respawnable) {
+            respawning = true;
+            respawnCounter = 6;
+        }
 
-	public void hideMessage() {
-		showingMessage = false;
-	}
+        setText(LifeAndDeath.getRandomCondolence(), reason.getDetails());
+    }
 
-	public void setText(String title, String subtitle) {
-		this.title = title;
-		this.subtitle = subtitle;
+    public void displayMessage() {
+        showingMessage = true;
+    }
 
-		GlyphLayout titGlyph = new GlyphLayout(titleFont, title);
-		titleX = Gdx.graphics.getWidth() / 2 - titGlyph.width / 2.f;
-		titleY = Gdx.graphics.getHeight() * 0.22f - titGlyph.height / 2.f;
+    public void hideMessage() {
+        showingMessage = false;
+    }
 
-		GlyphLayout subGlyph = new GlyphLayout(subtitleFont, subtitle);
-		subtitleX = Gdx.graphics.getWidth() / 2 - subGlyph.width / 2.f;
-		subtitleY = Gdx.graphics.getHeight() * 0.1f - subGlyph.height / 2.f + 20;
+    public void setText(String title, String subtitle) {
+        this.title = title;
+        this.subtitle = subtitle;
 
-		GlyphLayout resGlyph = new GlyphLayout(subtitleFont, "[0]");
-		respawnX = Gdx.graphics.getWidth() / 2 - resGlyph.width / 2.f;
-		respawnY = Gdx.graphics.getHeight() * 0.070f - resGlyph.height / 2.f;
-	}
+        GlyphLayout titGlyph = new GlyphLayout(titleFont, title);
+        titleX = Gdx.graphics.getWidth() / 2 - titGlyph.width / 2.f;
+        titleY = Gdx.graphics.getHeight() * 0.22f - titGlyph.height / 2.f;
 
-	public void hideAll() {
-		showingStats = false;
-		showingMessage = false;
-		showingTimer = false;
-	}
+        GlyphLayout subGlyph = new GlyphLayout(subtitleFont, subtitle);
+        subtitleX = Gdx.graphics.getWidth() / 2 - subGlyph.width / 2.f;
+        subtitleY = Gdx.graphics.getHeight() * 0.1f - subGlyph.height / 2.f + 20;
 
-	public void showStats() {
-		showingStats = true;
-	}
-	
-	public void showTimer() {
-		showingTimer = true;
-	}
+        GlyphLayout resGlyph = new GlyphLayout(subtitleFont, "[0]");
+        respawnX = Gdx.graphics.getWidth() / 2 - resGlyph.width / 2.f;
+        respawnY = Gdx.graphics.getHeight() * 0.070f - resGlyph.height / 2.f;
+    }
 
-	@Override
-	public void dispose() {
-		titleFont.dispose();
-		subtitleFont.dispose();
-	}
+    public void hideAll() {
+        showingStats = false;
+        showingMessage = false;
+        showingTimer = false;
+    }
+
+    public void showStats() {
+        showingStats = true;
+    }
+
+    public void showTimer() {
+        showingTimer = true;
+    }
+
+    @Override
+    public void dispose() {
+        titleFont.dispose();
+        subtitleFont.dispose();
+    }
 }

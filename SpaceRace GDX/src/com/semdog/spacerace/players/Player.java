@@ -3,7 +3,6 @@ package com.semdog.spacerace.players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,14 +18,9 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.VitalSigns.Type;
-import com.semdog.spacerace.universe.Collideable;
-import com.semdog.spacerace.universe.Goalobject;
-import com.semdog.spacerace.universe.Grenade;
-import com.semdog.spacerace.universe.Planet;
-import com.semdog.spacerace.universe.Universe;
+import com.semdog.spacerace.universe.*;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.RocketLauncher;
-import com.semdog.spacerace.weapons.SMG;
 import com.semdog.spacerace.weapons.Weapon;
 
 public class Player implements Collideable {
@@ -65,6 +59,8 @@ public class Player implements Collideable {
 
 	private VitalSigns primarySigns;
 	private Vitality vHealth, vAmmo, vGrenades;
+
+    private Array<Planet> visitedPlanets;
 
 	private int grenadeCount;
 
@@ -175,7 +171,9 @@ public class Player implements Collideable {
 		};
 
 		primarySigns.addItems(vHealth, vAmmo, vGrenades);
-	}
+
+        visitedPlanets = new Array<>();
+    }
 
 	public VitalSigns getPrimarySigns() {
 		return pilotingShip ? ship.getVitalSigns() : primarySigns;
@@ -196,22 +194,17 @@ public class Player implements Collideable {
 		return team;
 	}
 
-	public float getHealth() {
-		return health;
-	}
-	
 	public Vector2 getPosition() {
 		return pilotingShip ? ship.getPosition() : position;
 	}
 
-	public void update(float dt, OrthographicCamera camera, boolean controllable, Array<Planet> planets) {
-		//Gdx.app.log("Player", "Player at " + getPosition());
-		if (alive) {
+    public void update(float dt, boolean controllable, Array<Planet> planets) {
+        if (alive) {
 			if (pilotingShip && controllable) {
 				ship.updateControls(dt);
 
-				if (Gdx.input.isKeyJustPressed(Keys.E) && controllable) {
-					pilotingShip = false;
+                if (Gdx.input.isKeyJustPressed(Keys.E)) {
+                    pilotingShip = false;
 					float shipAngle = ship.getAngleAroundEnvironment();
 					position.x = ship.getX() + 30 * MathUtils.sin(shipAngle);
 					position.y = ship.getY() + 30 * MathUtils.cos(shipAngle);
@@ -251,12 +244,16 @@ public class Player implements Collideable {
 							vy = vy < 0 ? 0 : vy;
 							float v = Vector2.len(vx, vy);
 							if (v > 200) {
-								doDamage((v / getImpactThreshhold()) * 50, DamageCause.FALLING);
-								onGround = true;
-							}
-							position.x = environment.getX() + (environment.getRadius() + 10) * MathUtils.cos(angle);
+                                doDamage((v / getImpactThreshold()) * 50, DamageCause.FALLING);
+                            }
+                            onGround = true;
+                            position.x = environment.getX() + (environment.getRadius() + 10) * MathUtils.cos(angle);
 							position.y = environment.getY() + (environment.getRadius() + 10) * MathUtils.sin(angle);
-						}
+
+                            if (!visitedPlanets.contains(environment, true)) {
+                                visitedPlanets.add(environment);
+                            }
+                        }
 					} else {
 						velocity.set(Vector2.Zero);
 					}
@@ -281,7 +278,6 @@ public class Player implements Collideable {
 					lefting = false;
 				} else {
 					// Bly stil
-
 					wx = wy = 0;
 					lefting = righting = false;
 				}
@@ -289,9 +285,8 @@ public class Player implements Collideable {
 				if (Gdx.input.isKeyJustPressed(Keys.SPACE) && onGround && controllable) {
 					// Jump!
 
-					// Works out which direction is up and shoots the player
-					// there
-					float jx = 5500 * MathUtils.cos(angle);
+                    // Works out which direction is up and shoots the player in said direction
+                    float jx = 5500 * MathUtils.cos(angle);
 					float jy = 5500 * MathUtils.sin(angle);
 
 					velocity.add(jx * dt, jy * dt);
@@ -323,8 +318,8 @@ public class Player implements Collideable {
 				a = -MathUtils.atan2(ay - (Gdx.graphics.getHeight() / 2), ax - (Gdx.graphics.getWidth() / 2)) + angle
 						- MathUtils.PI / 2;
 
-				if (weapon != null)
-					weapon.update(dt, a);
+                if (weapon != null && controllable)
+                    weapon.update(dt, a);
 
 				if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0 && controllable) {
 					float gx = position.x + 30 * MathUtils.cos(a);
@@ -341,8 +336,8 @@ public class Player implements Collideable {
 		}
 	}
 
-	private float getImpactThreshhold() {
-		return 1000;
+    private float getImpactThreshold() {
+        return 1000;
 	}
 
 	public boolean isOnGround() {
@@ -424,7 +419,6 @@ public class Player implements Collideable {
 		Gdx.app.log("Player", "Player respawned at " + position);
 
 		health = 200;
-
 		grenadeCount = 5;
 
 		weapon.reset();
@@ -461,17 +455,8 @@ public class Player implements Collideable {
 		}
 	}
 
-	public void addSpeed(float dx2, float dy2) {
-		velocity.x += dx2;
-		velocity.y += dy2;
-	}
-
 	public Vector2 getVelocity() {
 		return pilotingShip ? ship.getVelocity() : velocity;
-	}
-
-	public void setEnvironment(Planet planet) {
-		environment = planet;
 	}
 
 	public String getEnvironmentID() {
@@ -502,8 +487,8 @@ public class Player implements Collideable {
 	}
 
 	public String getShipID() {
-		return pilotingShip ? ((Goalobject) ship).getID() : "???";
-	}
+        return pilotingShip ? ((GoalObject) ship).getID() : "???";
+    }
 
 	public void addSpeed(Vector2 added) {
 		velocity.add(added);
@@ -521,10 +506,21 @@ public class Player implements Collideable {
 
 	public Planet getEnvironment() {
 		return environment;
-	}
+    }
+
+    public void setEnvironment(Planet planet) {
+        environment = planet;
+    }
 
 	public void kickBack(float angle, float force) {
-		System.out.println(force * MathUtils.sin(angle) + ", " + force * MathUtils.cos(angle));
 		velocity.add(force * MathUtils.sin(angle), force * MathUtils.cos(angle));
 	}
+
+    public Array<Planet> getVisitedPlanets() {
+        return visitedPlanets;
+    }
+
+    public float getVisitedPlanetsNo() {
+        return visitedPlanets.size;
+    }
 }

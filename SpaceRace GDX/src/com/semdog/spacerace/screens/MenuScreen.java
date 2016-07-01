@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
+import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
@@ -46,7 +47,8 @@ public class MenuScreen extends RaceScreen {
 		button4.setColors(Colors.P_PINK, Color.WHITE);
 		
 		button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.27f, 200, 50, () -> {
-			Gdx.app.exit();
+            SoundManager.stopMusic("menu");
+            Gdx.app.exit();
 		});
 		button5.setColors(Colors.P_GREEN, Color.DARK_GRAY);
 		
@@ -56,7 +58,9 @@ public class MenuScreen extends RaceScreen {
 		secretButton.setColors(Color.ORANGE, Color.GREEN);
 		
 		titleCard = new TitleCard(1, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
-	}
+
+        SoundManager.playMusic("menu");
+    }
 
 	@Override
 	public void update(float dt) {

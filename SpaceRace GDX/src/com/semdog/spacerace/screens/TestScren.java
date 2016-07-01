@@ -20,7 +20,7 @@ public class TestScren extends RaceScreen {
     public TestScren(RaceGame game) {
         super(game);
         System.out.println("Universe,,,");
-        uni = new Universe();
+        uni = new Universe(null);
 
         for (float k = 0; k < 20.f; k++) {
             float a = MathUtils.PI2 * (k / 20.f);

@@ -2,7 +2,6 @@ package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DamageCause;
@@ -18,9 +18,10 @@ import com.semdog.spacerace.vehicles.DebrisPiece;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Bullet;
 
-public abstract class Mass implements Goalobject {
+public abstract class Mass implements GoalObject {
 
-	protected Vector2 position, velocity;
+    protected static Color[] orbitColors = {Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY,};
+    protected Vector2 position, velocity;
 	protected float mass, angle;
 	protected float width, height;
 	protected boolean onGround, alive = true;
@@ -28,13 +29,9 @@ public abstract class Mass implements Goalobject {
 	protected boolean shouldCollide, gravityEnabled = true;
 	protected Rectangle bounds;
 	protected float currentHealth, maxHealth;
-	
 	protected float age;
-
 	protected float ouchTime;
-
 	protected boolean loaded = false;
-
 	protected String id;
 
 	public Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment,
@@ -67,6 +64,24 @@ public abstract class Mass implements Goalobject {
 		this(x, y, dx, dy, mass, width, height, null, id);
 	}
 
+    protected static Color getOrbitColor(Mass mass) {
+        Color color = Color.GRAY;
+
+        if (mass instanceof Ship) {
+            if (((Ship) mass).hasPilot()) {
+                return Color.WHITE;
+            } else {
+                return Color.GRAY;
+            }
+        } else if (mass instanceof Grenade) {
+            return Color.LIGHT_GRAY;
+        } else if (mass instanceof DebrisPiece) {
+            return Color.DARK_GRAY;
+        }
+
+        return color;
+    }
+
 	public void setMaxHealth(int maxHealth) {
 		this.maxHealth = maxHealth;
 		currentHealth = maxHealth;
@@ -95,7 +110,7 @@ public abstract class Mass implements Goalobject {
 		if (environment != null) {
 			angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
 		}
-		
+
 		age += dt;
 
 		if (gravityEnabled) {
@@ -190,9 +205,17 @@ public abstract class Mass implements Goalobject {
 		return velocity.x;
 	}
 
+    public void setDx(float dx) {
+        velocity.x = dx;
+    }
+
 	public float getDy() {
 		return velocity.y;
 	}
+
+    public void setDy(float dy) {
+        velocity.y = dy;
+    }
 
 	public Rectangle getBounds() {
 		return bounds;
@@ -238,8 +261,12 @@ public abstract class Mass implements Goalobject {
 		renderer.identity();
 		renderer.translate(environment.getPosition().x, environment.getPosition().y, 0);
 		renderer.rotate(0, 0, 1, getOrbitAngle() * MathUtils.radiansToDegrees + 90);
-		renderer.ellipse((-semiminor), (-semimajor - f), semiminor * 2, semimajor * 2);
-		renderer.identity();
+        try {
+            renderer.ellipse((-semiminor), (-semimajor - f), semiminor * 2, semimajor * 2);
+        } catch (Exception e) {
+            Gdx.app.error("Mass", "There was some sort of error while trying to render that orbit. Oops");
+        }
+        renderer.identity();
 		renderer.setColor(Color.WHITE);
 		//Gdx.gl20.glLineWidth(1);*/
 	}
@@ -253,9 +280,13 @@ public abstract class Mass implements Goalobject {
 		}
 	}
 
-	public void render(SpriteBatch batch) {
-		
-	}
+    public void render(SpriteBatch batch) {
+    }
+
+    @Override
+    public Color getColor() {
+        return Colors.P_GRAY;
+    }
 
 	public void checkCollisions(Array<Mass> masses) {
 		for (int u = 0; u < masses.size; u++) {
@@ -316,14 +347,6 @@ public abstract class Mass implements Goalobject {
 		}
 	}
 
-	public void setDx(float dx) {
-		velocity.x = dx;
-	}
-
-	public void setDy(float dy) {
-		velocity.y = dy;
-	}
-
 	public Vector2 getPosition() {
 		return position;
 	}
@@ -356,26 +379,6 @@ public abstract class Mass implements Goalobject {
 	private float getOrbitAngle() {
 		return getTrueAnomaly() - MathUtils.PI
 				+ MathUtils.atan2(position.y - environment.getPosition().y, position.x - environment.getPosition().x);
-	}
-
-	protected static Color[] orbitColors = { Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY, };
-
-	protected static Color getOrbitColor(Mass mass) {
-		Color color = Color.GRAY;
-
-		if (mass instanceof Ship) {
-			if (((Ship) mass).hasPilot()) {
-				return Color.WHITE;
-			} else {
-				return Color.GRAY;
-			}
-		} else if (mass instanceof Grenade) {
-			return Color.LIGHT_GRAY;
-		} else if (mass instanceof DebrisPiece) {
-			return Color.DARK_GRAY;
-		}
-
-		return color;
 	}
 
 	public boolean contians(Bullet bullet) {

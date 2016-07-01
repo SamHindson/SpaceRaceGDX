@@ -14,6 +14,8 @@ public class RubbishLander extends Ship {
 
 	private ParticleEffect particleEffect;
 
+    private float dr;
+
 	public RubbishLander(float x, float y, String id) {
 		super(x, y, 32, 32, 3000, 250, "tinyship", id);
 
@@ -47,11 +49,13 @@ public class RubbishLander extends Ship {
 	@Override
 	public void updateControls(float dt) {
 		if (Gdx.input.isKeyPressed(Keys.A)) {
-			r += dt * 30;
-		}
+            dr += dt * 60;
+        }
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-			r -= dt * 30;
-		}
+            dr -= dt * 60;
+        }
+
+        r += dr * dt;
 
 		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 0) {
 			currentFuel -= power * dt;
@@ -76,6 +80,7 @@ public class RubbishLander extends Ship {
 
 	@Override
 	public void fireSecondary() {
-		System.out.println("Werent you listening");
-	}
+        System.out.println("Weren't you listening");
+    }
+
 }

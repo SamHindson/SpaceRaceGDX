@@ -1,48 +1,75 @@
 {
-	"name": "yeeeaaahhh",
-	"description": "Well this is embarassing.",
-	"planet-0": [
-		{
-			"id": "home",
-			"radius": 500,
-			"x": 500,
-			"y": 0
-		}
-	],
-	"healthpack": [
-		{
-			"orbiter": false,
-			"x": -50,
-			"y": 0
-		}
-	],
-	"playerstuff": [
-		{
-			"x": 500,
-			"y": 600
-		}
-	],
-	"runt": [
-		{
-			"x": 100,
-			"y": 0,
-			"id": "dude"
-		}
-		{
-			"setDy": 0
-		}
-	],
-	"playercriteria": [
-		{
-			"boolean-isAlive": true,
-			"string-getEnvironmentID": "bruh",
-			"boolean-isOnGround": true
-		}
-	],
-	"mission": [
-		{
-			"timelimit": 2014,
-			"suddendeath": true
-		}
-	],
+  "name": "yeeeaaahhh",
+  "description": "Well this is embarassing.",
+  "planet": [
+    {
+      "id": "home",
+      "radius": 250,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "homer",
+      "radius": 250,
+      "x": 1500,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "home",
+      "radius": 250,
+      "x": 0,
+      "y": 1500
+    }
+  ],
+  "planet": [
+    {
+      "id": "homer",
+      "radius": 250,
+      "x": 1500,
+      "y": 1500
+    }
+  ],
+  "healthpack": [
+    {
+      "orbiter": false,
+      "x": -50,
+      "y": 0
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 300
+    }
+  ],
+  "runt": [
+    {
+      "x": -300,
+      "y": 0,
+      "id": "dude"
+    }
+  ],
+  "runt": [
+    {
+      "x": 1800,
+      "y": 1500,
+      "id": "dude"
+    }
+  ],
+  "playercriteria": [
+    {
+      "boolean-isAlive": true,
+      "float-getVisitedPlanetsNo": 4
+    }
+  ],
+  "mission": [
+    {
+      "timelimit": 2,
+      "suddendeath": true
+    }
+  ]
 }

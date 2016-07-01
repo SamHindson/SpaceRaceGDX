@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.players.DamageCause;
-import com.semdog.spacerace.players.Vitality;
 import com.semdog.spacerace.players.VitalSigns.Type;
+import com.semdog.spacerace.players.Vitality;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.weapons.Bullet;
@@ -23,7 +23,7 @@ public class SmallBombarder extends Ship {
 	private int maxAmmo = 128, currentAmmo;
 
 	public SmallBombarder(float x, float y, String id) {
-		super(x, y, 32, 32, 10000, 400, "runt", id);
+        super(x, y, 32, 32, 10000, 75, "runt", id);
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/runtflame.p"), Gdx.files.internal("assets/effects"));

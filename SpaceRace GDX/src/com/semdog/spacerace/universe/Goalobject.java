@@ -1,5 +1,9 @@
 package com.semdog.spacerace.universe;
 
-public interface Goalobject {
-	public String getID();
+import com.badlogic.gdx.graphics.Color;
+
+public interface GoalObject {
+    public String getID();
+
+    public Color getColor();
 }

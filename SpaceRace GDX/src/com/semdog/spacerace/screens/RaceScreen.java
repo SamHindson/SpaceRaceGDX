@@ -43,4 +43,8 @@ public abstract class RaceScreen extends ScreenAdapter {
 	public abstract void update(float dt);
 	public abstract void render();
 	public abstract void dispose();
+
+    public RaceGame getGame() {
+        return game;
+    }
 }

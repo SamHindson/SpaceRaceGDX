@@ -1,6 +1,5 @@
 package com.semdog.spacerace.misc;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.universe.Universe;
@@ -29,8 +28,6 @@ public class OrbitalHelper {
 		Vector2 orV = new Vector2(orbiterVelocity);
 
 		float mu = Universe.GRAVITY * orbiteeMass;
-		
-		Gdx.app.log("OrbitalHelper", orP.toString());
 
 		float angularMomentum = offset.crs(orV);
 		float eccX = (orV.y * angularMomentum) / mu - (offset.x / offset.len());
@@ -38,18 +35,12 @@ public class OrbitalHelper {
 		Vector2 eccentricityVector = new Vector2(eccX, eccY);
 		float eccentricity = eccentricityVector.len();
 
-		Gdx.app.log("OrbitalHelper", orP.toString());
-
 		float energy = orV.len() * orV.len() / 2 - mu / offset.len();
-
-		Gdx.app.log("OrbitalHelper", orP.toString());
 
 		float semiMajorAxis = -mu / (2 * energy);
 		float semiMinorAxis = (float) (semiMajorAxis * Math.sqrt(1 - (eccentricity * eccentricity)));
 		float apoapsis = semiMajorAxis * (1 + eccentricity);
 		float periapsis = semiMajorAxis * (1 - eccentricity);
-
-		Gdx.app.log("OrbitalHelper", orP.toString());
 
 		float trueAnomaly = 0;
 
@@ -67,17 +58,11 @@ public class OrbitalHelper {
 			}
 		}
 
-		Gdx.app.log("OrbitalHelper", orP.toString());
-
 		float sinE = (float) (MathUtils.sin(trueAnomaly) * Math.sqrt(1 - (eccentricity * eccentricity)) / (1 + eccentricity * MathUtils.cos(trueAnomaly)));
-		float cosE = (float) ((eccentricity + MathUtils.cos(trueAnomaly)) / (1 + eccentricity * MathUtils.cos(trueAnomaly)));
-		float eccentricAnomaly = MathUtils.atan2(sinE, cosE);
-
-		Gdx.app.log("OrbitalHelper", orP.toString());
+        float cosE = (eccentricity + MathUtils.cos(trueAnomaly)) / (1 + eccentricity * MathUtils.cos(trueAnomaly));
+        float eccentricAnomaly = MathUtils.atan2(sinE, cosE);
 		
 		float orbitalPeriod = MathUtils.PI2 * (float)Math.sqrt(Math.pow(semiMajorAxis, 3) / mu);
-
-		Gdx.app.log("OrbitalHelper", orP.toString());
 
 		float[] results = new float[10];
 		results[0] = angularMomentum;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.universe.Universe;
 
 public class RaceEndScreen extends Overlay {
 
@@ -15,9 +16,8 @@ public class RaceEndScreen extends Overlay {
 
 	public RaceEndScreen() {
 		super();
-		retry = new Button("Retry", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.41f, 200, 75,
-				null);
-		exit = new Button("Exit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.3f, 200, 75, null);
+        retry = new Button("Retry", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.41f, 200, 75, Universe::reset);
+        exit = new Button("Exit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.3f, 200, 75, Universe::transcend);
 
 		retry.setColors(Colors.P_BLUE, Color.WHITE);
 		exit.setColors(Colors.P_BLUE, Color.WHITE);

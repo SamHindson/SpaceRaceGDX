@@ -12,6 +12,8 @@ uniform sampler2D u_sampler2D;
 uniform float _VertsColor;
 uniform float _VertsColor2;
 
+uniform float f_ringy = 1;
+
 void main() {
 	int pp = (int)(1280 * v_texCoord0.x) % 3; 
 	vec4 outcolor = vec4(0, 0, 0, 1);
@@ -32,6 +34,8 @@ void main() {
     }
     
     outcolor = color * muls;
+
+    outcolor.rgb *= f_ringy;
 	
 	gl_FragColor = outcolor;
 }

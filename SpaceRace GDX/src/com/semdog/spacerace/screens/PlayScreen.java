@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.semdog.spacerace.RaceGame;
+import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.universe.UniverseLoader;
 
@@ -16,9 +17,8 @@ public class PlayScreen extends RaceScreen {
 	public PlayScreen(RaceGame game) {
 		super(game);
 
-		universe = new Universe();
-		new UniverseLoader().load(universe);
-		//runnable = new PhysicsRunnable();
+        bigBang();
+        //runnable = new PhysicsRunnable();
 		//physicsThread = new Thread(runnable, "SpaceRace! Physics Thread");
 		//physicsThread.start();
 	}
@@ -37,6 +37,13 @@ public class PlayScreen extends RaceScreen {
 			game.changeScreen("play");
 	}
 
+    public void bigBang() {
+        universe = new Universe(this);
+        new UniverseLoader().load(universe);
+
+        SoundManager.playMusic("oxidiser");
+    }
+
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
@@ -52,7 +59,7 @@ public class PlayScreen extends RaceScreen {
 		System.out.println("Done disposiong");
 	}
 
-	private class PhysicsRunnable implements Runnable {
+	/*private class PhysicsRunnable implements Runnable {
 
 		boolean running = false;
 
@@ -87,6 +94,6 @@ public class PlayScreen extends RaceScreen {
 			running = false;
 		}
 
-	}
+	}*/
 
 }

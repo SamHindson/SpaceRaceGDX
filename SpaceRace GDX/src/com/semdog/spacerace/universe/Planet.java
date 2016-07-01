@@ -1,17 +1,17 @@
 package com.semdog.spacerace.universe;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.graphics.Colors;
 
 import java.util.Random;
 
-public class Planet {
-	
-	private Vector2 position;
+public class Planet implements GoalObject {
+
+    private Vector2 position;
 	private float radius;
 	private float mass;
 	
@@ -31,13 +31,12 @@ public class Planet {
 		this.id = id;
 		
 		mass = radius * radius * 5f;
-		
-		System.out.println(x + ", " + y + "RABBITS");
-		
-		System.out.println("Planet mass: " + mass);
-		System.out.println("Planet Gravity at Surface: " + getGravity(radius) + "m/s2");
-		
-		color = Colors.getRandom();
+
+        Gdx.app.log("Planet", "Planet made.");
+        Gdx.app.error("Planet", "Raduis: " + radius);
+        Gdx.app.error("Planet", "SOI: " + radius * 3);
+
+        color = Colors.getRandom();
 		
 		dustMaker = new Random((int)(x + y + radius));
 		dustBalls = 100;
@@ -77,8 +76,8 @@ public class Planet {
 	}
 	
 	public float getSOI() {
-		return radius * 5;
-	}
+        return radius * 3;
+    }
 
 	public float getMass() {
 		return mass;
@@ -107,4 +106,9 @@ public class Planet {
 	public Vector2 getPosition() {
 		return position;
 	}
+
+    public void debugRender(ShapeRenderer shapeRenderer) {
+        shapeRenderer.setColor(color);
+        shapeRenderer.circle(position.x, position.y, getSOI());
+    }
 }
