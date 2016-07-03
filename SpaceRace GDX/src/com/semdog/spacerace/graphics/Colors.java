@@ -29,7 +29,18 @@ public class Colors {
 	public static final Color V_PLAYERGRENADES = new Color(0xFFB626FF);
 	public static final Color V_BOOST = new Color(0x46B1C9FF);
 	public static final Color V_ROCKETAMMO = new Color(0x3454D1FF);
-	
+
+    public static final Color UI_GRAY = new Color(0x5D737EFF);
+    public static final Color UI_RED = new Color(0xAF0000FF);
+    public static final Color UI_YELLOW = new Color(0xFFCC00FF);
+    public static final Color UI_BLUE = new Color(0x62BBC1FF);
+    public static final Color UI_INDIGO = new Color(0x0F6DB3FF);
+    public static final Color UI_PURPLE = new Color(0x7441A5FF);
+    public static final Color UI_GREEN = new Color(0x5CAF3DFF);
+    public static final Color UI_TEAL = new Color(0x7441A5FF);
+    public static final Color UI_VERMILLION = new Color(0xF85A3EFF);
+    public static final Color UI_WHITE = new Color(0xE1E6E1FF);
+
 	public static Color getRandom() {
 		return (Color) Tools.decide(P_BLUE, P_GRAY, P_GREEN, P_ORANGE, P_PURPLE, P_RED, P_WHITE, P_YELLOW);
 	}

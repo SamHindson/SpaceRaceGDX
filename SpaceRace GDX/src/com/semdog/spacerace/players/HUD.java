@@ -67,7 +67,7 @@ public class HUD implements Disposable {
                     initialSpawn = false;
                 }
 
-                if (respawnable && !initialSpawn)
+                if (respawnable)
                     Universe.currentUniverse.respawnPlayer();
             }
         }
@@ -204,7 +204,9 @@ public class HUD implements Disposable {
 
     @Override
     public void dispose() {
-        titleFont.dispose();
-        subtitleFont.dispose();
+        // TODO figure out what to dispose here
+        //titleFont.dispose();
+        //subtitleFont.dispose();
+        //countdownFont.dispose();
     }
 }

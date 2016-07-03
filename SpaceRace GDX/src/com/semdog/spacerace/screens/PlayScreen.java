@@ -2,7 +2,6 @@ package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.universe.Universe;
@@ -32,34 +31,29 @@ public class PlayScreen extends RaceScreen {
 			universe.tickPhysics(t * dt);
 			universe.finalizeState();
 		}
-		
-		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE))
-			game.changeScreen("play");
+
+        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+            game.changeScreen("play");
 	}
 
     public void bigBang() {
         universe = new Universe(this);
         new UniverseLoader().load(universe);
 
-        SoundManager.playMusic("oxidiser");
+        SoundManager.playMusic("oxidiser", true);
     }
 
 	@Override
 	public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
-				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-		Gdx.gl20.glClearColor(0, 0, 0, 0.9f);
 		universe.render();
 	}
 
 	@Override
 	public void dispose() {
-		//runnable.stop();
-		universe.dispose();
-		System.out.println("Done disposiong");
-	}
+        super.dispose();
+    }
 
-	/*private class PhysicsRunnable implements Runnable {
+    /*private class PhysicsRunnable implements Runnable {
 
 		boolean running = false;
 

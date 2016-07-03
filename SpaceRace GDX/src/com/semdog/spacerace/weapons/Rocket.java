@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Explosion;
-import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
@@ -87,4 +86,8 @@ public class Rocket extends Mass {
 		explode();
 	}
 
+    @Override
+    public void dispose() {
+        particleEffect.dispose();
+    }
 }

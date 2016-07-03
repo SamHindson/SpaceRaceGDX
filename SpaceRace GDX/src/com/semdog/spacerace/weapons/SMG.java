@@ -2,7 +2,6 @@ package com.semdog.spacerace.weapons;
 
 import com.badlogic.gdx.graphics.Color;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.universe.Universe;
 
 public class SMG extends Weapon {
     public SMG() {

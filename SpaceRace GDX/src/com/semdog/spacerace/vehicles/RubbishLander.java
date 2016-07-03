@@ -83,4 +83,8 @@ public class RubbishLander extends Ship {
         System.out.println("Weren't you listening");
     }
 
+    @Override
+    public void dispose() {
+        particleEffect.dispose();
+    }
 }

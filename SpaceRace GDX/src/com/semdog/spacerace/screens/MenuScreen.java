@@ -2,7 +2,6 @@ package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
@@ -25,41 +24,35 @@ public class MenuScreen extends RaceScreen {
 		super(game);
 		
 		batch = new SpriteBatch();
-		
-		button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 50, () -> {
-			game.changeScreen("playmenu");
+
+        button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 60, () -> game.changeScreen("play"));
+        button1.setColors(Colors.P_YELLOW, Colors.UI_BLUE);
+
+        button2 = new Button("Multiplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 61, 200, 60, () -> System.out.println("Dogs!"));
+        button2.setColors(Colors.UI_BLUE, Colors.P_YELLOW);
+
+        button3 = new Button("Settings", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 122, 200, 60, () -> {
+
 		});
-		button1.setColors(Colors.P_YELLOW, Color.BLUE);
-		
-		button2 = new Button("Multiplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.48f, 200, 50, () -> {
-			System.out.println("Dogs!");
+        button3.setColors(Colors.UI_YELLOW, Colors.UI_WHITE);
+
+        button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 183, 200, 60, () -> {
+
 		});
-		button2.setColors(Colors.P_BLUE, Color.YELLOW);
-		
-		button3 = new Button("Settings", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.41f, 200, 50, () -> {
-			game.changeScreen("settings");
-		});
-		button3.setColors(Colors.P_ORANGE, Color.GREEN);
-		
-		button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.34f, 200, 50, () -> {
-			System.out.println("Halp");
-		});
-		button4.setColors(Colors.P_PINK, Color.WHITE);
-		
-		button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.27f, 200, 50, () -> {
+        button4.setColors(Colors.UI_GRAY, Colors.UI_WHITE);
+
+        button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 244, 200, 60, () -> {
             SoundManager.stopMusic("menu");
             Gdx.app.exit();
 		});
-		button5.setColors(Colors.P_GREEN, Color.DARK_GRAY);
-		
-		secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {
-			Gdx.app.exit();
-		});
-		secretButton.setColors(Color.ORANGE, Color.GREEN);
+        button5.setColors(Colors.UI_BLUE, Colors.UI_WHITE);
+
+        secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> Gdx.app.exit());
+        secretButton.setColors(Color.ORANGE, Color.GREEN);
 		
 		titleCard = new TitleCard(1, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
 
-        SoundManager.playMusic("menu");
+        SoundManager.playMusic("menu", true);
     }
 
 	@Override
@@ -70,13 +63,16 @@ public class MenuScreen extends RaceScreen {
 		button4.update(dt);
 		button5.update(dt);
 		secretButton.update(dt);
-	}
+        button1.setColors(Colors.P_YELLOW, Colors.UI_WHITE);
+        button2.setColors(Colors.P_RED, Colors.UI_WHITE);
+        button3.setColors(Colors.P_PURPLE, Colors.UI_WHITE);
+        button4.setColors(Colors.P_GRAY, Colors.UI_WHITE);
+        button5.setColors(Colors.P_BLUE, Colors.UI_WHITE);
+
+    }
 
 	@Override
 	public void render() {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl20.glClearColor(0, 0, 0, 1f);
-
 		batch.begin();
 		
 		titleCard.draw(batch);
@@ -93,7 +89,8 @@ public class MenuScreen extends RaceScreen {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
+        super.dispose();
+        batch.dispose();
 		titleCard.dispose();
 	}
 	

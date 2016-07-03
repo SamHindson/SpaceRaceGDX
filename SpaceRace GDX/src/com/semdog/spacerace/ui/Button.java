@@ -39,16 +39,12 @@ public class Button {
 	private boolean hovered, held;
 
 	private Color buttonColor, textColor;
-	@SuppressWarnings("unused")
-	private boolean darkHover;
-	private String text;
+    private String text;
 
 	private boolean small = false;
-	
-	private GlyphLayout glyphLayout;
 
-	public Button(String text, boolean small, float x, float y, float w, float h, Event clickEvent) {
-		this.x = x;
+    public Button(String text, boolean small, float x, float y, float w, float h, Event clickEvent) {
+        this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
@@ -57,7 +53,7 @@ public class Button {
 
 		this.small = small;
 
-		glyphLayout = null;
+        GlyphLayout glyphLayout;
 
 		if (small) {
 			glyphLayout = new GlyphLayout(font10, text);
@@ -79,7 +75,6 @@ public class Button {
 	public void setColors(Color buttonColor, Color textColor) {
 		this.buttonColor = buttonColor;
 		this.textColor = textColor;
-		darkHover = (buttonColor.r + buttonColor.g + buttonColor.b) < 1.5f;
 	}
 
 	public void update(float dt) {
@@ -102,8 +97,10 @@ public class Button {
 	}
 
 	public void draw(SpriteBatch batch) {
-		batch.setColor(hovered ? textColor : buttonColor);
-		batch.draw(texture, x - w / 2, y - h / 2, w, h);
+        //batch.setColor(hovered ? buttonColor : textColor);
+        batch.setColor(hovered ? textColor : buttonColor);
+        batch.draw(texture, x - w / 2, y - h / 2, w, h);
+        //batch.draw(texture, x - w / 2 + 2, y - h / 2 + 2, w - 4, h - 4);
 
 		batch.setColor(Color.WHITE);
 		if (small) {
@@ -113,8 +110,5 @@ public class Button {
 			font16.setColor(hovered ? buttonColor : textColor);
 			font16.draw(batch, text, x + tox, y + toy);
 		}
-		
-		/*batch.setColor(Colors.PLANETORANGE);
-		batch.draw(texture, x - 2, y - 2, 4, 4);*/
 	}
 }

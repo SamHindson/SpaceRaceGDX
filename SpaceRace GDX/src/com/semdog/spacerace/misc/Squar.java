@@ -15,7 +15,7 @@ import com.semdog.spacerace.universe.Planet;
  */
 public class Squar extends Mass {
 
-	float age;
+    private float age;
 
 	public Squar(float x, float y, float dx, float dy, float mass, Planet environment) {
 		super(x, y, dx, dy, mass, 100, 100, environment, "Herobrine");
@@ -70,6 +70,11 @@ public class Squar extends Mass {
 
 	@Override
 	public String getID() {
-		return "squazzy";
-	}
+        return "squazzy_ninkfalunkzes";
+    }
+
+    @Override
+    public void dispose() {
+
+    }
 }

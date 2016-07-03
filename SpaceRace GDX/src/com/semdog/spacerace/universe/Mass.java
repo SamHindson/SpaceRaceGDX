@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
@@ -18,7 +19,7 @@ import com.semdog.spacerace.vehicles.DebrisPiece;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Bullet;
 
-public abstract class Mass implements GoalObject {
+public abstract class Mass implements GoalObject, Disposable {
 
     protected static Color[] orbitColors = {Color.WHITE, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY,};
     protected Vector2 position, velocity;
@@ -88,11 +89,8 @@ public abstract class Mass implements GoalObject {
 	}
 
 	public boolean isOnGround() {
-		if(environment == null)
-			return false;
-		return Vector2.dst(position.x, position.y, environment.getX(), environment.getY()) <= environment.getRadius()
-				+ 5;
-	}
+        return environment != null && Vector2.dst(position.x, position.y, environment.getX(), environment.getY()) <= environment.getRadius() + 5;
+    }
 
 	public void doDamage(float amount, DamageCause reason) {
 		ouchTime = 1;

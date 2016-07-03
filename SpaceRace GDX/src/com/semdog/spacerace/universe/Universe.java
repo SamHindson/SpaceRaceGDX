@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.audio.SoundManager;
-import com.semdog.spacerace.collectables.Collectable;
+import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
@@ -33,542 +33,542 @@ import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Bullet;
 
 public class Universe implements Disposable {
-	public static final float GRAVITY = 30f;
-	public static Universe currentUniverse;
+    public static final float GRAVITY = 30f;
+    public static Universe currentUniverse;
     private static PlayScreen container;
-
-	private float age;
-	private float timeLeft;
+    private static boolean exiting;
+    private float age;
+    private float timeLeft;
     private float raceEndDelay;
     private float countdown = 10;
-	private boolean countingDown = true;
-	private boolean playerEnabled;
+    private boolean countingDown = true;
+    private boolean playerEnabled;
+    private Array<Planet> planets;
+    private Array<Mass> masses;
+    private Array<Ship> ships;
+    private Array<Effect> effects;
+    private Array<Bullet> bullets;
+    private Array<Collectible> collectibles;
+    private Array<Collideable> collideables;
+    private GoalChecker goalChecker;
+    private HUD hud;
+    private Player player;
+    private SpriteBatch hudBatch;
+    private SpriteBatch universeBatch;
+    private ShapeRenderer universeShapeRenderer;
+    private OrthographicCamera camera;
+    private float cameraRot;
+    private Sprite stars;
+    private float cameraX;
+    private float cameraY;
+    private boolean lockedRotation = true;
+    private boolean followingPlayer = true;
+    private float injuryAlpha;
+    @SuppressWarnings("unused")
+    private float zoom;
+    private float desiredZoom;
+    private float cameraShake = 0;
+    private boolean isLoading = true;
+    private Overlay raceEnd;
 
-	private Array<Planet> planets;
-	private Array<Mass> masses;
-	private Array<Ship> ships;
-	private Array<Effect> effects;
-	private Array<Bullet> bullets;
-	private Array<Collectable> collectables;
-	private Array<Collideable> collideables;
-
-	private GoalChecker goalChecker;
-	private HUD hud;
-	private Player player;
-
-	private SpriteBatch hudBatch;
-
-	private SpriteBatch universeBatch;
-	private ShapeRenderer universeShapeRenderer;
-
-	private OrthographicCamera camera;
-	private float cameraRot, desiredRot;
-
-	private Sprite stars;
-
-	private float cameraX, cameraY, desiredCX, desiredCY;
-	private boolean followingPlayer = true, lockedRotation = true;
-
-	private float injuryAlpha;
-
-	@SuppressWarnings("unused")
-	private float zoom;
-	private float desiredZoom, deltaZoom;
-	private float cameraShake = 0;
-
-	private boolean isLoading = true;
-
-	@SuppressWarnings("unused")
-	private boolean suddenDeath;
-
-	private Overlay raceEnd;
-
-	private boolean shownEnd = false;
-	private boolean gogglesActive = false;
+    private boolean shownEnd = false;
+    private boolean gogglesActive = false;
 
     public Universe(PlayScreen _container) {
         container = _container;
 
-		currentUniverse = this;
+        currentUniverse = this;
 
-		planets = new Array<>();
-		masses = new Array<>();
-		ships = new Array<>();
+        planets = new Array<>();
+        masses = new Array<>();
+        ships = new Array<>();
 
-		effects = new Array<>();
+        effects = new Array<>();
 
-		bullets = new Array<>();
+        bullets = new Array<>();
 
-		player = new Player(0, 0, null);
+        player = new Player(0, 0, null);
 
-		hud = new HUD(player);
+        hud = new HUD(player);
 
-		hudBatch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
 
-		universeBatch = new SpriteBatch();
-		universeShapeRenderer = new ShapeRenderer();
+        universeBatch = new SpriteBatch();
+        universeShapeRenderer = new ShapeRenderer();
 
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 0, 0);
-		camera.zoom = 0.5f;
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(0, 0, 0);
+        camera.zoom = 0.5f;
 
-		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 6, Gdx.graphics.getWidth() * 6, Format.RGBA4444);
-		pixmap.setColor(Color.DARK_GRAY);
-		pixmap.fill();
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 6, Gdx.graphics.getWidth() * 6, Format.RGBA4444);
+        pixmap.setColor(Color.DARK_GRAY);
+        pixmap.fill();
 
-		for (int k = 0; k < 5000; k++) {
-			float i = MathUtils.random();
-			float x = MathUtils.random(pixmap.getWidth());
-			float y = MathUtils.random(pixmap.getHeight());
-			float s = MathUtils.random(2) + 1;
-			pixmap.setColor(i, i, i, 1);
-			pixmap.fillRectangle((int) x, (int) y, (int) s, (int) s);
-		}
+        for (int k = 0; k < 5000; k++) {
+            float i = MathUtils.random();
+            float x = MathUtils.random(pixmap.getWidth());
+            float y = MathUtils.random(pixmap.getHeight());
+            float s = MathUtils.random(2) + 1;
+            pixmap.setColor(i, i, i, 1);
+            pixmap.fillCircle((int) x, (int) y, (int) s);
+        }
 
-		stars = new Sprite(new Texture(pixmap));
-		stars.setOriginCenter();
+        stars = new Sprite(new Texture(pixmap));
+        stars.setOriginCenter();
 
-		universeBatch.setProjectionMatrix(camera.combined);
+        universeBatch.setProjectionMatrix(camera.combined);
 
-		Gdx.input.setInputProcessor(new InputManager());
-		camera.zoom = 1.5f;
-		camera.update();
+        Gdx.input.setInputProcessor(new InputManager());
+        camera.zoom = 1.5f;
+        camera.update();
 
-		isLoading = false;
+        isLoading = false;
 
-		goalChecker = new GoalChecker();
+        goalChecker = new GoalChecker();
 
-		raceEnd = new RaceEndScreen();
-		playerEnabled = false;
+        raceEnd = new RaceEndScreen();
+        playerEnabled = false;
 
-		collectables = new Array<>();
+        collectibles = new Array<>();
 
-		collideables = new Array<>();
-		collideables.add(player);
-	}
+        collideables = new Array<>();
+        collideables.add(player);
+
+        exiting = false;
+    }
 
     public static void reset() {
         container.bigBang();
     }
 
     public static void transcend() {
+        exiting = true;
+        SoundManager.stopMusic("victory");
+        SoundManager.stopMusic("failure");
+        currentUniverse.dispose();
+        container.setMarkedForDestruction(true);
         container.getGame().changeScreen("menu");
     }
 
-	public Array<Planet> getPlanets() {
-		return planets;
-	}
+    public Array<Planet> getPlanets() {
+        return planets;
+    }
 
-	public GoalChecker getGoalChecker() {
-		return goalChecker;
-	}
+    public GoalChecker getGoalChecker() {
+        return goalChecker;
+    }
 
-	public boolean isLoading() {
-		return isLoading;
-	}
+    public boolean isLoading() {
+        return isLoading;
+    }
 
-	private Mass getMass(int i) {
-		try {
-			return masses.get(i);
-		} catch (Exception e) {
-			Gdx.app.error("Universe", "Mass is not good!");
-			return null;
-		}
-	}
+    public void tick(float dt) {
+        age += dt;
 
-	public void tick(float dt) {
-		age += dt;
+        if (desiredZoom >= 20) {
+            desiredZoom = 20;
+        } else if (desiredZoom <= 0.25f) {
+            desiredZoom = 0.25f;
+        }
 
-		if (desiredZoom >= 5) {
-			desiredZoom = 5;
-		} else if (desiredZoom <= 0.25f) {
-			desiredZoom = 0.25f;
-		}
+        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+            desiredZoom = 1;
+        }
 
-		deltaZoom = (desiredZoom - camera.zoom) / 10.f;
+        float deltaZoom = (desiredZoom - camera.zoom) / 10.f;
 
-		zoom += deltaZoom;
-		camera.zoom += deltaZoom;
+        zoom += deltaZoom;
+        camera.zoom += deltaZoom;
 
-		if (!gogglesActive && Gdx.input.isKeyPressed(Keys.Q)) {
-			gogglesActive = true;
-			playUISound("goggleson");
-		} else if (gogglesActive && !Gdx.input.isKeyPressed(Keys.Q)) {
-			gogglesActive = false;
-			playUISound("gogglesoff");
-		}
+        if (!gogglesActive && Gdx.input.isKeyPressed(Keys.Q)) {
+            gogglesActive = true;
+            playUISound("goggleson");
+        } else if (gogglesActive && !Gdx.input.isKeyPressed(Keys.Q)) {
+            gogglesActive = false;
+            playUISound("gogglesoff");
+        }
 
-		for (int i = 0; i < bullets.size; i++) {
-			if (bullets.get(i) != null)
-				bullets.get(i).checkCollisions(planets);
-		}
+        for (int i = 0; i < bullets.size; i++) {
+            if (bullets.get(i) != null)
+                bullets.get(i).checkCollisions(planets);
+        }
 
-		for (int i = 0; i < masses.size; i++) {
-			getMass(i).checkCollisions(masses);
+        for (int i = 0; i < masses.size; i++) {
+            masses.get(i).checkCollisions(masses);
 
-			if (!player.isPilotingShip() && getMass(i) != null)
-				getMass(i).checkPlayerCollision(player);
-		}
+            if (!player.isPilotingShip() && masses.get(i) != null)
+                masses.get(i).checkPlayerCollision(player);
+        }
 
-		for (int i = 0; i < masses.size; i++) {
-			Mass mass = getMass(i);
-			for (int j = 0; j < bullets.size; j++) {
-				Bullet bullet = bullets.get(j);
-				if (mass.contians(bullet)) {
-					mass.doDamage(bullet.getDamage(), DamageCause.BULLET);
-					bullet.die();
-				}
-			}
-		}
-
-		for (int i = 0; i < masses.size; i++) {
-			getMass(i).checkState();
-		}
-
-		for (int i = 0; i < collectables.size; i++) {
-			collectables.get(i).update(collideables, dt);
-		}
-
-		for (Effect effect : effects) {
-			effect.update(dt);
-		}
-
-		if (Gdx.input.isKeyJustPressed(Input.Keys.C))
-			lockedRotation = !lockedRotation;
-
-		if (lockedRotation) {
-			desiredRot = player.getAngle() % MathUtils.PI2;
-		} else {
-			desiredRot = 0;
-		}
-
-		float da = (desiredRot - cameraRot) / 10.f;
-		cameraRot += da;
-		camera.rotate(-da * MathUtils.radiansToDegrees);
-
-		followingPlayer = true;
-
-		if (followingPlayer) {
-			desiredCX = player.getFX();
-			desiredCY = player.getFY();
-		} else {
-			desiredCX = getMass(0).getX();
-			desiredCY = getMass(0).getY();
-		}
-
-		cameraX += (desiredCX - cameraX) / 10.f;
-		cameraY += (desiredCY - cameraY) / 10.f;
-
-		camera.position.set(cameraX + MathUtils.random() * cameraShake, cameraY + MathUtils.random() * cameraShake, 0);
-		camera.update();
-
-		universeBatch.setProjectionMatrix(camera.combined);
-		universeShapeRenderer.setProjectionMatrix(camera.combined);
-		stars.setOriginCenter();
-		stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
-
-		boolean f = true;
-
-		if (!player.isPilotingShip()) {
-			for (int k = 0; k < ships.size; k++) {
-				Ship ship = ships.get(k);
-
-				if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 500) {
-					player.setBoarding(true, ship);
-					f = false;
-					break;
-				}
-			}
-
-			if (f)
-				player.setBoarding(false, null);
-		}
-
-		hud.update(dt);
-
-		if (cameraShake > 0) {
-			if (cameraShake > 5)
-				cameraShake = 5;
-			cameraShake -= dt * 1.5f;
-		} else {
-			cameraShake = 0;
-		}
-
-		goalChecker.update(player);
-
-        if (goalChecker.isVictory()) {
-            playerEnabled = false;
-
-            raceEndDelay += dt;
-
-            if (!shownEnd) {
-                shownEnd = true;
-                raceEnd.setText("Victory!", "Race completed in ample time.");
-                SoundManager.stopMusic("oxidiser");
-                playUISound("victory");
-                hud.hideAll();
-                raceEnd.setShowing(true);
+        for (int i = 0; i < masses.size; i++) {
+            Mass mass = masses.get(i);
+            for (int j = 0; j < bullets.size; j++) {
+                Bullet bullet = bullets.get(j);
+                if (mass.contians(bullet)) {
+                    mass.doDamage(bullet.getDamage(), DamageCause.BULLET);
+                    bullet.die();
+                }
             }
+        }
+
+        for (int i = 0; i < masses.size; i++) {
+            masses.get(i).checkState();
+        }
+
+        for (int i = 0; i < collectibles.size; i++) {
+            collectibles.get(i).update(collideables);
+        }
+
+        for (Effect effect : effects) {
+            effect.update(dt);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C))
+            lockedRotation = !lockedRotation;
+
+        float desiredRot;
+        if (lockedRotation) {
+            desiredRot = player.getAngle() % MathUtils.PI2;
+        } else {
+            desiredRot = 0;
+        }
+
+        float da = (desiredRot - cameraRot) / 10.f;
+        cameraRot += da;
+        camera.rotate(-da * MathUtils.radiansToDegrees);
+
+        float desiredCX;
+        float desiredCY;
+        if (followingPlayer) {
+            desiredCX = player.getFX();
+            desiredCY = player.getFY();
+        } else {
+            desiredCX = masses.get(0).getX();
+            desiredCY = masses.get(0).getY();
+        }
+
+        cameraX += (desiredCX - cameraX) / 10.f;
+        cameraY += (desiredCY - cameraY) / 10.f;
+
+        camera.position.set(cameraX + MathUtils.random() * cameraShake, cameraY + MathUtils.random() * cameraShake, 0);
+        camera.update();
+
+        universeBatch.setProjectionMatrix(camera.combined);
+        universeShapeRenderer.setProjectionMatrix(camera.combined);
+        stars.setOriginCenter();
+        stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
+
+        boolean f = true;
+
+        if (!player.isPilotingShip()) {
+            for (int k = 0; k < ships.size; k++) {
+                Ship ship = ships.get(k);
+
+                if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 50) {
+                    player.setBoarding(true, ship);
+                    f = false;
+                    break;
+                }
+            }
+
+            if (f)
+                player.setBoarding(false, null);
+        }
+
+        hud.update(dt);
+
+        if (cameraShake > 0) {
+            if (cameraShake > 5)
+                cameraShake = 5;
+            cameraShake -= dt * 1.5f;
+        } else {
+            cameraShake = 0;
         }
 
         if (raceEndDelay > 1.3f) {
             raceEnd.update(dt);
         }
 
-		if (countingDown) {
-            countdown -= dt * 2;
+        if (countingDown) {
+            countdown -= dt * 20;
             hud.setText("Get ready!", "[" + (int) countdown + "]");
 
-			if (countdown <= 0) {
-				countingDown = false;
-				playerEnabled = true;
-				hud.hideMessage();
-				hud.showStats();
-				hud.showTimer();
-			}
-		} else {
-			timeLeft -= dt;
-			hud.setCountdownValue((int) timeLeft);
+            if (countdown <= 0) {
+                countingDown = false;
+                playerEnabled = true;
+                hud.hideMessage();
+                hud.showStats();
+                hud.showTimer();
+            }
+        } else {
+            timeLeft -= dt;
+            hud.setCountdownValue((int) timeLeft);
 
             if (timeLeft <= 0) {
                 raceEndDelay += dt;
                 if (!shownEnd) {
                     playerEnabled = false;
+                    SoundManager.stopAllSounds();
                     shownEnd = true;
                     hud.hideAll();
                     SoundManager.stopMusic("oxidiser");
-                    playUISound("failure");
+                    SoundManager.playMusic("failure", false);
                     raceEnd.setText("Failure!", "You're not a clever smart boy.");
                     raceEnd.setShowing(true);
                 }
             }
-		}
+        }
 
-		if (injuryAlpha > 0) {
-			injuryAlpha *= 0.5f;
+        if (injuryAlpha > 0) {
+            injuryAlpha *= 0.5f;
 
-			if (injuryAlpha < 0.05f)
-				injuryAlpha = 0;
-		}
-		//System.out.println("Done junk...");
-	}
+            if (injuryAlpha < 0.05f)
+                injuryAlpha = 0;
+        }
+    }
 
-	public void tickPhysics(float dt) {
-		for (int i = 0; i < masses.size; i++) {
-			masses.get(i).update(dt, planets);
-		}
+    public boolean isPlayerAlive() {
+        return player.isAlive();
+    }
 
-		//System.out.println("Ticking Physics... " + dt);
+    public float getPlayerVisitedPlanetsNo() {
+        return player.getVisitedPlanetsNo();
+    }
 
-		for (int i = 0; i < bullets.size; i++) {
-			if (bullets.get(i) != null) {
-				bullets.get(i).updatePhysics(dt);
-			}
-		}
+    public void tickPhysics(float dt) {
+        if (exiting)
+            return;
+
+        goalChecker.update(this);
+
+        if (goalChecker.isVictory()) {
+            playerEnabled = false;
+            raceEndDelay += dt;
+
+            if (!shownEnd) {
+                shownEnd = true;
+                String time = timeLeft < 10 ? timeLeft + "" : (int) (timeLeft) + "";
+                SoundManager.stopAllSounds();
+                raceEnd.setText("Victory!", "Race completed with " + time + "s left!");
+                SoundManager.stopMusic("oxidiser");
+                SoundManager.playMusic("victory", false);
+                hud.hideAll();
+                raceEnd.setShowing(true);
+            }
+        }
+
+        for (int i = 0; i < masses.size; i++) {
+            masses.get(i).update(dt, planets);
+        }
+
+        for (int i = 0; i < bullets.size; i++) {
+            if (bullets.get(i) != null) {
+                bullets.get(i).updatePhysics(dt);
+            }
+        }
 
         player.update(dt, playerEnabled, planets);
     }
 
-	public void setPlayerEnabled(boolean playerEnabled) {
-		this.playerEnabled = playerEnabled;
-	}
+    public void setPlayerEnabled(boolean playerEnabled) {
+        this.playerEnabled = playerEnabled;
+    }
 
-	public void render() {
-		universeBatch.begin();
+    public void render() {
+        universeBatch.begin();
 
-		stars.draw(universeBatch);
+        stars.draw(universeBatch);
 
-		for (int i = 0; i < effects.size; i++) {
-			effects.get(i).render(universeBatch);
-		}
+        for (int i = 0; i < effects.size; i++) {
+            effects.get(i).render(universeBatch);
+        }
 
-		for (int i = 0; i < masses.size; i++) {
-			masses.get(i).render(universeBatch);
-		}
+        for (int i = 0; i < masses.size; i++) {
+            masses.get(i).render(universeBatch);
+        }
 
-		player.draw(universeBatch);
+        player.draw(universeBatch);
 
-		for (int i = 0; i < collectables.size; i++) {
-			collectables.get(i).draw(universeBatch);
-		}
+        for (int i = 0; i < collectibles.size; i++) {
+            collectibles.get(i).draw(universeBatch);
+        }
 
-		universeBatch.end();
-		// universeShapeRenderer.set();
-		universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
-		for (int i = 0; i < bullets.size; i++) {
-			bullets.get(i).draw(universeShapeRenderer);
-		}
-		for (int i = 0; i < planets.size; i++) {
-			planets.get(i).draw(universeShapeRenderer);
-		}
+        universeBatch.end();
+        // universeShapeRenderer.set();
+        universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
+        for (int i = 0; i < bullets.size; i++) {
+            bullets.get(i).draw(universeShapeRenderer);
+        }
+        for (int i = 0; i < planets.size; i++) {
+            planets.get(i).draw(universeShapeRenderer);
+        }
 
         if (gogglesActive) {
             for (int i = 0; i < masses.size; i++)
-                getMass(i).debugRender(universeShapeRenderer);
+                masses.get(i).debugRender(universeShapeRenderer);
 
             for (Planet planet : planets) {
                 planet.debugRender(universeShapeRenderer);
             }
         }
 
-		planets.get(0).draw(universeShapeRenderer);
-		player.debugDraw(universeShapeRenderer);
-		universeShapeRenderer.end();
+        planets.get(0).draw(universeShapeRenderer);
+        player.debugDraw(universeShapeRenderer);
+        universeShapeRenderer.end();
 
-		hudBatch.begin();
-		if (!goalChecker.isVictory()) {
-			hud.draw(hudBatch);
-		}
-		raceEnd.draw(hudBatch);
+        hudBatch.begin();
+        if (!goalChecker.isVictory()) {
+            hud.draw(hudBatch);
+        }
+        raceEnd.draw(hudBatch);
 
-		hudBatch.setColor(1f, 1f, 1f, injuryAlpha);
-		hudBatch.draw(Art.get("pixel_white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		hudBatch.setColor(Color.WHITE);
+        hudBatch.setColor(1f, 1f, 1f, injuryAlpha);
+        hudBatch.draw(Art.get("pixel_white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        hudBatch.setColor(Color.WHITE);
 
-		hudBatch.end();
-	}
+        hudBatch.end();
+    }
 
-	public void finalizeState() {
-		for (int i = 0; i < effects.size; i++) {
-			if (!effects.get(i).isAlive()) {
-				effects.removeValue(effects.get(i), true);
-				break;
-			}
-		}
+    public void finalizeState() {
+        for (int i = 0; i < effects.size; i++) {
+            if (!effects.get(i).isAlive()) {
+                effects.removeValue(effects.get(i), true);
+                break;
+            }
+        }
 
-		for (int i = 0; i < masses.size; i++) {
-			if (!masses.get(i).isAlive()) {
-				if (masses.get(i) instanceof Ship)
-					ships.removeValue((Ship) masses.get(i), true);
+        for (int i = 0; i < masses.size; i++) {
+            if (!masses.get(i).isAlive()) {
+                if (masses.get(i) instanceof Ship)
+                    ships.removeValue((Ship) masses.get(i), true);
 
-				masses.removeValue(masses.get(i), true);
+                masses.removeValue(masses.get(i), true);
+                break;
+            }
+        }
 
-				break;
-			}
-		}
+        for (int i = 0; i < bullets.size; i++) {
+            if (!bullets.get(i).alive()) {
+                bullets.removeValue(bullets.get(i), true);
+                break;
+            }
+        }
+    }
 
-		for (int i = 0; i < bullets.size; i++) {
-			if (!bullets.get(i).alive()) {
-				bullets.removeValue(bullets.get(i), true);
-				break;
-			}
-		}
-	}
+    public void addMass(Mass what) {
+        masses.add(what);
+    }
 
-	public void addMass(Mass what) {
-		masses.add(what);
-	}
+    public void addShip(Ship ship) {
+        ships.add(ship);
+    }
 
-	public void addShip(Ship ship) {
-		ships.add(ship);
-	}
+    public void addEffect(Effect effect) {
+        effects.add(effect);
 
-	public void addEffect(Effect effect) {
-		effects.add(effect);
+        if (effect instanceof Explosion) {
+            playSound("explosion" + Tools.decide(1, 2, 3), effect.getX(), effect.getY(), 1);
 
-		if (effect instanceof Explosion) {
-			playSound("explosion" + Tools.decide(1, 2, 3), effect.getX(), effect.getY(), 1);
+            if (cameraShake < 5) {
+                for (int i = 0; i < masses.size; i++) {
+                    Mass mass = masses.get(i);
+                    float distance = Vector2.dst(mass.getX(), mass.getY(), effect.getX(),
+                            effect.getY());
+                    if (distance < 300) {
+                        float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
 
-			if (cameraShake < 5) {
-				for (int i = 0; i < masses.size; i++) {
-					Mass mass = masses.get(i);
-					float distance = Vector2.dst(mass.getX(), mass.getY(), ((Explosion) effect).getX(),
-							((Explosion) effect).getY());
-					if (distance < 300) {
-						float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                        if (mass.isAlive())
+                            mass.doDamage(damage, DamageCause.EXPLOSION);
+                    }
+                }
 
-						if (mass.isAlive())
-							mass.doDamage(damage, DamageCause.EXPLOSION);
-					}
-				}
+                float distance = Vector2.dst(player.getFX(), player.getFY(), effect.getX(),
+                        effect.getY());
+                if (distance < 300) {
+                    float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                    playerHurt(player, damage, DamageCause.EXPLOSION);
+                    cameraShake = 5 / (0.01f * distance + 1);
+                }
+            }
+        }
+    }
 
-				float distance = Vector2.dst(player.getFX(), player.getFY(), ((Explosion) effect).getX(),
-						((Explosion) effect).getY());
-				if (distance < 300) {
-					float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-					playerHurt(player, damage, DamageCause.EXPLOSION);
-					cameraShake = 5 / (0.01f * distance + 1);
-				}
-			}
-		}
-	}
+    public void playerKilled(Player player, DamageCause cause) {
+        player.die();
+        hud.setDead(cause, true);
+        hud.displayMessage();
+    }
 
-	public void playerKilled(Player player, DamageCause cause) {
-		player.die();
-		hud.setDead(cause, true);
-		hud.displayMessage();
-	}
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+    }
 
-	public void addBullet(Bullet bullet) {
-		bullets.add(bullet);
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public void respawnPlayer() {
+        hud.showStats();
+        switch (player.getTeam()) {
+            case PINK:
+                player.spawn(0, 550, planets);
+            case BLUE:
+                break;
+            default:
+                break;
+        }
+    }
 
-	public void respawnPlayer() {
-		hud.showStats();
-		switch (player.getTeam()) {
-		case PINK:
-			player.spawn(0, 550, planets);
-		case BLUE:
-			break;
-		default:
-			break;
-		}
-	}
+    public void spawnPlayer(float x, float y) {
+        player.spawn(x, y, planets);
+    }
 
-	public void spawnPlayer(float x, float y) {
-		player.spawn(x, y, planets);
-	}
+    public void playUISound(String name) {
+        SoundManager.playSound(name, 3f, 0);
+    }
 
-	public void playUISound(String name) {
-		SoundManager.playSound(name, 3f, 0);
-	}
+    public void loopSound(String name, float x, float y, float volume) {
+        float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
 
-	public void loopSound(String name, float x, float y, float volume) {
-		float v = 20f / (Vector2.dst(x, y, player.getX(), player.getY()) - 5);
+        float u = x - player.getX();
+        float pan = (float) Math.atan(u);
 
-		float u = x - player.getX();
-		float pan = (float) Math.atan(u);
+        SoundManager.loopSound(name, v + volume, pan);
+    }
 
-		SoundManager.loopSound(name, v + volume, pan);
-	}
+    public void stopSound(String name) {
+        SoundManager.stopSound(name);
+    }
 
-	public void stopSound(String name) {
-		SoundManager.stopSound(name);
-	}
+    public void playSound(String name, float x, float y, float volume) {
+        float d = Vector2.dst(x, y, player.getX(), player.getY());
 
-	public void playSound(String name, float x, float y, float volume) {
-		float d = Vector2.dst(x, y, player.getX(), player.getY());
-
-		if (d < 500) {
+        if (d < 500) {
             float v = 3f / (d + 3) + volume;
 
-			float u = x - player.getX();
-			float pan = (float) Math.atan(u);
+            float u = x - player.getX();
+            float pan = (float) Math.atan(u);
 
-			SoundManager.playSound(name, v, pan);
-		}
-	}
+            SoundManager.playSound(name, v, pan);
+        }
+    }
 
-	public void playerHurt(Player player, float amount, DamageCause cause) {
-		injuryAlpha = amount / 200.f;
-		player.doDamage(amount, cause);
-	}
+    public void playerHurt(Player player, float amount, DamageCause cause) {
+        injuryAlpha = amount / 200.f;
+        player.doDamage(amount, cause);
+    }
 
-	public void createPlanet(String id, float x, float y, float radius) {
-		planets.add(new Planet(id, x, y, radius));
+    public void createPlanet(String id, float x, float y, float radius) {
+        planets.add(new Planet(id, x, y, radius));
 
-		for (Collectable collectable : collectables) {
-			collectable.reposition(planets);
-		}
-	}
+        for (Collectible collectible : collectibles) {
+            collectible.reposition(planets);
+        }
+    }
 
-	public float getAge() {
-		return age;
-	}
+    public float getAge() {
+        return age;
+    }
 
     public void setCameraShake(float cameraShake) {
         this.cameraShake = cameraShake;
@@ -579,75 +579,91 @@ public class Universe implements Disposable {
         hud.displayMessage();
     }
 
-    public void setSuddenDeath(boolean suddenDeath) {
-        this.suddenDeath = suddenDeath;
+    public void killCollectible(Collectible collectible) {
+        collectibles.removeValue(collectible, true);
     }
 
-    public void killCollectible(Collectable collectable) {
-        collectables.removeValue(collectable, true);
-    }
-
-    public void addCollectable(Collectable collectable) {
-        collectable.reposition(planets);
-        collectables.add(collectable);
+    public void addCollectable(Collectible collectible) {
+        collectible.reposition(planets);
+        collectibles.add(collectible);
     }
 
     @Override
     public void dispose() {
+        Gdx.app.log("Universe", "Disposing of all sorts of stuff");
+        for (Planet planet : planets) {
+            planet.dispose();
+        }
         planets.clear();
+
+        for (Mass mass : masses) {
+            mass.dispose();
+        }
         masses.clear();
+
+        for (Bullet bullet : bullets) {
+            bullet.dispose();
+        }
         bullets.clear();
-        collectables.clear();
-        collideables.clear();
+
+        for (Collectible collectible : collectibles) {
+            collectible.dispose();
+        }
+        collectibles.clear();
+        ships.clear();
+
         hud.dispose();
-        universeBatch.dispose();
-        hudBatch.dispose();
-        universeShapeRenderer.dispose();
+
+        player.dispose();
+
+        //universeBatch.dispose();
+        //hudBatch.dispose();
+        // universeShapeRenderer.dispose();
     }
 
-	private class InputManager implements InputProcessor {
+    private class InputManager implements InputProcessor {
 
-		@Override
-		public boolean keyDown(int keycode) {
-			return false;
-		}
+        @Override
+        public boolean keyDown(int keycode) {
+            return false;
+        }
 
-		@Override
-		public boolean keyUp(int keycode) {
+        @Override
+        public boolean keyUp(int keycode) {
 
-			return false;
-		}
+            return false;
+        }
 
-		@Override
-		public boolean keyTyped(char character) {
-			return false;
-		}
+        @Override
+        public boolean keyTyped(char character) {
+            return false;
+        }
 
-		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-			return false;
-		}
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
 
-		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-			return false;
-		}
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
 
-		@Override
-		public boolean touchDragged(int screenX, int screenY, int pointer) {
-			return false;
-		}
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            return false;
+        }
 
-		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
-			return false;
-		}
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            return false;
+        }
 
-		@Override
-		public boolean scrolled(int amount) {
-			desiredZoom += 0.25f * amount;
-			return false;
-		}
+        @Override
+        public boolean scrolled(int amount) {
+            desiredZoom += 0.25f * amount;
+            return false;
+        }
 
-	}
+    }
 }

@@ -16,8 +16,10 @@ public abstract class RaceScreen extends ScreenAdapter {
 	protected BitmapFont titleFont;
 	protected String title;
 	protected float titleX, titleY;
-	
-	public RaceScreen(RaceGame game) {
+
+    private boolean markedForDestruction = false;
+
+    public RaceScreen(RaceGame game) {
 		this.game = game;
 	}
 	
@@ -42,7 +44,18 @@ public abstract class RaceScreen extends ScreenAdapter {
 	
 	public abstract void update(float dt);
 	public abstract void render();
-	public abstract void dispose();
+
+    public void dispose() {
+        markedForDestruction = true;
+    }
+
+    public boolean isMarkedForDestruction() {
+        return markedForDestruction;
+    }
+
+    public void setMarkedForDestruction(boolean markedForDestruction) {
+        this.markedForDestruction = markedForDestruction;
+    }
 
     public RaceGame getGame() {
         return game;

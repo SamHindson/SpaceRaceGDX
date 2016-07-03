@@ -6,7 +6,7 @@ import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Universe;
 
-public class Health extends Collectable {
+public class Health extends Collectible {
 
 	public Health(float x, float y) {
 		super(x, y, 10, 10);
@@ -23,4 +23,6 @@ public class Health extends Collectable {
 		Universe.currentUniverse.playUISound("healthget");
 		((Player)collideable).replenishHealth();
 	}
+
+
 }

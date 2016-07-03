@@ -4,126 +4,137 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.collectables.Health;
+import com.semdog.spacerace.vehicles.Needle;
 import com.semdog.spacerace.vehicles.RubbishLander;
 import com.semdog.spacerace.vehicles.SmallBombarder;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class UniverseLoader {
-	public void load(Universe universe) {
-		JsonReader jsonReader = new JsonReader();
-		JsonValue data = jsonReader.parse(Gdx.files.internal("data/testlevel.json"));
+    public void load(Universe universe) {
+        JsonReader jsonReader = new JsonReader();
+        JsonValue data = jsonReader.parse(Gdx.files.internal("data/testlevel.json"));
 
-		int index = 0;
+        int index = 0;
 
-		while (true) {
-			JsonValue value = data.get(index);
+        while (true) {
+            JsonValue value = data.get(index);
 
-			if (value == null)
-				break;
+            if (value == null)
+                break;
 
-			String name = value.name.split("-")[0];
+            String name = value.name.split("-")[0];
 
-			switch (name) {
-			case "planet":
-				Gdx.app.log("UniverseLoader", "NEW PLANET");
+            switch (name) {
+                case "planet":
+                    float r = value.get(0).getFloat("radius");
+                    float x = value.get(0).getFloat("x");
+                    float y = value.get(0).getFloat("y");
+                    String id = value.get(0).getString("id");
 
-				float r = value.get(0).getFloat("radius");
-				float x = value.get(0).getFloat("x");
-				float y = value.get(0).getFloat("y");
-				String id = value.get(0).getString("id");
+                    universe.createPlanet(id, x, y, r);
+                    Gdx.app.log("UniverseLoader", "Planet created.");
 
-				universe.createPlanet(id, x, y, r);
+                    break;
+                case "playerstuff":
+                    float dx = value.get(0).getFloat("x");
+                    float dy = value.get(0).getFloat("y");
 
-				break;
-			case "playerstuff":
-				float dx = value.get(0).getFloat("x");
-				float dy = value.get(0).getFloat("y");
+                    universe.spawnPlayer(dx, dy);
 
-				universe.spawnPlayer(dx, dy);
+                    break;
+                case "runt":
+                    float rx = value.get(0).getFloat("x");
+                    float ry = value.get(0).getFloat("y");
+                    String rid = value.get(0).getString("id");
 
-				break;
+                    SmallBombarder dude = new SmallBombarder(rx, ry, rid);
 
-			case "runt":
-				float rx = value.get(0).getFloat("x");
-				float ry = value.get(0).getFloat("y");
-				String rid = value.get(0).getString("id");
+                    try {
+                        String ssname = value.get(1).get(0).name;
+                        float ssvalue = value.get(1).getFloat(0);
+                        SmallBombarder.class.getDeclaredMethod(ssname, float.class).invoke(dude, ssvalue);
+                    } catch (NullPointerException npe) {
+                        Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
+                    } catch (Exception e) {
+                        Gdx.app.error("UniverseLoader", "Something went wrong while processing the JSON.");
+                        e.printStackTrace();
+                    }
 
-				SmallBombarder dude = new SmallBombarder(rx, ry, rid);
-				
-				try {
-					String ssname = value.get(1).get(0).name;
-					float ssvalue = value.get(1).getFloat(0);
-					SmallBombarder.class.getDeclaredMethod(ssname, float.class).invoke(dude, ssvalue);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-                } catch (NullPointerException npe) {
-                    Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
-                }
+                    Gdx.app.log("UniverseLoader", "Runt ship created.");
 
-				break;
-			case "rubbish":
-				float cx = value.get(0).getFloat("x");
-				float cy = value.get(0).getFloat("y");
-				String cid = value.get(0).getString("id");
+                    break;
+                case "needle":
+                    float nrx = value.get(0).getFloat("x");
+                    float nry = value.get(0).getFloat("y");
+                    String nrid = value.get(0).getString("id");
 
-				new RubbishLander(cx, cy, cid);
+                    Needle ndude = new Needle(nrx, nry, nrid);
 
-				break;
-			case "playercriteria":
-				JsonValue details = value.get(0);
+                    try {
+                        String ssname = value.get(1).get(0).name;
+                        float ssvalue = value.get(1).getFloat(0);
+                        Needle.class.getDeclaredMethod(ssname, float.class).invoke(ndude, ssvalue);
+                    } catch (NullPointerException npe) {
+                        Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
+                    } catch (Exception e) {
+                        Gdx.app.error("UniverseLoader", "Something went wrong while processing the JSON.");
+                        e.printStackTrace();
+                    }
 
-				for (JsonValue criteria : details) {
-					String criterion = criteria.name;
-					String criterionType = criterion.split("-")[0];
-					String criterionName = criterion.split("-")[1];
+                    Gdx.app.log("UniverseLoader", "Needle ship created.");
 
-					System.out.println("Found a value.");
-					System.out.println("Name: " + criterionName);
-					System.out.println("Full name: " + criterion);
-					System.out.println("Value: " + details.get(criterion).asString());
+                    break;
+                case "rubbish":
+                    float cx = value.get(0).getFloat("x");
+                    float cy = value.get(0).getFloat("y");
+                    String cid = value.get(0).getString("id");
 
-					switch (criterionType) {
-					case "boolean":
-						universe.getGoalChecker().addBoolean(criterionName, details.getBoolean(criterion));
-						break;
-					case "float":
-						universe.getGoalChecker().addFloat(criterionName, details.getFloat(criterion));
-						break;
-					case "string":
-						universe.getGoalChecker().addString(criterionName, details.getString(criterion));
-						break;
-					}
-				}
+                    new RubbishLander(cx, cy, cid);
+                    Gdx.app.log("UniverseLoader", "Rubbish ship created.");
 
-				break;
-			case "mission":
-				JsonValue missionDetails = value.get(0);
+                    break;
+                case "playercriteria":
+                    JsonValue details = value.get(0);
 
-				universe.setTimeLimit(missionDetails.getFloat("timelimit"));
-				universe.setSuddenDeath(missionDetails.getBoolean("suddendeath"));
+                    for (JsonValue criteria : details) {
+                        String criterion = criteria.name;
+                        String criterionType = criterion.split("-")[0];
+                        String criterionName = criterion.split("-")[1];
 
-				Gdx.app.log("UniverseLoader", "Mission details good!");
+                        switch (criterionType) {
+                            case "boolean":
+                                universe.getGoalChecker().addBoolean(criterionName, details.getBoolean(criterion));
+                                break;
+                            case "float":
+                                universe.getGoalChecker().addFloat(criterionName, details.getFloat(criterion));
+                                break;
+                            case "string":
+                                universe.getGoalChecker().addString(criterionName, details.getString(criterion));
+                                break;
+                        }
+                    }
+                    Gdx.app.log("UniverseLoader", "Mission criteria loaded.");
 
-				break;
-			case "healthpack":
+                    break;
+                case "mission":
+                    JsonValue missionDetails = value.get(0);
 
-				float hx = value.get(0).getFloat("x");
-				float hy = value.get(0).getFloat("y");
-				universe.addCollectable(new Health(hx, hy));
+                    universe.setTimeLimit(missionDetails.getFloat("timelimit"));
 
-				break;
-			}
+                    Gdx.app.log("UniverseLoader", "Mission details loaded.");
 
-			index++;
-		}
-	}
+                    break;
+                case "healthpack":
+
+                    float hx = value.get(0).getFloat("x");
+                    float hy = value.get(0).getFloat("y");
+                    universe.addCollectable(new Health(hx, hy));
+
+                    Gdx.app.log("UniverseLoader", "Health Pack created.");
+
+                    break;
+            }
+
+            index++;
+        }
+    }
 }

@@ -3,15 +3,15 @@ package com.semdog.spacerace.weapons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
-public class Bullet {
-	private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
+public class Bullet implements Disposable {
+    private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
 	
 	private int damage;
 
@@ -49,10 +49,6 @@ public class Bullet {
 	public void draw(ShapeRenderer renderer) {
 		renderer.setColor(Color.WHITE);
 		renderer.line(x, y, x + dx * 0.005f, y + dy * 0.005f);
-		//renderer.point(x, y, 0);
-		//renderer.point(x + dx * 0.01f, y + dy * 0.01f, 0);
-		//System.out.println(x + ", " + y);
-		//System.out.println(dx + ", " + dy);
 	}
 
 	public boolean alive() {
@@ -82,4 +78,9 @@ public class Bullet {
 	public void die() {
 		age = life * 5;
 	}
+
+    @Override
+    public void dispose() {
+        //  TODO do something here
+    }
 }

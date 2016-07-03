@@ -18,9 +18,9 @@ public class OrbitalHelper {
 	 * 
 	 * It takes in some orbital states and returns a whole bunch of information
 	 * packaged into a float array.
-	 * 
-	 * Blatantly stolen from last year's ULTRANAUT becuase I was not going to do
-	 * all of this math again
+	 *
+     * Blatantly stolen from last year's ULTRANAUT because I was not going to do
+     * all of this math again
 	 */
 	public static float[] computeOrbit(Vector2 orbiteePosition, Vector2 orbiterPosition, Vector2 orbiterVelocity, float orbiteeMass) {
 		Vector2 orP = new Vector2(orbiterPosition);
@@ -42,7 +42,7 @@ public class OrbitalHelper {
 		float apoapsis = semiMajorAxis * (1 + eccentricity);
 		float periapsis = semiMajorAxis * (1 - eccentricity);
 
-		float trueAnomaly = 0;
+        float trueAnomaly;
 
 		if (angularMomentum > 0) {
 			if (offset.dot(orV) < 0) {

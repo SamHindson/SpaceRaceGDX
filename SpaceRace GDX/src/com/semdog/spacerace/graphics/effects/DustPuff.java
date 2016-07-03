@@ -33,4 +33,9 @@ public class DustPuff extends Effect {
 	public boolean isAlive() {
 		return !effect.isComplete();
 	}
+
+    @Override
+    public void dispose() {
+        effect.dispose();
+    }
 }

@@ -1,10 +1,9 @@
 package com.semdog.spacerace.universe;
 
-import java.lang.reflect.InvocationTargetException;
+import com.badlogic.gdx.Gdx;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
-
-import com.semdog.spacerace.players.Player;
 
 public class GoalChecker {
 	private HashMap<String, Boolean> booleans;
@@ -14,18 +13,11 @@ public class GoalChecker {
 	private int totalCriteria = 0;
 	
 	private boolean victory;
-	
-	@SuppressWarnings("unused")
-	private float timeLeft;
 
 	public GoalChecker() {
 		booleans = new HashMap<>();
 		floats = new HashMap<>();
 		strings = new HashMap<>();
-	}
-	
-	public void setTimeLeft(float timeLeft) {
-		this.timeLeft = timeLeft;
 	}
 
 	public void addBoolean(String id, boolean value) {
@@ -43,28 +35,20 @@ public class GoalChecker {
 		totalCriteria++;
 	}
 
-	public void update(Player player) {
-		int correctCriteria = 0;
+    public void update(Universe universe) {
+        int correctCriteria = 0;
 		
 		for (Entry<String, Boolean> entry : booleans.entrySet()) {
 		    String key = entry.getKey();
 		    boolean value = entry.getValue();
 		    
 		    try {
-				if(Player.class.getMethod(key).invoke(player).equals(value)) {
-					correctCriteria++;
+                if (Universe.class.getMethod(key).invoke(universe).equals(value)) {
+                    correctCriteria++;
 				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
+            } catch (Exception e) {
+                Gdx.app.error("GoalChecker", "Something went wrong checking " + key + "!");
+            }
 		}
 		
 		for (Entry<String, Float> entry : floats.entrySet()) {
@@ -72,20 +56,12 @@ public class GoalChecker {
 		    float value = entry.getValue();
 		    
 		    try {
-				if(Player.class.getMethod(key).invoke(player).equals(value)) {
-					correctCriteria++;
+                if (Universe.class.getMethod(key).invoke(universe).equals(value)) {
+                    correctCriteria++;
 				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
+            } catch (Exception e) {
+                Gdx.app.error("GoalChecker", "Something went wrong checking " + key + "!");
+            }
 		}
 		
 		for (Entry<String, String> entry : strings.entrySet()) {
@@ -93,21 +69,13 @@ public class GoalChecker {
 		   	String value = entry.getValue();
 		    
 		    try {
-				if(Player.class.getDeclaredMethod(key).invoke(player).equals(value)) {
-					correctCriteria++;
+                if (Universe.class.getDeclaredMethod(key).invoke(universe).equals(value)) {
+                    correctCriteria++;
 				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
-		}
+            } catch (Exception e) {
+                Gdx.app.error("GoalChecker", "Something went wrong checking " + key + "!");
+            }
+        }
 		
 		if(correctCriteria == totalCriteria) {
 			victory = true;

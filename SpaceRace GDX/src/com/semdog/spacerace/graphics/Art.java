@@ -1,13 +1,13 @@
 package com.semdog.spacerace.graphics;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+
+import java.util.HashMap;
 
 public class Art {
 	private static HashMap<String, Texture> artwork;
@@ -48,13 +48,11 @@ public class Art {
 		Pixmap pix = new Pixmap(1, 1, Format.RGB565);
 		pix.setColor(color);
 		pix.drawPixel(0, 0);
-		System.out.println("Created pixel for " + color);
 		return new Texture(pix);
 	}
 
 	private static Texture createSilhouette(Texture original) {
 		if (!original.getTextureData().isPrepared()) {
-			System.out.println("Not premared yet");
 			original.getTextureData().prepare();
 		}
 
@@ -71,16 +69,14 @@ public class Art {
 			}
 		}
 
-		Texture texture = new Texture(newPixmap);
-		return texture;
-	}
+        return new Texture(newPixmap);
+    }
 
-	public static void load(FileHandle file) {
-		Texture texture = new Texture(file);
+    private static void load(FileHandle file) {
+        Texture texture = new Texture(file);
 		String name = file.nameWithoutExtension();
 		artwork.put(name, texture);
 		artwork.put(name + "_sil", createSilhouette(texture));
-		Gdx.app.log("Art", "Loaded " + file);
 	}
 
 	public static Texture get(String name) {
@@ -90,8 +86,8 @@ public class Art {
 			try {
 				Texture texture = new Texture(Gdx.files.internal("assets/graphics/" + name + ".png"));
 				Gdx.app.error("Art",
-						"WARNING! " + name + " was not loaded intitially and as such caused a slowdown. Nyet!");
-				artwork.put(name, texture);
+                        "WARNING! " + name + " was not loaded initially and as such caused a slowdown. Nyet!");
+                artwork.put(name, texture);
 				return texture;
 			} catch (Exception e) {
 				System.err.println("Error loading your texture! Here's an error one instead.");

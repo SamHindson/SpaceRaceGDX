@@ -68,10 +68,10 @@ public class SmallBombarder extends Ship {
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
-		particleEffect.setPosition(position.x, position.y);
-		particleEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90);
-		particleEffect.update(dt);
-	}
+        particleEffect.setPosition(position.x, position.y);
+        particleEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90);
+        particleEffect.update(dt);
+    }
 
 	@Override
 	public void updateControls(float dt) {
@@ -157,4 +157,9 @@ public class SmallBombarder extends Ship {
 	public void orbit(float direction) {
 		super.orbit(direction);
 	}
+
+    @Override
+    public void dispose() {
+        particleEffect.dispose();
+    }
 }

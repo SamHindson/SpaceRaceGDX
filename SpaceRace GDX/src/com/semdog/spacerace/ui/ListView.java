@@ -82,10 +82,8 @@ public class ListView {
 
 			Button butt = new Button(titles[k + maxItems * page], true, x + width / 2,
 					y + height - 40 - (buttonHeight/2) - (k * buttonHeight), width - 10, buttonHeight,
-					() -> {
-						itemChosen(titleIndex);
-					});
-			butt.setColors(Colors.getRandom(), Color.WHITE);
+                    () -> itemChosen(titleIndex));
+            butt.setColors(Colors.getRandom(), Color.WHITE);
 			items[k] = butt;
 		}
 	}

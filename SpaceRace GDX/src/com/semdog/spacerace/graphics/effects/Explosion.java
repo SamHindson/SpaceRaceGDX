@@ -35,12 +35,9 @@ public class Explosion extends Effect {
 	public boolean isAlive() {
 		return !effect.isComplete();
 	}
-	
-	public float getX() {
-		return x;
-	}
-	
-	public float getY() {
-		return y;
-	}
+
+    @Override
+    public void dispose() {
+        effect.dispose();
+    }
 }

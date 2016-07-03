@@ -92,8 +92,8 @@ public class DebrisPiece extends Mass {
 	protected void handlePlanetCollision(float speed, boolean planet) {
 		if (bounces < 3) {
 			float surfaceAngle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
-			float velocityAngle = MathUtils.atan2(velocity.x, velocity.y);
-			float impactAngle = (MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
+            float velocityAngle = MathUtils.atan2(velocity.y, velocity.x);
+            float impactAngle = (MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
 			velocity.x *= MathUtils.cos(impactAngle);
 			velocity.y *= MathUtils.sin(impactAngle);
 			position.x += velocity.x * 0.016f;
@@ -119,4 +119,8 @@ public class DebrisPiece extends Mass {
 		return "debris";
 	}
 
+    @Override
+    public void dispose() {
+        sprite.getTexture().dispose();
+    }
 }

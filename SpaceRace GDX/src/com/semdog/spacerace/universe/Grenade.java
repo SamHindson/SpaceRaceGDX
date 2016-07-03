@@ -151,4 +151,10 @@ public class Grenade extends Mass {
 	public void die(DamageCause reason) {
 		super.die(reason);
 	}
+
+    @Override
+    public void dispose() {
+        trail.dispose();
+        sprite.getTexture().dispose();
+    }
 }
