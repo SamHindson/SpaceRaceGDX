@@ -1,8 +1,8 @@
 package com.semdog.spacerace.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 
@@ -13,13 +13,11 @@ import com.semdog.spacerace.graphics.Colors;
  * @author Sam
  */
 
-public class ListView {
-	private Texture block;
-	
-	private ListViewListener listener;
+public class ListView implements Disposable {
+    private ListViewListener listener;
 
-	private int x, y, width, height;
-	private int maxItems;
+    private float x, y, width, height;
+    private int maxItems;
 
 	@SuppressWarnings("unused")
 	private Color borderColor, itemColor;
@@ -30,13 +28,10 @@ public class ListView {
 	private int page = 0;
 	private int pageCount;
 
-	private String[] titles = { "Baby's First Rocket", "Into Orbit We Go", "To The Moooon!", "MURPH",
-			"Quadroplanet Warfare", "SpaceDecathon!", "American Booty", "Wagonwheel?!" };
+    private String[] titles;
 
-	public ListView(int x, int y, int width, int height, Color borderColor, Color itemColor, int maxItems) {
-		block = Art.get("pixel_white");
-
-		this.x = x;
+    public ListView(float x, float y, float width, float height, Color borderColor, Color itemColor, int maxItems) {
+        this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
@@ -62,14 +57,17 @@ public class ListView {
 
 		items = new Button[maxItems];
 		pageCount = items.length / maxItems + 1;
-
-		recomposeItems();
 	}
 
-	// TODO fix this stupid button placement
-	private void recomposeItems() {
-		int usableSpace = height - 80;
-		int buttonHeight = usableSpace / maxItems;
+    public void setTitles(String[] titles) {
+        this.titles = titles;
+        recomposeItems();
+    }
+
+    // TODO fix this stupid button placement
+    private void recomposeItems() {
+        int usableSpace = (int) height - 80;
+        int buttonHeight = usableSpace / maxItems;
 
 		items = new Button[maxItems];
 
@@ -77,19 +75,20 @@ public class ListView {
 
 			int titleIndex = (k + maxItems * page);
 
-			if (titleIndex - 2 > items.length)
-				return;
+            if (titleIndex > titles.length - 1) {
+                return;
+            }
 
 			Button butt = new Button(titles[k + maxItems * page], true, x + width / 2,
 					y + height - 40 - (buttonHeight/2) - (k * buttonHeight), width - 10, buttonHeight,
                     () -> itemChosen(titleIndex));
-            butt.setColors(Colors.getRandom(), Color.WHITE);
-			items[k] = butt;
+            butt.setColors(Colors.UI_TEAL, Color.WHITE);
+            items[k] = butt;
 		}
 	}
 
-	public void itemChosen(int index) {
-		listener.itemSelected(index);
+    private void itemChosen(int index) {
+        listener.itemSelected(index);
 	}
 
 	public void update(float dt) {
@@ -104,9 +103,9 @@ public class ListView {
 
 	public void draw(SpriteBatch batch) {
 		batch.setColor(borderColor);
-		batch.draw(block, x, y, width, height);
-		batch.setColor(Color.BLACK);
-		batch.draw(block, x + 5, y + 5, width - 10, height - 10);
+        batch.draw(Art.get("pixel_white"), x, y, width, height);
+        batch.setColor(Color.BLACK);
+        batch.draw(Art.get("pixel_white"), x + 5, y + 5, width - 10, height - 10);
 
 		for (Button item : items) {
 			if (item != null)
@@ -120,4 +119,9 @@ public class ListView {
 	public void setListener(ListViewListener listener) {
 		this.listener = listener;
 	}
+
+    @Override
+    public void dispose() {
+
+    }
 }

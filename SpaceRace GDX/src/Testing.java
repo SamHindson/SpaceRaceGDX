@@ -3,15 +3,21 @@ import java.lang.reflect.InvocationTargetException;
 public class Testing {
 
 	public static void main(String[] args) throws NoSuchFieldException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
-		Dude alex = new Dude();
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InstantiationException {
 
-		Dude.class.getDeclaredMethod("setAeg", int.class).invoke(alex, 17);
-	}
+        Dude bruh = new Dude(69);
+
+        bruh.getClass().getDeclaredConstructor(int.class).newInstance(13);
+    }
 }
 
 class Dude {
 	private int aeg = 450;
+
+    public Dude(int aeg) {
+        this.aeg = aeg;
+        System.out.println("Sweet");
+    }
 
 	public int getAeg() {
 		return aeg;

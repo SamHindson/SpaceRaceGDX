@@ -1,0 +1,39 @@
+{
+  "name": "The Name's Clooney",
+  "author": "Sam",
+  "description" : "You are now stuck in orbit. Climb into a nearby ship and get home! (Mind the lake though)",
+  "briefing": "To lower the height of your orbit everywhere else, point in the Retrograde direction (opposite to the direction you're currently moving in) and fire those engines.\nYou'll figure it out.",
+  "timelimit": 300,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 400,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 800,
+      "y": 0
+    }
+    {
+        "orbit": 1
+    }
+  ],
+  "runt": [
+    {
+        "x": 800,
+        "y": -50,
+        "id": "Tiangong"
+    }
+    {
+        "orbit": 1
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getPlayerVisitedPlanetsNo": 1
+    }
+  ]
+}

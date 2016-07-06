@@ -83,4 +83,8 @@ public class Bullet implements Disposable {
     public void dispose() {
         //  TODO do something here
     }
+
+    public Vector2 getVelocity() {
+        return new Vector2(dx, dy);
+    }
 }

@@ -10,12 +10,10 @@ import com.semdog.spacerace.graphics.Colors;
 
 public class TitleCard implements Disposable {
 
-	private BitmapFont titleFont;
-	
+    public static final int BIG = 1, SMALL = 0;
+    private BitmapFont titleFont;
 	private float x, y;
 	private int size;
-	
-	public static final int BIG = 1, SMALL = 0;
 	
 	public TitleCard(int size, float x, float y) {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
@@ -45,6 +43,6 @@ public class TitleCard implements Disposable {
 
 	@Override
 	public void dispose() {
-		
-	}
+        titleFont.dispose();
+    }
 }

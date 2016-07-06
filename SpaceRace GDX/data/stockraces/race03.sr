@@ -1,0 +1,48 @@
+{
+  "name": "The Valkyrie's Orbit",
+  "author": "Sam",
+  "description": "Now you've learned to love, you must learn to kill. Use your advanced weapons training to take down the enemy ship, before he destroys your small village!\nThe horror, the horror...",
+  "briefing": "We are under attack!\nFetch your guns and/or grenades and take down that orbiting bombarder!",
+  "timelimit": 30,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 400,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "weaponpickup-smg": [
+        {
+            "h": 10,
+            "a": 110
+        }
+      ],
+  "weaponpickup-rocketlauncher": [
+        {
+            "h": 10,
+            "a": 90
+        }
+      ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 420
+    }
+  ],
+  "runt": [
+    {
+        "x": 0,
+        "y": -600,
+        "id": "Sgt. Killgore"
+    }
+    {
+        "orbit": 1
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getShipCount": 0
+    }
+  ]
+}

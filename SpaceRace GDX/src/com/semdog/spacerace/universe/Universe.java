@@ -2,7 +2,6 @@ package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,12 +19,15 @@ import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
+import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.Player;
+import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.screens.PlayScreen;
 import com.semdog.spacerace.ui.Overlay;
 import com.semdog.spacerace.ui.RaceEndScreen;
@@ -39,6 +41,7 @@ public class Universe implements Disposable {
     private static boolean exiting;
     private float age;
     private float timeLeft;
+    private float timeLimit;
     private float raceEndDelay;
     private float countdown = 10;
     private boolean countingDown = true;
@@ -50,6 +53,7 @@ public class Universe implements Disposable {
     private Array<Bullet> bullets;
     private Array<Collectible> collectibles;
     private Array<Collideable> collideables;
+    private Array<Box> boxes;
     private GoalChecker goalChecker;
     private HUD hud;
     private Player player;
@@ -82,6 +86,8 @@ public class Universe implements Disposable {
         planets = new Array<>();
         masses = new Array<>();
         ships = new Array<>();
+
+        boxes = new Array<>();
 
         effects = new Array<>();
 
@@ -135,6 +141,8 @@ public class Universe implements Disposable {
         collideables.add(player);
 
         exiting = false;
+
+        player.setHud(hud);
     }
 
     public static void reset() {
@@ -148,6 +156,10 @@ public class Universe implements Disposable {
         currentUniverse.dispose();
         container.setMarkedForDestruction(true);
         container.getGame().changeScreen("menu");
+    }
+
+    public float getShipCount() {
+        return ships.size;
     }
 
     public Array<Planet> getPlanets() {
@@ -180,10 +192,10 @@ public class Universe implements Disposable {
         zoom += deltaZoom;
         camera.zoom += deltaZoom;
 
-        if (!gogglesActive && Gdx.input.isKeyPressed(Keys.Q)) {
+        if (!gogglesActive && Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
             gogglesActive = true;
             playUISound("goggleson");
-        } else if (gogglesActive && !Gdx.input.isKeyPressed(Keys.Q)) {
+        } else if (gogglesActive && !Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
             gogglesActive = false;
             playUISound("gogglesoff");
         }
@@ -216,14 +228,14 @@ public class Universe implements Disposable {
         }
 
         for (int i = 0; i < collectibles.size; i++) {
-            collectibles.get(i).update(collideables);
+            collectibles.get(i).update(dt, collideables);
         }
 
         for (Effect effect : effects) {
             effect.update(dt);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C))
+        if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("CAMERALOCK")))
             lockedRotation = !lockedRotation;
 
         float desiredRot;
@@ -290,7 +302,7 @@ public class Universe implements Disposable {
         }
 
         if (countingDown) {
-            countdown -= dt * 20;
+            countdown -= dt * 2;
             hud.setText("Get ready!", "[" + (int) countdown + "]");
 
             if (countdown <= 0) {
@@ -312,8 +324,8 @@ public class Universe implements Disposable {
                     shownEnd = true;
                     hud.hideAll();
                     SoundManager.stopMusic("oxidiser");
-                    SoundManager.playMusic("failure", false);
-                    raceEnd.setText("Failure!", "You're not a clever smart boy.");
+                    SoundManager.playMusic("failure2", false);
+                    raceEnd.setText("Failure!", "Our deepest condolences.");
                     raceEnd.setShowing(true);
                 }
             }
@@ -327,12 +339,32 @@ public class Universe implements Disposable {
         }
     }
 
+    public float getBoxCount() {
+        return boxes.size;
+    }
+
+    public void addBox(Box box) {
+        boxes.add(box);
+    }
+
     public boolean isPlayerAlive() {
         return player.isAlive();
     }
 
     public float getPlayerVisitedPlanetsNo() {
         return player.getVisitedPlanetsNo();
+    }
+
+    public float getPlayerToastCount() {
+        return player.getToastCount();
+    }
+
+    public boolean hasTestBox() {
+        for (Mass mass : masses) {
+            if (mass.getID().equals("bawx"))
+                return true;
+        }
+        return false;
     }
 
     public void tickPhysics(float dt) {
@@ -347,11 +379,22 @@ public class Universe implements Disposable {
 
             if (!shownEnd) {
                 shownEnd = true;
-                String time = timeLeft < 10 ? timeLeft + "" : (int) (timeLeft) + "";
                 SoundManager.stopAllSounds();
-                raceEnd.setText("Victory!", "Race completed with " + time + "s left!");
+
+                boolean best = timeLeft < RaceManager.getCurrentBestTime();
+
+                if (best) {
+                    RaceManager.setNewBestTime(timeLimit - timeLeft);
+                    Gdx.app.log("Universe", "New best time!");
+                }
+
+                String time = timeLeft < 10 ? String.format("%.2f", timeLeft) : (int) timeLeft + "";
+                String text = "Race completed with " + time + "s left!" + (best ? "\nNew Record!" : "");
+                raceEnd.setColor(best ? Colors.UI_GREEN : Colors.UI_WHITE);
+                raceEnd.setText("Victory!", text);
                 SoundManager.stopMusic("oxidiser");
                 SoundManager.playMusic("victory", false);
+
                 hud.hideAll();
                 raceEnd.setShowing(true);
             }
@@ -374,10 +417,15 @@ public class Universe implements Disposable {
         this.playerEnabled = playerEnabled;
     }
 
+    public boolean isPlayerOrbiting() {
+        return player.getPerigee() > planets.get(0).getRadius();
+    }
+
     public void render() {
         universeBatch.begin();
 
-        stars.draw(universeBatch);
+        if (!gogglesActive)
+            stars.draw(universeBatch);
 
         for (int i = 0; i < effects.size; i++) {
             effects.get(i).render(universeBatch);
@@ -396,6 +444,7 @@ public class Universe implements Disposable {
         universeBatch.end();
         // universeShapeRenderer.set();
         universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
+        Gdx.gl20.glLineWidth(gogglesActive ? 2 : 1);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).draw(universeShapeRenderer);
         }
@@ -410,10 +459,15 @@ public class Universe implements Disposable {
             for (Planet planet : planets) {
                 planet.debugRender(universeShapeRenderer);
             }
+
+            for (Collectible collectible : collectibles) {
+                collectible.debugDraw(universeShapeRenderer);
+            }
+
+            player.debugDraw(universeShapeRenderer);
         }
 
         planets.get(0).draw(universeShapeRenderer);
-        player.debugDraw(universeShapeRenderer);
         universeShapeRenderer.end();
 
         hudBatch.begin();
@@ -576,6 +630,7 @@ public class Universe implements Disposable {
 
     public void setTimeLimit(float timeLimit) {
         timeLeft = timeLimit;
+        this.timeLimit = timeLimit;
         hud.displayMessage();
     }
 
@@ -619,6 +674,10 @@ public class Universe implements Disposable {
         //universeBatch.dispose();
         //hudBatch.dispose();
         // universeShapeRenderer.dispose();
+    }
+
+    public void killBox(Box box) {
+        boxes.removeValue(box, true);
     }
 
     private class InputManager implements InputProcessor {

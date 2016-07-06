@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.semdog.spacerace.io.SettingsManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,14 +53,19 @@ public class SoundManager {
 		load("playerhit4.wav");
 		load("playerhit5.wav");
 		load("shiphurt.wav");
+
 		load("healthget.wav");
-		load("goggleson.wav");
-		load("gogglesoff.wav");
+        load("toastget.wav");
+        load("weaponget.wav");
+
+        load("goggleson.wav");
+        load("gogglesoff.wav");
 
 		load("neet.wav");
 
         loadMusic("victory.ogg");
         loadMusic("failure.ogg");
+        loadMusic("failure2.ogg");
         loadMusic("oxidiser.ogg");
         loadMusic("menu.ogg");
     }
@@ -68,11 +74,16 @@ public class SoundManager {
         music.put(name.split("[.]")[0], Gdx.audio.newMusic(Gdx.files.internal("assets/music/" + name)));
     }
 
+    public static boolean isMusicPlaying(String name) {
+        return music.get(name).isPlaying();
+    }
+
     public static void playMusic(String name, boolean loop) {
         if (music.containsKey(name)) {
             try {
                 music.get(name).stop();
                 music.get(name).setLooping(loop);
+                music.get(name).setVolume(SettingsManager.getMaster() / 100.f * SettingsManager.getMusic() / 100.f);
                 music.get(name).play();
                 Gdx.app.log("SoundManager", "Playing song " + name);
             } catch (GdxRuntimeException e) {
@@ -113,8 +124,7 @@ public class SoundManager {
 
 	public static void playSound(String name, float volume, float pan) {
 		if (clips.containsKey(name)) {
-			clips.get(name).play(volume, 1, pan);
-            Gdx.app.log("SoundManager", "Playing a sound!");
+            clips.get(name).play(volume * SettingsManager.getMaster() / 100.f * SettingsManager.getSfx() / 100.f, 1, pan);
         } else {
             Gdx.app.error("SoundManager", name + " is not part of our sound bank.");
         }
@@ -123,8 +133,8 @@ public class SoundManager {
 	public static void loopSound(String name, float volume, float pan) {
 		if (!looping.containsKey(name)) {
 			if (clips.containsKey(name)) {
-				looping.put(name, clips.get(name).loop(volume, 1, pan));
-			} else {
+                looping.put(name, clips.get(name).loop(volume * SettingsManager.getMaster() / 100.f * SettingsManager.getSfx() / 100.f, 1, pan));
+            } else {
                 Gdx.app.error("SoundManager", name + " is not part of our sound bank.");
             }
 		}

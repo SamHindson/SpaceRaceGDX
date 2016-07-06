@@ -25,15 +25,15 @@ public class MenuScreen extends RaceScreen {
 		
 		batch = new SpriteBatch();
 
-        button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 60, () -> game.changeScreen("play"));
+        button1 = new Button("Singleplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f, 200, 60, () -> game.changeScreen("playmenu"));
         button1.setColors(Colors.P_YELLOW, Colors.UI_BLUE);
 
         button2 = new Button("Multiplayer", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 61, 200, 60, () -> System.out.println("Dogs!"));
         button2.setColors(Colors.UI_BLUE, Colors.P_YELLOW);
 
         button3 = new Button("Settings", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 122, 200, 60, () -> {
-
-		});
+            game.changeScreen("settings");
+        });
         button3.setColors(Colors.UI_YELLOW, Colors.UI_WHITE);
 
         button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 183, 200, 60, () -> {
@@ -47,12 +47,15 @@ public class MenuScreen extends RaceScreen {
 		});
         button5.setColors(Colors.UI_BLUE, Colors.UI_WHITE);
 
-        secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> Gdx.app.exit());
+        secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {
+            game.changeScreen("thankyou");
+        });
         secretButton.setColors(Color.ORANGE, Color.GREEN);
 		
 		titleCard = new TitleCard(1, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
 
-        SoundManager.playMusic("menu", true);
+        if (!SoundManager.isMusicPlaying("menu"))
+            SoundManager.playMusic("menu", true);
     }
 
 	@Override

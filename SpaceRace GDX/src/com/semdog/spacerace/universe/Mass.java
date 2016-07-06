@@ -141,6 +141,12 @@ public abstract class Mass implements GoalObject, Disposable {
 		}
 	}
 
+    public void addMomentum(Vector2 velocity, float p) {
+        float vx = velocity.x;
+        float vy = velocity.y;
+        this.velocity.add(vx * p / mass, vy * p / mass);
+    }
+
 	protected void setEnvironment(Planet planet) {
 		environment = planet;
 	}
@@ -393,7 +399,8 @@ public abstract class Mass implements GoalObject, Disposable {
 			float py = MathUtils.lerp(oy, fy, i / accuracy);
 
 			if (bounds.contains(px, py)) {
-				return true;
+                addMomentum(bullet.getVelocity(), bullet.getDamage() / 10.f);
+                return true;
 			}
 		}
 

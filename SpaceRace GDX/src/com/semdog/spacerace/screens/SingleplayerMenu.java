@@ -8,10 +8,15 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.ui.ListView;
-import com.semdog.spacerace.ui.ListViewListener;
-import com.semdog.spacerace.ui.RaceInfoViewer;
-import com.semdog.spacerace.ui.TitleCard;
+import com.semdog.spacerace.races.Race;
+import com.semdog.spacerace.races.RaceManager;
+import com.semdog.spacerace.ui.*;
+
+/**
+ * A screen where players can choose a singleplayer race to play.
+ * <p>
+ * Contains a custom ListView and a specially formatted information display area.
+ */
 
 public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
@@ -23,6 +28,8 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
 	private ListView raceChooser;
 	private RaceInfoViewer raceViewer;
+
+    private Button abandonButton;
 
 	public SingleplayerMenu(RaceGame game) {
 		super(game);
@@ -40,17 +47,25 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
 		batch = new SpriteBatch();
 
-		raceChooser = new ListView(100, 100, 250, 420, new Color(1.f, 0, 110f / 255f, 1),
-				new Color(178f / 255f, 0, 1, 1), 5);
-		raceChooser.setListener(this);
-		
-		raceViewer = new RaceInfoViewer(350, 100, (Gdx.graphics.getWidth() - 100 - 250 - 100), 420);
-	}
+        raceChooser = new ListView(100, Gdx.graphics.getHeight() * 0.1f, 250, Gdx.graphics.getHeight() * 0.7f, new Color(1.f, 0, 110f / 255f, 1),
+                new Color(178f / 255f, 0, 1, 1), 10);
+        raceChooser.setTitles(RaceManager.getRaceTitles());
+        raceChooser.setListener(this);
+
+        raceViewer = new RaceInfoViewer(this, 350, Gdx.graphics.getHeight() * 0.1f, (Gdx.graphics.getWidth() - 100 - 250 - 100), Gdx.graphics.getHeight() * 0.7f);
+
+        abandonButton = new Button("Abandon", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 140, 50, () -> {
+            game.changeScreen("menu");
+        });
+        abandonButton.setColors(Colors.UI_RED, Colors.UI_WHITE);
+    }
 
 	@Override
 	public void update(float dt) {
 		raceChooser.update(dt);
-	}
+        raceViewer.update(dt);
+        abandonButton.update(dt);
+    }
 
 	@Override
 	public void render() {
@@ -64,17 +79,27 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
 		raceChooser.draw(batch);
 		raceViewer.draw(batch);
-		batch.end();
+        abandonButton.draw(batch);
+        batch.end();
 	}
 
 	@Override
 	public void dispose() {
-
-	}
+        super.dispose();
+        batch.dispose();
+        titleFont.dispose();
+        subtitleFont.dispose();
+        raceChooser.dispose();
+        raceViewer.dispose();
+    }
 
 	@Override
 	public void itemSelected(int index) {
-		Gdx.app.log("SingleplayerMenu", "Thingy was a choosd' " + index);
-	}
+        raceViewer.setRace(RaceManager.getRace(index));
+    }
 
+    public void loadRace(Race race) {
+        RaceManager.setCurrentRace(race);
+        game.changeScreen("play");
+    }
 }

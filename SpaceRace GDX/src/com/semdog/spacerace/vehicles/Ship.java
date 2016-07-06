@@ -328,7 +328,6 @@ public abstract class Ship extends Mass {
 	}
 	
 	public void orbit(float direction) {
-		System.out.println("Nice! Environment: " + environment);
 		if(environment == null)
 			findEnvironment();
 		angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
@@ -340,5 +339,13 @@ public abstract class Ship extends Mass {
     @Override
     public Color getColor() {
         return Colors.V_FUEL;
+    }
+
+    public float getFX() {
+        return position.x;
+    }
+
+    public float getFY() {
+        return position.y;
     }
 }

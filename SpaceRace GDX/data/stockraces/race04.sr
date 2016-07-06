@@ -1,0 +1,33 @@
+{
+  "name": "The Name's Gagarin",
+  "author": "Sam",
+  "description": "In this race, you'll learn how to place yourself into an orbit. Much easier than in Kerbal Space Program, believe me.",
+  "briefing": "Get into that space ship over there. Then, fire your engines until your Apoapsis (highest point in trajectory) is decent. When you get there, fire your engines in the direction in which you are travelling (referred to from now on as Prograde) until your Periapsis (lowest point in trajectory) is above the other side of the planet.\n\nGit gud!",
+  "timelimit": 300,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 500,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 550
+    }
+  ],
+  "rubbish": [
+    {
+        "x": 200,
+        "y": 550,
+        "id": "dudeman9001"
+    }
+  ],
+  "playercriteria": [
+    {
+      "boolean-isPlayerOrbiting": true
+    }
+  ]
+}

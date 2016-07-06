@@ -15,7 +15,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.collectables.Collectible;
+import com.semdog.spacerace.collectables.Health;
+import com.semdog.spacerace.collectables.Toast;
+import com.semdog.spacerace.collectables.WeaponPickup;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.VitalSigns.Type;
@@ -24,7 +28,6 @@ import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.vehicles.Ship;
-import com.semdog.spacerace.weapons.RocketLauncher;
 import com.semdog.spacerace.weapons.Weapon;
 
 public class Player implements Collideable, Disposable {
@@ -64,6 +67,9 @@ public class Player implements Collideable, Disposable {
 
     private int grenadeCount;
 
+    private int toastCount;
+    private HUD hud;
+
     public Player(float x, float y, Planet planet) {
         environment = planet;
         position = new Vector2(x, y);
@@ -73,8 +79,6 @@ public class Player implements Collideable, Disposable {
         animation = new Animation(1 / 30f, textureAtlas.getRegions());
         idleTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/graphics/idledude.png")));
         bounds = new Rectangle(x - 10, y - 10, 20, 20);
-        weapon = new RocketLauncher();
-        weapon.pickup(this);
 
         grenadeCount = 5;
         primarySigns = new VitalSigns();
@@ -162,8 +166,12 @@ public class Player implements Collideable, Disposable {
             }
         };
 
-        primarySigns.addItems(vHealth, vAmmo, vGrenades);
+        primarySigns.addItems(vHealth, vGrenades);
         visitedPlanets = new Array<>();
+    }
+
+    public void setHud(HUD hud) {
+        this.hud = hud;
     }
 
     public VitalSigns getPrimarySigns() {
@@ -194,7 +202,7 @@ public class Player implements Collideable, Disposable {
             if (pilotingShip && controllable) {
                 ship.updateControls(dt);
 
-                if (Gdx.input.isKeyJustPressed(Keys.E)) {
+                if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE"))) {
                     exitShip();
                 }
             } else {
@@ -243,20 +251,20 @@ public class Player implements Collideable, Disposable {
                     onGround = distance < environment.getRadius() + 10;
                 }
 
-                sprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
+                sprinting = Gdx.input.isKeyPressed(SettingsManager.getKey("SPRINT"));
 
                 float wx;
                 float wy;
-                if (Gdx.input.isKeyPressed(Keys.A) && controllable) {
+                if (Gdx.input.isKeyPressed(SettingsManager.getKey("LEFT")) && controllable) {
                     // Move anti-clockwise around planet
                     float speed = sprinting ? -300 : -100;
                     wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
                     wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
                     lefting = true;
                     righting = false;
-                } else if (Gdx.input.isKeyPressed(Keys.D) && controllable) {
+                } else if (Gdx.input.isKeyPressed(SettingsManager.getKey("RIGHT")) && controllable) {
                     // Move clockwise around planet
-                    float speed = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 300 : 100;
+                    float speed = sprinting ? 300 : 100;
                     wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
                     wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
                     righting = true;
@@ -267,7 +275,7 @@ public class Player implements Collideable, Disposable {
                     lefting = righting = false;
                 }
 
-                if (Gdx.input.isKeyJustPressed(Keys.SPACE) && onGround && controllable) {
+                if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("JUMP")) && onGround && controllable) {
                     // Jump!
 
                     // Works out which direction is up and shoots the player in said direction
@@ -281,7 +289,7 @@ public class Player implements Collideable, Disposable {
                     Universe.currentUniverse.playUISound("jump");
                 }
 
-                if (boarding && Gdx.input.isKeyJustPressed(Keys.E) && controllable) {
+                if (boarding && Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE")) && controllable) {
                     pilotingShip = true;
                     setShip(boardingShip);
                     boardingShip = null;
@@ -306,7 +314,7 @@ public class Player implements Collideable, Disposable {
                 if (weapon != null && controllable)
                     weapon.update(dt, a);
 
-                if (Gdx.input.isKeyJustPressed(Keys.G) && grenadeCount > 0 && controllable) {
+                if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("GRENADE")) && grenadeCount > 0 && controllable) {
                     float gx = position.x + 30 * MathUtils.cos(a);
                     float gy = position.y + 30 * MathUtils.sin(a);
 
@@ -348,6 +356,7 @@ public class Player implements Collideable, Disposable {
 
     public void debugDraw(ShapeRenderer sr) {
         sr.setColor(Color.BLUE);
+        sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
     public float getX() {
@@ -359,11 +368,11 @@ public class Player implements Collideable, Disposable {
     }
 
     public float getFX() {
-        return (pilotingShip && ship != null) ? ship.getX() : (position.x + velocity.x * Gdx.graphics.getDeltaTime());
+        return (pilotingShip && ship != null) ? ship.getFX() : (position.x + velocity.x * Gdx.graphics.getDeltaTime());
     }
 
     public float getFY() {
-        return (pilotingShip && ship != null) ? ship.getY() : (position.y + velocity.y * Gdx.graphics.getDeltaTime());
+        return (pilotingShip && ship != null) ? ship.getFY() : (position.y + velocity.y * Gdx.graphics.getDeltaTime());
     }
 
     public float getDa() {
@@ -406,7 +415,8 @@ public class Player implements Collideable, Disposable {
         health = 200;
         grenadeCount = 5;
 
-        weapon.reset();
+        if (weapon != null)
+            weapon.reset();
 
         for (Planet planet : planets) {
             if (planet.inRange(x, y)) {
@@ -471,7 +481,18 @@ public class Player implements Collideable, Disposable {
 
     @Override
     public boolean canCollect(Collectible collectible) {
-        return alive && health < 200;
+        if (collectible instanceof Health)
+            return alive && health < 200;
+
+        if (collectible instanceof WeaponPickup) {
+            return Gdx.input.isKeyJustPressed(Keys.E);
+        }
+
+        if (collectible instanceof Toast) {
+            return true;
+        }
+
+        return true;
     }
 
     @Override
@@ -528,5 +549,28 @@ public class Player implements Collideable, Disposable {
         for (TextureRegion region : animation.getKeyFrames()) {
             region.getTexture().dispose();
         }
+    }
+
+    public void addToast() {
+        toastCount++;
+        hud.showNotification("Toast", "You got toast!");
+    }
+
+    public void orbit(float direction) {
+        angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
+        float v = (float) Math.sqrt(Universe.GRAVITY * environment.getMass() / position.sub(environment.getX(), environment.getY()).len()) * -direction;
+        velocity.x = MathUtils.sin(angle) * v;
+        velocity.y = MathUtils.cos(angle) * v;
+    }
+
+    public float getToastCount() {
+        return toastCount;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        weapon.pickup(this);
+        primarySigns.addItems(weapon);
+        hud.showNotification("Equipment", "Picked up " + weapon.getName());
     }
 }

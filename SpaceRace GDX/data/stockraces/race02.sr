@@ -1,0 +1,71 @@
+{
+  "name": "Baby's First... Gun?",
+  "author": "Sam",
+  "description": "In this petty excuse for a race, you'll learn to pick up a gun and fire it.",
+  "briefing": "Welcome back! In this race/tutorial, you'll learn how to fire a gun.\nWalk over to any of the hovering guns to pick one up. Then, aim with your mouse and take shoot at the crate until it explodes!",
+  "timelimit": 120,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 250,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "weaponpickup-smg": [
+    {
+        "h": 10,
+        "a": 95
+    }
+  ],
+  "weaponpickup-carbine": [
+        {
+            "h": 10,
+            "a": 100
+        }
+      ],
+  "weaponpickup-shotgun": [
+        {
+            "h": 10,
+            "a": 105
+        }
+      ],
+  "weaponpickup-rocketlauncher": [
+        {
+            "h": 10,
+            "a": 110
+        }
+      ],
+      "box": [
+        {
+            "x": 275,
+            "y": 0,
+            "id": "bleh"
+        }
+      ],
+      "box": [
+              {
+                  "x": 0,
+                  "y": -275,
+                  "id": "savage"
+              }
+            ],
+            "box": [
+                    {
+                        "x": -275,
+                        "y": 0,
+                        "id": "mensvreeterleeu"
+                    }
+                  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 270
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getBoxCount": 0
+    }
+  ]
+}

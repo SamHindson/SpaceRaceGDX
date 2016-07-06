@@ -1,9 +1,14 @@
 package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.collectables.Health;
+import com.semdog.spacerace.collectables.Toast;
+import com.semdog.spacerace.collectables.WeaponPickup;
+import com.semdog.spacerace.players.Player;
+import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.vehicles.Needle;
 import com.semdog.spacerace.vehicles.RubbishLander;
 import com.semdog.spacerace.vehicles.SmallBombarder;
@@ -11,9 +16,11 @@ import com.semdog.spacerace.vehicles.SmallBombarder;
 public class UniverseLoader {
     public void load(Universe universe) {
         JsonReader jsonReader = new JsonReader();
-        JsonValue data = jsonReader.parse(Gdx.files.internal("data/testlevel.json"));
+        JsonValue data = jsonReader.parse(RaceManager.getCurrentRaceSchematics());
 
         int index = 0;
+
+        universe.setTimeLimit(data.getFloat("timelimit"));
 
         while (true) {
             JsonValue value = data.get(index);
@@ -39,6 +46,17 @@ public class UniverseLoader {
                     float dy = value.get(0).getFloat("y");
 
                     universe.spawnPlayer(dx, dy);
+
+                    try {
+                        String ssname = value.get(1).get(0).name;
+                        float ssvalue = value.get(1).getFloat(0);
+                        Player.class.getDeclaredMethod(ssname, float.class).invoke(universe.getPlayer(), ssvalue);
+                    } catch (NullPointerException npe) {
+                        Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
+                    } catch (Exception e) {
+                        Gdx.app.error("UniverseLoader", "Something went wrong while processing the JSON.");
+                        e.printStackTrace();
+                    }
 
                     break;
                 case "runt":
@@ -115,21 +133,37 @@ public class UniverseLoader {
                     Gdx.app.log("UniverseLoader", "Mission criteria loaded.");
 
                     break;
-                case "mission":
-                    JsonValue missionDetails = value.get(0);
-
-                    universe.setTimeLimit(missionDetails.getFloat("timelimit"));
-
-                    Gdx.app.log("UniverseLoader", "Mission details loaded.");
-
-                    break;
                 case "healthpack":
 
                     float hx = value.get(0).getFloat("x");
                     float hy = value.get(0).getFloat("y");
                     universe.addCollectable(new Health(hx, hy));
 
-                    Gdx.app.log("UniverseLoader", "Health Pack created.");
+                    break;
+                case "toast":
+
+                    float tx = value.get(0).getFloat("x");
+                    float ty = value.get(0).getFloat("y");
+                    universe.addCollectable(new Toast(tx, ty));
+
+                    break;
+                case "weaponpickup":
+
+                    String type = value.name.split("-")[1];
+
+                    float h = value.get(0).getFloat("h");
+                    float a = value.get(0).getFloat("a") * MathUtils.degreesToRadians;
+
+                    universe.addCollectable(new WeaponPickup(h, a, type));
+
+                    break;
+                case "box":
+
+                    float bx = value.get(0).getFloat("x");
+                    float by = value.get(0).getFloat("y");
+                    String bid = value.get(0).getString("id");
+
+                    new Box(bx, by, bid);
 
                     break;
             }

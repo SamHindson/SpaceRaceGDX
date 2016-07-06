@@ -1,68 +1,102 @@
 package com.semdog.spacerace.collectables;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
 public abstract class Collectible implements Disposable {
+    protected float x;
+    protected float y;
+    protected float h, a;
     String target;
     float width;
     float height;
     Sprite sprite;
-    private float x;
-    private float y;
     private Rectangle bounds;
     private Planet environment;
     private float originalHeight;
     private float angle;
 
-    Collectible(float x, float y, float width, float height) {
-        this.x = x;
-		this.y = y;
-		this.width = width;
+    private ParticleEffect particleEffect;
+
+    Collectible(float h, float a, float width, float height, String textureName, String target) {
+        this.h = h;
+        this.a = a;
+        this.width = width;
 		this.height = height;
 
-		bounds = new Rectangle(x, y, width, height);
-	}
+        sprite = new Sprite(Art.get(textureName));
+        sprite.setOriginCenter();
+        sprite.setSize(width, height);
 
-    private void setEnvironment(Planet planet) {
+        Color particleColor = Art.getAccent(textureName);
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("assets/effects/weaponpickup.p"), Gdx.files.internal("assets/effects"));
+        particleEffect.start();
+        particleEffect.getEmitters().first().getTint().setColors(new float[]{particleColor.r, particleColor.g, particleColor.b});
+
+        this.target = target;
+    }
+
+    protected void setEnvironment(Planet planet) {
         environment = planet;
+
+        x = environment.getX() + (environment.getRadius() + h) * MathUtils.cos(a);
+        y = environment.getY() + (environment.getRadius() + h) * MathUtils.sin(a);
+
+        bounds = new Rectangle(x, y, width, height);
+
 		angle = MathUtils.atan2(y - planet.getY(), x - planet.getX());
 		originalHeight = Vector2.dst(x, y, planet.getX(), planet.getY());
-		sprite.setRotation(angle * MathUtils.radiansToDegrees);
-	}
+        sprite.setRotation(angle * MathUtils.radiansToDegrees - 90);
 
-    public void update(Array<Collideable> collideables) {
+        sprite.setOriginCenter();
+        sprite.setPosition(x, y);
+    }
+
+    public void update(float dt, Array<Collideable> collideables) {
         if (environment != null) {
             float bob = MathUtils.sin(Universe.currentUniverse.getAge()) * 3;
             x = environment.getX() + (originalHeight + bob) * MathUtils.cos(angle);
 			y = environment.getY() + (originalHeight + bob) * MathUtils.sin(angle);
-		}
-		sprite.setOriginCenter();
+            particleEffect.setPosition(x, y);
+        }
+        sprite.setOriginCenter();
 		sprite.setPosition(x, y);
 
 		for (int q = 0; q < collideables.size; q++) {
 			Collideable collideable = collideables.get(q);
 			if (collideable.getType().equals(target) && collideable.canCollect(this)) {
-				if (collideable.getBounds().contains(bounds)) {
-					get(collideable);
+                if (collideable.getBounds().overlaps(bounds)) {
+                    get(collideable);
 					collideable.collectCollectible(this);
 					Universe.currentUniverse.killCollectible(this);
 				}
 			}
 		}
-	}
+        particleEffect.update(dt);
+    }
 
 	public void draw(SpriteBatch batch) {
-		sprite.draw(batch);
+        particleEffect.draw(batch);
+        sprite.draw(batch);
 	}
+
+    public void debugDraw(ShapeRenderer shapeRenderer) {
+        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
 
     protected abstract void get(Collideable collideable);
 
@@ -77,7 +111,6 @@ public abstract class Collectible implements Disposable {
 
     @Override
     public void dispose() {
-        sprite.getTexture().dispose();
         bounds = null;
     }
 }

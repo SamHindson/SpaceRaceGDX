@@ -2,6 +2,7 @@ package com.semdog.spacerace.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -22,9 +23,10 @@ public abstract class Overlay {
 	protected float titleOff, subtitleOff;
 
 	protected Texture background;
+    protected Color color;
 
-	public Overlay() {
-		background = Art.get("pixel_white");
+    public Overlay() {
+        background = Art.get("pixel_white");
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
                 Gdx.files.internal("assets/fonts/Mohave.ttf"));
@@ -63,4 +65,8 @@ public abstract class Overlay {
 		titleOff = titleGlyphs.width / 2;
 		subtitleOff = subtitleGlyphs.width / 2;
 	}
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

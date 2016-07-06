@@ -2,54 +2,101 @@ package com.semdog.spacerace.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.races.Race;
+import com.semdog.spacerace.screens.SingleplayerMenu;
 
-public class RaceInfoViewer {
-	private Race race;
-	
-	private String title, description;
-	private float yourTime, bestTime;
-	
-	private BitmapFont titleFont, descriptionFont, timeFont;
-	private Color borderColor;
-	private Button button;
-	private Texture block;
-	
-	private float x, y, width, height;
-	
-	public RaceInfoViewer(float x, float y, float width, float height) {
-		this.x = x;
+public class RaceInfoViewer implements Disposable {
+    private Race race;
+
+    private String title, info;
+    private float timeLimit, bestTime;
+
+    private BitmapFont titleFont, descriptionFont;
+    private Color borderColor;
+    private Button launchButton;
+
+    private float x, y, width, height;
+
+    private boolean showing = false;
+
+    public RaceInfoViewer(SingleplayerMenu container, float x, float y, float width, float height) {
+        this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-				Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
+
+        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(
+                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 
-		parameter.size = 24;
-		titleFont = generator.generateFont(parameter);
+        parameter.size = 36;
+        titleFont = generator1.generateFont(parameter);
+        generator1.dispose();
 
-		parameter.size = 16;
-		descriptionFont = generator.generateFont(parameter);
-		generator.dispose();
-		
-		block = Art.get("pixel_white");
-		
-		borderColor = Colors.P_BLUE;
-	}
+        parameter.size = 24;
+        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(
+                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
+        descriptionFont = generator2.generateFont(parameter);
+
+        borderColor = Colors.P_BLUE;
+
+        launchButton = new Button("Launch", false, x + width - 80, y + 35, 140, 50, () -> container.loadRace(race));
+        launchButton.setColors(Colors.UI_GREEN, Colors.UI_WHITE);
+    }
 	
 	public void draw(SpriteBatch batch) {
 		batch.setColor(borderColor);
-		batch.draw(block, x, y, width, height);
-		batch.setColor(Color.BLACK);
-		batch.draw(block, x + 5, y + 5, width - 10, height - 10);
-	}
+        batch.draw(Art.get("pixel_white"), x, y, width, height);
+        batch.setColor(Color.BLACK);
+        batch.draw(Art.get("pixel_white"), x + 5, y + 5, width - 10, height - 10);
+
+        if (showing) {
+            titleFont.draw(batch, title, x + 20, y + height - 20);
+
+            descriptionFont.setColor(Color.WHITE);
+            descriptionFont.draw(batch, info, x + 20, y + height - titleFont.getCapHeight() - 40, width - 40, 9, true);
+
+            descriptionFont.setColor(Colors.P_PINK);
+            descriptionFont.draw(batch, "Time Limit:", x + 20, y + 110);
+            descriptionFont.setColor(Colors.P_GREEN);
+            descriptionFont.draw(batch, timeLimit + "s", x + 20, y + 85);
+
+            descriptionFont.setColor(Colors.P_RED);
+            descriptionFont.draw(batch, "Best Time:", x + 20, y + 60);
+            descriptionFont.setColor(Colors.P_BLUE);
+            descriptionFont.draw(batch, String.format("%.2f", bestTime) + "s", x + 20, y + 35);
+
+            launchButton.draw(batch);
+        }
+    }
+
+    public void update(float dt) {
+        launchButton.update(dt);
+    }
+
+    public void setRace(Race race) {
+        this.race = race;
+        setInfo(race.getName(), race.getDescription(), race.getTimeLimit(), race.getBestTime());
+    }
+
+    private void setInfo(String title, String info, float timeLimit, float bestTime) {
+        showing = true;
+        this.title = title;
+        this.info = info;
+        this.timeLimit = timeLimit;
+        this.bestTime = bestTime;
+    }
+
+    @Override
+    public void dispose() {
+        titleFont.dispose();
+        descriptionFont.dispose();
+    }
 }

@@ -3,18 +3,15 @@ package com.semdog.spacerace.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.semdog.spacerace.graphics.Art;
 
 public class Button {
 	private static BitmapFont font16, font10;
-	private static Texture texture;
 
 	static {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
@@ -27,11 +24,6 @@ public class Button {
 		parameter.size = 12;
 		font10 = generator.generateFont(parameter);
 		generator.dispose();
-
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.drawPixel(0, 0);
-		texture = new Texture(pixmap);
 	}
 
 	private float x, y, w, h, tox, toy;
@@ -99,7 +91,7 @@ public class Button {
 	public void draw(SpriteBatch batch) {
         //batch.setColor(hovered ? buttonColor : textColor);
         batch.setColor(hovered ? textColor : buttonColor);
-        batch.draw(texture, x - w / 2, y - h / 2, w, h);
+        batch.draw(Art.get("pixel_white"), x - w / 2, y - h / 2, w, h);
         //batch.draw(texture, x - w / 2 + 2, y - h / 2 + 2, w - 4, h - 4);
 
 		batch.setColor(Color.WHITE);
@@ -111,4 +103,27 @@ public class Button {
 			font16.draw(batch, text, x + tox, y + toy);
 		}
 	}
+
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        GlyphLayout glyphLayout;
+
+        if (small) {
+            glyphLayout = new GlyphLayout(font10, text);
+            tox = 0;
+            toy = 0;
+        } else {
+            glyphLayout = new GlyphLayout(font16, text);
+            tox = 0;
+            toy = 0;
+        }
+
+        tox = -glyphLayout.width / 2;
+        toy = glyphLayout.height / 2;
+    }
 }

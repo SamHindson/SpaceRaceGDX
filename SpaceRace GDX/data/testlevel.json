@@ -4,7 +4,7 @@
   "planet": [
     {
       "id": "home",
-      "radius": 2500,
+      "radius": 1000,
       "x": 0,
       "y": 0
     }
@@ -14,7 +14,7 @@
       "id": "mun",
       "radius": 250,
       "x": 0,
-      "y": -8250
+      "y": -3750
     }
   ],
   "playerstuff": [

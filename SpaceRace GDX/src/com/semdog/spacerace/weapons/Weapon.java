@@ -99,4 +99,8 @@ public abstract class Weapon implements Vitality {
 	public String getID() {
 		return "ammo";
 	}
+
+    public String getName() {
+        return name;
+    }
 }

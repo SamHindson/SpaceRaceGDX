@@ -34,8 +34,12 @@ public class HUD implements Disposable {
     private boolean countdownActive;
     private float timeLeft;
 
-    private BitmapFont titleFont, subtitleFont, countdownFont;
+    private BitmapFont titleFont, subtitleFont, countdownFont, notificationFont;
     private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
+
+    private boolean showingNotification, notificationEntering, notificationExiting;
+    private String notificationTitle, notification;
+    private float notificationHeight, notificationTime;
 
     public HUD(Player owner) {
         this.owner = owner;
@@ -49,6 +53,8 @@ public class HUD implements Disposable {
         subtitleFont = generator.generateFont(parameter);
         parameter.size = 45;
         countdownFont = generator.generateFont(parameter);
+        parameter.size = 18;
+        notificationFont = generator.generateFont(parameter);
         generator.dispose();
 
         title = subtitle = "";
@@ -70,7 +76,42 @@ public class HUD implements Disposable {
                 if (respawnable)
                     Universe.currentUniverse.respawnPlayer();
             }
+        } else {
+            if (showingNotification) {
+                if (notificationEntering) {
+                    notificationHeight += 500 * dt;
+
+                    if (notificationHeight >= 50) {
+                        notificationHeight = 50;
+                        notificationEntering = false;
+                    }
+                } else if (notificationExiting) {
+                    notificationHeight -= 500 * dt;
+
+                    if (notificationHeight <= 0) {
+                        notificationHeight = 0;
+                        notificationExiting = false;
+                        showingNotification = false;
+                    }
+                } else {
+                    notificationTime += dt;
+
+                    if (notificationTime > 3) {
+                        notificationExiting = true;
+                    }
+                }
+            }
         }
+    }
+
+    public void showNotification(String title, String text) {
+        showingNotification = true;
+        notificationEntering = true;
+
+        notificationTitle = title;
+        notification = text;
+
+        notificationTime = 0;
     }
 
     public void draw(SpriteBatch spriteBatch) {
@@ -104,6 +145,14 @@ public class HUD implements Disposable {
             titleFont.draw(spriteBatch, title, titleX, titleY);
             subtitleFont.setColor(Color.WHITE);
             subtitleFont.draw(spriteBatch, subtitle, subtitleX, subtitleY);
+        }
+
+        if (showingNotification) {
+            float barHeight = 25 + 2 * notificationFont.getCapHeight();
+            spriteBatch.draw(Art.get("pixel_gray"), 0, notificationHeight - barHeight + 2, 245, barHeight);
+
+            notificationFont.draw(spriteBatch, notificationTitle, 10, notificationHeight - 10 + 2);
+            notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 15 - notificationFont.getCapHeight() + 2);
         }
 
         if (showingStats) {

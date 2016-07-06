@@ -5,30 +5,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.screens.MenuScreen;
-import com.semdog.spacerace.screens.PlayScreen;
-import com.semdog.spacerace.screens.RaceScreen;
-import com.semdog.spacerace.screens.SingleplayerMenu;
+import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.races.RaceManager;
+import com.semdog.spacerace.screens.*;
 
 public class RaceGame extends ApplicationAdapter {
 
     private static Pixmap cursor, crosshair;
     // TEST FEATURES
-    FrameBuffer frameBuffer;
-    SpriteBatch frameBufferBatch;
-    ShaderProgram shaderProgram;
-    ShapeRenderer backgroundRenderer;
-    Array<BackgroundElement> backgroundElements;
+    //private FrameBuffer frameBuffer;
+    //private SpriteBatch frameBufferBatch;
+    //private ShaderProgram shaderProgram;
+    private ShapeRenderer backgroundRenderer;
+    private Array<BackgroundElement> backgroundElements;
     private RaceScreen screen;
 
     public static void enableCrosshair() {
@@ -43,11 +38,16 @@ public class RaceGame extends ApplicationAdapter {
     @Override
     public void create() {
         Gdx.app.log("RaceGame", "Welcome! Loading bits and pieces...");
+        SettingsManager.initialize();
         Art.initialize();
         Gdx.app.log("RaceGame", "Loaded Graphics...");
         SoundManager.initialize();
         Gdx.app.log("RaceGame", "Loaded Audio...");
+        RaceManager.initialize();
+        Gdx.app.log("RaceGame", "Loaded Races...");
         Gdx.app.log("RaceGame", "Finisce!");
+
+        Gdx.graphics.setDisplayMode(SettingsManager.getWidth(), SettingsManager.getHeight(), SettingsManager.isFullscreen());
 
         backgroundRenderer = new ShapeRenderer();
         backgroundElements = new Array<>();
@@ -57,14 +57,11 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         Pixmap cursor = new Pixmap(Gdx.files.internal("assets/graphics/cursor.png"));
-        Pixmap crosshair = new Pixmap(Gdx.files.internal("assets/graphics/crosshair.png"));
-
-        Gdx.input.setCursorImage(cursor, 4, 4);
-        //enableCursor();
+        Gdx.input.setCursorImage(cursor, 0, 0);
 
         screen = new MenuScreen(this);
 
-        frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 2),
+        /*frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, (int) (Gdx.graphics.getWidth() / 2),
                 (int) (Gdx.graphics.getHeight() / 2), true);
         frameBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         frameBufferBatch = new SpriteBatch();
@@ -79,7 +76,7 @@ public class RaceGame extends ApplicationAdapter {
 
         ShaderProgram.pedantic = false;
 
-        frameBufferBatch.setShader(shaderProgram);
+        frameBufferBatch.setShader(shaderProgram);*/
     }
 
     @Override
@@ -97,9 +94,6 @@ public class RaceGame extends ApplicationAdapter {
 
         SoundManager.update();
 
-        frameBuffer.begin();
-
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
         Gdx.gl20.glClearColor(0, 0, 0, 0.05f);
@@ -115,18 +109,15 @@ public class RaceGame extends ApplicationAdapter {
             }
         }
         screen.render();
-        frameBuffer.end();
+        //frameBuffer.end();
 
-        frameBufferBatch.begin();
-        frameBufferBatch.draw(frameBuffer.getColorBufferTexture(), 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(),
-                -Gdx.graphics.getHeight());
-        frameBufferBatch.end();
+        //frameBufferBatch.begin();
+        //frameBufferBatch.draw(frameBuffer.getColorBufferTexture(), 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(),
+        //        -Gdx.graphics.getHeight());
+        //frameBufferBatch.end();
     }
 
     public void changeScreen(String name) {
-        if (!name.equals("play"))
-            enableCursor();
-
         switch (name) {
             case "play":
                 screen.dispose();
@@ -136,11 +127,22 @@ public class RaceGame extends ApplicationAdapter {
             case "menu":
                 screen.dispose();
                 screen = new MenuScreen(this);
-                Gdx.app.log("RaceGame", screen.toString());
                 break;
             case "playmenu":
                 screen.dispose();
                 screen = new SingleplayerMenu(this);
+                break;
+            case "settings":
+                screen.dispose();
+                screen = new SettingsScreen(this);
+                break;
+            case "keys":
+                screen.dispose();
+                screen = new KeysScreen(this);
+                break;
+            case "thankyou":
+                screen.dispose();
+                screen = new ThankYouScreen(this);
                 break;
         }
     }

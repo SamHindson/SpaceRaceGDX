@@ -1,0 +1,33 @@
+{
+  "name": "Baby's First Steps",
+  "author": "Sam",
+  "description": "This is the race for you if you have no idea what's going on. It won't teach you everything, but it may look cute on your resume.",
+  "briefing": "Welcome to SpaceRace! In this race/tutorial, you'll learn how to walk around planets.\nPress [A] or [D] to walk all around the planet to the bottom, where you'll collect a nice little piece of toast.",
+  "timelimit": 60,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 1000,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "toast": [
+    {
+      "x": 0,
+      "y": -1030
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 1030
+    }
+  ],
+  "playercriteria": [
+    {
+      "boolean-isPlayerAlive": true,
+      "float-getPlayerToastCount": 1
+    }
+  ],
+}

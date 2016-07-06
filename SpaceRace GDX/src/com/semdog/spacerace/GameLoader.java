@@ -4,13 +4,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class GameLoader {
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+    public static final String version = "0.3.0";
+
+    public static void main(String[] args) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "SpaceRace v" + version;
         config.width = 1280;
-        config.height = config.width * 9 / 16;
-        config.title = "SPACERACE!";
-		config.samples = 4;
-		config.resizable = false;
-		new LwjglApplication(new RaceGame(), config);
-	}
+        config.height = 720;
+        config.samples = 4;
+        config.resizable = false;
+        new LwjglApplication(new RaceGame(), config);
+    }
 }

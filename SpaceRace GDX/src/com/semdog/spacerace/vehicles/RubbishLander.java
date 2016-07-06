@@ -49,13 +49,11 @@ public class RubbishLander extends Ship {
 	@Override
 	public void updateControls(float dt) {
 		if (Gdx.input.isKeyPressed(Keys.A)) {
-            dr += dt * 60;
+            r += dt * 60f;
         }
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-            dr -= dt * 60;
+            r -= dt * 60f;
         }
-
-        r += dr * dt;
 
 		if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 0) {
 			currentFuel -= power * dt;
