@@ -394,7 +394,7 @@ public class Player implements Collideable, Disposable {
     }
 
     public float getAngle() {
-        return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2) % MathUtils.PI2;
+        return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2);
     }
 
     public float getDX() {
@@ -464,7 +464,7 @@ public class Player implements Collideable, Disposable {
 
     @Override
     public void collectCollectible(Collectible collectible) {
-        // Yeah baby!
+        // Grabem pills!
     }
 
     public void exitShip() {

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +22,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.misc.SRCamera;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.HUD;
@@ -60,7 +60,7 @@ public class Universe implements Disposable {
     private SpriteBatch hudBatch;
     private SpriteBatch universeBatch;
     private ShapeRenderer universeShapeRenderer;
-    private OrthographicCamera camera;
+    private SRCamera camera;
     private float cameraRot;
     private Sprite stars;
     private float cameraX;
@@ -102,7 +102,7 @@ public class Universe implements Disposable {
         universeBatch = new SpriteBatch();
         universeShapeRenderer = new ShapeRenderer();
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new SRCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(0, 0, 0);
         camera.zoom = 0.5f;
 
@@ -245,9 +245,11 @@ public class Universe implements Disposable {
             desiredRot = 0;
         }
 
-        float da = (desiredRot - cameraRot) / 10.f;
+        /*float da = (desiredRot - cameraRot) / 10.f;
         cameraRot += da;
-        camera.rotate(-da * MathUtils.radiansToDegrees);
+        camera.rotate(-da * MathUtils.radiansToDegrees);*/
+
+        camera.setRotation(-player.getAngle() * MathUtils.radiansToDegrees);
 
         float desiredCX;
         float desiredCY;

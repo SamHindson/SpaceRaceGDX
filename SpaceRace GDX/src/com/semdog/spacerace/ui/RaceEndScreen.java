@@ -14,8 +14,6 @@ public class RaceEndScreen extends Overlay {
 	private float age;
 	private boolean titleShowing, subtitleShowing, buttonsShowing;
 
-    private boolean doubleLine = false;
-
 	public RaceEndScreen() {
 		super();
         retry = new Button("Retry", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.2f + 60, 200, 30, Universe::reset);
