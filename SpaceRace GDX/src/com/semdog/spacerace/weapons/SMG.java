@@ -11,6 +11,7 @@ public class SMG extends Weapon {
     @Override
     protected void fire() {
         super.fire();
+        ammoleft++;
     }
 
 	@Override

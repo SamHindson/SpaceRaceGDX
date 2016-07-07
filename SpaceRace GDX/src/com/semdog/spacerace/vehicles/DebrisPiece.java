@@ -109,8 +109,8 @@ public class DebrisPiece extends Mass {
 
 	@Override
 	protected void hitPlayer(Player player) {
-		Universe.currentUniverse.playerHurt(player, getVelocity().len(), DamageCause.DEBRIS);
-		Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_RED));
+        Universe.currentUniverse.playerHurt(player, getVelocity().len() / 50.f, DamageCause.DEBRIS);
+        Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_RED));
 		alive = false;
 	}
 	

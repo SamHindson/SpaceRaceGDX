@@ -12,18 +12,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class SRCamera extends OrthographicCamera {
     private float currentRotation;
+    private float lastRotation;
 
     public SRCamera(int w, int h) {
         super(w, h);
     }
 
     public void setRotation(float rotation) {
-        if (rotation < 0) {
-            rotation += 360;
+
+        if (Math.abs(rotation - currentRotation) > 345) {
+            float rAmount = (rotation - currentRotation);
+            currentRotation += rAmount;
+            rotate(rAmount);
+        } else {
+            float rAmount = (rotation - currentRotation) / 10.f;
+            currentRotation += rAmount;
+            rotate(rAmount);
         }
-        System.out.println(rotation);
-        float desiredRotation = rotation;
-        rotate((desiredRotation - currentRotation) / 2.f);
-        currentRotation += (desiredRotation - currentRotation) / 2.f;
     }
 }

@@ -33,7 +33,7 @@
   ],
   "playercriteria": [
     {
-      "float-getPlayerVisitedPlanetsNo": 1
+      "float-getPlayerVisitedPlanetsNo": 2
     }
   ]
 }

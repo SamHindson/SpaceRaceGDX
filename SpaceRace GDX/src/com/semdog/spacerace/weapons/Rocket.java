@@ -23,7 +23,6 @@ public class Rocket extends Mass {
 				700 * MathUtils.sin(direction), 10, owner.getEnvironment(), "rocket");
 		width = 3;
 		height = 7.5f;
-		//gravityEnabled = false;
 		sprite = new Sprite(Art.get("rocket"));
 		sprite.setOriginCenter();
 		sprite.setSize(3, 7.5f);
@@ -59,7 +58,7 @@ public class Rocket extends Mass {
 	public void render(SpriteBatch batch) {
 		particleEffect.draw(batch);
 		sprite.draw(batch);
-	}
+    }
 
 	@Override
 	protected float getImpactThreshold() {

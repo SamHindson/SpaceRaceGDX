@@ -53,8 +53,16 @@ public class Planet implements GoalObject, Disposable {
         }
     }
 
-    public void draw(ShapeRenderer shapeRenderer) {
+    public void draw(ShapeRenderer shapeRenderer, boolean goggles) {
         //shapeRenderer.set(ShapeType.Filled);
+
+        if (goggles) {
+            shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.BLACK);
+            shapeRenderer.circle(position.x, position.y, radius, 100);
+            shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        }
+
         shapeRenderer.setColor(color);
         shapeRenderer.circle(position.x, position.y, radius, 100);
 

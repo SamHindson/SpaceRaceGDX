@@ -235,21 +235,18 @@ public class Universe implements Disposable {
             effect.update(dt);
         }
 
-        if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("CAMERALOCK")))
+        if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("CAMERALOCK"))) {
             lockedRotation = !lockedRotation;
-
-        float desiredRot;
-        if (lockedRotation) {
-            desiredRot = player.getAngle() % MathUtils.PI2;
-        } else {
-            desiredRot = 0;
+            hud.makeToast("Camera " + (lockedRotation ? "locked" : "unlocked"));
         }
 
-        /*float da = (desiredRot - cameraRot) / 10.f;
-        cameraRot += da;
-        camera.rotate(-da * MathUtils.radiansToDegrees);*/
+        if (lockedRotation)
+            camera.setRotation(-player.getAngleAroundEnvironment() * MathUtils.radiansToDegrees + 90);
+        else
+            camera.setRotation(0);
 
-        camera.setRotation(-player.getAngle() * MathUtils.radiansToDegrees);
+        //camera.setRotation(player.getAngleAroundEnvironment() * -MathUtils.radiansToDegrees + 90);
+        //System.out.println("Gotta get: " + player.getAngleAroundEnvironment() * MathUtils.radiansToDegrees);
 
         float desiredCX;
         float desiredCY;
@@ -412,7 +409,7 @@ public class Universe implements Disposable {
             }
         }
 
-        player.update(dt, playerEnabled, planets);
+        player.update(dt, playerEnabled, planets, lockedRotation);
     }
 
     public void setPlayerEnabled(boolean playerEnabled) {
@@ -444,14 +441,11 @@ public class Universe implements Disposable {
         }
 
         universeBatch.end();
-        // universeShapeRenderer.set();
+        universeShapeRenderer.setAutoShapeType(true);
         universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
         Gdx.gl20.glLineWidth(gogglesActive ? 2 : 1);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).draw(universeShapeRenderer);
-        }
-        for (int i = 0; i < planets.size; i++) {
-            planets.get(i).draw(universeShapeRenderer);
         }
 
         if (gogglesActive) {
@@ -469,7 +463,9 @@ public class Universe implements Disposable {
             player.debugDraw(universeShapeRenderer);
         }
 
-        planets.get(0).draw(universeShapeRenderer);
+        for (int i = 0; i < planets.size; i++) {
+            planets.get(i).draw(universeShapeRenderer, gogglesActive);
+        }
         universeShapeRenderer.end();
 
         hudBatch.begin();

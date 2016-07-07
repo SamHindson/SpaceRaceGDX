@@ -66,12 +66,12 @@ public class RaceInfoViewer implements Disposable {
             descriptionFont.setColor(Colors.P_PINK);
             descriptionFont.draw(batch, "Time Limit:", x + 20, y + 110);
             descriptionFont.setColor(Colors.P_GREEN);
-            descriptionFont.draw(batch, timeLimit + "s", x + 20, y + 85);
+            descriptionFont.draw(batch, String.format("%.1f", timeLimit) + "s", x + 20, y + 85);
 
             descriptionFont.setColor(Colors.P_RED);
             descriptionFont.draw(batch, "Best Time:", x + 20, y + 60);
             descriptionFont.setColor(Colors.P_BLUE);
-            descriptionFont.draw(batch, String.format("%.2f", bestTime) + "s", x + 20, y + 35);
+            descriptionFont.draw(batch, String.format("%.1f", bestTime) + "s", x + 20, y + 35);
 
             launchButton.draw(batch);
         }

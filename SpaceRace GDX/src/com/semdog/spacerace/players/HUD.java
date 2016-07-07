@@ -41,6 +41,10 @@ public class HUD implements Disposable {
     private String notificationTitle, notification;
     private float notificationHeight, notificationTime;
 
+    private boolean showingToast;
+    private float toastTime;
+    private String toast;
+
     public HUD(Player owner) {
         this.owner = owner;
 
@@ -81,8 +85,8 @@ public class HUD implements Disposable {
                 if (notificationEntering) {
                     notificationHeight += 500 * dt;
 
-                    if (notificationHeight >= 50) {
-                        notificationHeight = 50;
+                    if (notificationHeight >= 25) {
+                        notificationHeight = 25;
                         notificationEntering = false;
                     }
                 } else if (notificationExiting) {
@@ -99,6 +103,11 @@ public class HUD implements Disposable {
                     if (notificationTime > 3) {
                         notificationExiting = true;
                     }
+                }
+            } else if (showingToast) {
+                toastTime += dt;
+                if (toastTime > 0.5f) {
+                    showingToast = false;
                 }
             }
         }
@@ -147,14 +156,6 @@ public class HUD implements Disposable {
             subtitleFont.draw(spriteBatch, subtitle, subtitleX, subtitleY);
         }
 
-        if (showingNotification) {
-            float barHeight = 25 + 2 * notificationFont.getCapHeight();
-            spriteBatch.draw(Art.get("pixel_gray"), 0, notificationHeight - barHeight + 2, 245, barHeight);
-
-            notificationFont.draw(spriteBatch, notificationTitle, 10, notificationHeight - 10 + 2);
-            notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 15 - notificationFont.getCapHeight() + 2);
-        }
-
         if (showingStats) {
             int size = owner.getPrimarySigns().getSigns().values().size();
             spriteBatch.setColor(0, 0, 0, 0.5f);
@@ -191,6 +192,19 @@ public class HUD implements Disposable {
                     }
                 }
                 h++;
+            }
+
+            if (showingToast) {
+                subtitleFont.setColor(Colors.UI_BLUE);
+                subtitleFont.draw(spriteBatch, toast, 0, subtitleFont.getCapHeight() * 1.5f, Gdx.graphics.getWidth(), 1, false);
+            }
+
+            if (showingNotification) {
+                float barHeight = 25 + notificationFont.getCapHeight();
+                //spriteBatch.draw(Art.get("pixel_gray"), 0, notificationHeight - barHeight + 2, 245, barHeight);
+
+                //notificationFont.draw(spriteBatch, notificationTitle, 10, notificationHeight - 10 + 2);
+                notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 5);
             }
         }
     }
@@ -257,5 +271,11 @@ public class HUD implements Disposable {
         //titleFont.dispose();
         //subtitleFont.dispose();
         //countdownFont.dispose();
+    }
+
+    public void makeToast(String toast) {
+        this.toast = toast;
+        toastTime = 0;
+        showingToast = true;
     }
 }

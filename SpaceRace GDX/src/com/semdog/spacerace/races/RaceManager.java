@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.io.Times;
 
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Sam on 2016/07/04.
@@ -77,7 +78,11 @@ public class RaceManager {
 
     public static void loadBestTimes() {
         for (int w = 0; w < races.size; w++) {
-            races.get(w).setBestTime(times.getTime(races.get(w).getID()));
+            try {
+                races.get(w).setBestTime(times.getTime(races.get(w).getID()));
+            } catch (NoSuchElementException nsee) {
+                races.get(w).setBestTime(races.get(w).getTimeLimit());
+            }
         }
     }
 

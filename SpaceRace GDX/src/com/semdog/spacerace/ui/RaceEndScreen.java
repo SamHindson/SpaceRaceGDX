@@ -23,7 +23,9 @@ public class RaceEndScreen extends Overlay {
         exit.setColors(Color.CLEAR, Colors.UI_WHITE);
 
 		showing = false;
-	}
+
+        color = Colors.UI_WHITE;
+    }
 
 	@Override
 	public void draw(SpriteBatch spriteBatch) {

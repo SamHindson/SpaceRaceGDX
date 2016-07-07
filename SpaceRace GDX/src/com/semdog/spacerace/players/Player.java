@@ -187,6 +187,8 @@ public class Player implements Collideable, Disposable {
         boarding = false;
         this.ship = ship;
         ship.setPilot(this);
+
+        hud.showNotification("Vehicles", "Boarded ship " + ship.getID());
     }
 
     public Team getTeam() {
@@ -197,7 +199,7 @@ public class Player implements Collideable, Disposable {
         return pilotingShip ? ship.getPosition() : position;
     }
 
-    public void update(float dt, boolean controllable, Array<Planet> planets) {
+    public void update(float dt, boolean controllable, Array<Planet> planets, boolean lockedCamera) {
         if (alive) {
             if (pilotingShip && controllable) {
                 ship.updateControls(dt);
@@ -243,6 +245,7 @@ public class Player implements Collideable, Disposable {
 
                             if (!visitedPlanets.contains(environment, true)) {
                                 visitedPlanets.add(environment);
+                                hud.showNotification("Exploration", "Visited Planet " + environment.getID());
                             }
                         }
                     } else {
@@ -308,8 +311,16 @@ public class Player implements Collideable, Disposable {
                 float ax1 = Gdx.input.getX();
                 float ay1 = Gdx.input.getY();
 
-                float a = -MathUtils.atan2(ay1 - (Gdx.graphics.getHeight() / 2), ax1 - (Gdx.graphics.getWidth() / 2)) + angle
-                        - MathUtils.PI / 2;
+                float cx = Gdx.graphics.getWidth() / 2;
+                float cy = Gdx.graphics.getHeight() / 2;
+
+                float a = 0;
+
+                if (lockedCamera) {
+                    a = -MathUtils.atan2(cy - ay1, cx - ax1) + MathUtils.PI / 2.f + getAngleAroundEnvironment();
+                } else {
+                    a = MathUtils.atan2(cy - ay1, ax1 - cx);
+                }
 
                 if (weapon != null && controllable)
                     weapon.update(dt, a);
@@ -397,6 +408,10 @@ public class Player implements Collideable, Disposable {
         return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2);
     }
 
+    public float getAngleAroundEnvironment() {
+        return (pilotingShip && ship != null) ? ship.getAngleAroundEnvironment() : (angle);
+    }
+
     public float getDX() {
         return velocity.x;
     }
@@ -477,6 +492,7 @@ public class Player implements Collideable, Disposable {
         ship.setPilot(null);
         ship = null;
         Universe.currentUniverse.playUISound("egress");
+        hud.showNotification("Vehicles", "Alighted Ship");
     }
 
     @Override

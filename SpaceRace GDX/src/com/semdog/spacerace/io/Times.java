@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 /**
  * A class used to handle Input/Output of the races' best times.
@@ -46,8 +47,10 @@ public class Times implements Serializable {
         }
     }
 
-    public Float getTime(String id) {
-        return times.getOrDefault(id, 2104f);
+    public Float getTime(String id) throws NoSuchElementException {
+        if (!times.containsKey(id))
+            throw new NoSuchElementException();
+        return times.get(id);
     }
 
     public void setTime(String id, float time) {
