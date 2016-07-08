@@ -38,7 +38,7 @@ public class HUD implements Disposable {
     private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
 
     private boolean showingNotification, notificationEntering, notificationExiting;
-    private String notificationTitle, notification;
+    private String notification;
     private float notificationHeight, notificationTime;
 
     private boolean showingToast;
@@ -113,11 +113,10 @@ public class HUD implements Disposable {
         }
     }
 
-    public void showNotification(String title, String text) {
+    public void showNotification(String text) {
         showingNotification = true;
         notificationEntering = true;
 
-        notificationTitle = title;
         notification = text;
 
         notificationTime = 0;
@@ -200,10 +199,6 @@ public class HUD implements Disposable {
             }
 
             if (showingNotification) {
-                float barHeight = 25 + notificationFont.getCapHeight();
-                //spriteBatch.draw(Art.get("pixel_gray"), 0, notificationHeight - barHeight + 2, 245, barHeight);
-
-                //notificationFont.draw(spriteBatch, notificationTitle, 10, notificationHeight - 10 + 2);
                 notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 5);
             }
         }

@@ -1,0 +1,40 @@
+Welcome!
++Welcome to the SpaceRace Help Section. \nClick on any of the topics along the left hand side to get started on your journey to becoming... A real astronauts. \n \n
++Basic Controls
++These are the default controls to move around and interact with the universe, which can be changed in the Settings menu: \n
+\n [red] A [white] to walk left around your planet
+\n [red] D [white] to walk right around your planet
+\n [red] SHIFT [white] to activate sprint (hold it down while pressing A or D)
+\n [red] SPACE [white] to jump into the ??? (there's no air in space)
+\n [red] E [white] to interact with objects (like picking up a gun, or climbing into a space ship)
+\n [red] Q [white] to turn your supervision goggles on (which shows you players' names and trajectories of masses)
+\n [red] G [white] to throw a grenade \n
+\n [red] W [white] to turn on your rocket boosters if you are in a space ship \n
+\n [red] C [white] to switch camera modes (LOCKED, which keeps your current planet at the bottom of your screen, or UNLOCKED, which does not. You'll see.) \n
+\n In terms of weaponry, aim with your mouse, and click to fire your weapon.
++Vehicles
++A plethora of (3) vehicles await you in SpaceRace. These are used to get around the planets and planet systems in SpaceRace, and some of them are even used
+to explode other players into tiny bits. \n
+[red] The Rubbish Lander [white] lives up to its name. The only thing it's good for is landing. It has no weapons and is made of tinfoil. \n
+[red] The Needler [white] is another ship with no weapons, but you may crash it into a planet as hard as you like and you won't die. It's like one giant airbag. \n
+[red] The Bombarder [white] is the big boy. Named after the Serbian thrash metal band, it has an immense array of guns atop it. If you get one of these in orbit around a planet of enemies, they're not going to have a good time.
++Weaponry
++Weaponry in SpaceRace is fairly simplistic: see gun, pick up gun, shoot gun. The guns included in this release are: \n
+\n [blue] The Carbine [white] - a simple rifle that does a decent amount of damage.
+\n [blue] The SMG [white] - an automatic weapon whose bullets have the damage of a single Rice Crispie. But like they say, fire enough Rice Crispies at someone and they're sure to collapse eventually.
+\n [blue] The Shotgun [white] - a deadly short-rage weapon which will be nerfed in a future release, because picking one up is like finding the Golden Snitch.
+\n [blue] The Rocket Launcher [white] - a thing which launches things that explode. Mind the recoil - around small enough planets it may send you into orbit .
++Spaceflight 101
++When you fire your engines, your ship goes in the direction you're pointing in. Provided you stay in your planet's area of gravitational influence (seen in your goggles as the outermost circle), you'll fall back down. \n [anim0] \n
+The highest point in this trajectory is called your [blue] APOGEE. [white] \n
++Spaceflight 102
++The direction in which you're busy moving at the moment is called the [green] PROGRADE [white] direction. So when you take off from the surface of a planet, your [green] prograde [white] is pointed directly into the night sky. \n
+Likewise, when you're hurtling back towards the surface of the planet, your [green] prograde [white] is pointing directly at the planet. \n [anim1] \n
+Essentially, [green] prograde [white] is the direction of your velocity.
++Spaceflight 103
++The direction that's directly opposite to your [green] prograde [white] is called your [green] retrograde. [white] \n Did this really need its own section? You decide.
++Getting into orbit
++Getting into orbit is not too difficult. All you need to do is burn [green] prograde [white] at [blue] apogee. [white] Check it out: \n [anim2] \n
+It does require some precision though - burning too much will result in your apogee being outside of the planet's circle of influence. Higher than this and the planet cannot pull you down any more -- you'll drift into space lonelily like that guy from Sunshine.
++Getting out of orbit
++Burn [green] retrograde. [white] \n That's literally all there is to it. [anim3] \n And also make sure you land softly enough.
