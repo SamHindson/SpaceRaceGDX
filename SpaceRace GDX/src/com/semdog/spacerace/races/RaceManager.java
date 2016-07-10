@@ -1,14 +1,14 @@
 package com.semdog.spacerace.races;
 
+import java.util.HashMap;
+import java.util.NoSuchElementException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.io.Times;
-
-import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 /**
  * Created by Sam on 2016/07/04.

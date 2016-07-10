@@ -1,14 +1,14 @@
 package com.semdog.spacerace.audio;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.semdog.spacerace.io.SettingsManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // TODO fix the music queue
 

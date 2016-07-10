@@ -4,11 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.ui.*;
+import com.semdog.spacerace.misc.FontManager;
+import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.HelpSection;
+import com.semdog.spacerace.ui.ListView;
+import com.semdog.spacerace.ui.ListViewListener;
+import com.semdog.spacerace.ui.TitleCard;
 
 /**
  * Help help I'm being repressed
@@ -25,19 +29,11 @@ public class HelpScreen extends RaceScreen implements ListViewListener {
 
     private Button backButton, bugButton;
 
-    private Array<Texture> diagrams;
-
     public HelpScreen(RaceGame game) {
         super(game);
 
         titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        subtitleFont = generator.generateFont(parameter);
-        generator.dispose();
+        subtitleFont = FontManager.getFont("fipps-18");
 
         setTitle("Select a Help Topic!");
 

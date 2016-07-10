@@ -159,6 +159,10 @@ public class Universe implements Disposable {
         container.setMarkedForDestruction(true);
         container.getGame().changeScreen("menu");
     }
+    
+    public static boolean isExiting() {
+		return exiting;
+	}
 
     public float getShipCount() {
         return ships.size;
@@ -217,7 +221,7 @@ public class Universe implements Disposable {
             hud.update(dt);
 
             if (countingDown) {
-                countdown -= dt * 2;
+                countdown -= dt * 5;
                 hud.setText("Get ready!", "[" + (int) countdown + "]");
 
                 if (countdown <= 0) {
@@ -235,7 +239,6 @@ public class Universe implements Disposable {
                     raceEndDelay += dt;
                     if (!shownEnd) {
                         playerEnabled = false;
-                        SoundManager.stopAllSounds();
                         shownEnd = true;
                         hud.hideAll();
                         SoundManager.stopMusic("oxidiser");
@@ -253,7 +256,6 @@ public class Universe implements Disposable {
 
                 if (!shownEnd) {
                     shownEnd = true;
-                    SoundManager.stopAllSounds();
 
                     boolean best = timeLeft < RaceManager.getCurrentBestTime();
 
@@ -348,7 +350,7 @@ public class Universe implements Disposable {
             for (int k = 0; k < ships.size; k++) {
                 Ship ship = ships.get(k);
 
-                if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 50) {
+                if (Vector2.dst(player.getX(), player.getY(), ship.getX(), ship.getY()) < 75) {
                     player.setBoarding(true, ship);
                     f = false;
                     break;
@@ -725,4 +727,8 @@ public class Universe implements Disposable {
         }
 
     }
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
 }

@@ -18,14 +18,12 @@ public class RubbishLander extends Ship {
     private float dr;
 
 	public RubbishLander(float x, float y, String id) {
-		super(x, y, 32, 32, 3000, 250, "tinyship", id);
+		super(x, y, 32, 32, 3000, 250, "rubbish", id);
 
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/landerflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
 		particleEffect.allowCompletion();
-		
-		System.out.println("GUD");
 	}
 
 	@Override

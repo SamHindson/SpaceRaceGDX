@@ -1,10 +1,15 @@
 package com.semdog.spacerace.io;
 
-import com.badlogic.gdx.Gdx;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * A class used to handle Input/Output of the races' best times.
@@ -12,7 +17,9 @@ import java.util.NoSuchElementException;
  */
 
 public class Times implements Serializable {
-    private HashMap<String, Float> times;
+	private static final long serialVersionUID = -6990769729054607028L;
+	
+	private HashMap<String, Float> times;
 
     public Times() {
         try {

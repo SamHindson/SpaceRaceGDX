@@ -40,4 +40,12 @@ public class Exhibit {
             batch.draw(Art.get(textures[e]), x + k * (e + 1) - itemWidth / 2, y + padding * 2, itemWidth, itemWidth);
         }
     }
+    
+    public float getHeight() {
+		return height;
+	}
+    
+    public float getWidth() {
+		return width;
+	}
 }

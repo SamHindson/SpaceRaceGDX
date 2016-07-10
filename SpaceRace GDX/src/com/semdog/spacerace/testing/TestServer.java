@@ -1,11 +1,11 @@
 package com.semdog.spacerace.testing;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Created by Sam on 2016/07/05.

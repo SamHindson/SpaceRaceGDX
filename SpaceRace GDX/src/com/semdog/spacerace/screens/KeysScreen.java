@@ -1,19 +1,19 @@
 package com.semdog.spacerace.screens;
 
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
-
-import java.util.Map;
 
 /**
  * Created by Sam on 2016/07/05.
@@ -38,15 +38,8 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
         super(game);
 
         titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        subtitleFont = generator.generateFont(parameter);
-        parameter.size = 20;
-        categoryFont = generator.generateFont(parameter);
-        generator.dispose();
+        subtitleFont = FontManager.getFont("fipps-18");
+        categoryFont = FontManager.getFont("fipps-20");
 
         setTitle("Click on a key to change it.");
 

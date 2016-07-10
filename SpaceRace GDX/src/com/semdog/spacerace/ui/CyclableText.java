@@ -1,12 +1,11 @@
 package com.semdog.spacerace.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 
 /**
  * Created by Sam on 2016/07/05.
@@ -16,14 +15,7 @@ public class CyclableText {
     private static float height;
 
     static {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 20;
-        font = generator.generateFont(parameter);
-        generator.dispose();
-
-        font.setColor(Colors.P_ORANGE);
+        font = FontManager.getFont("fipps-20");
 
         height = font.getCapHeight();
     }
@@ -82,6 +74,7 @@ public class CyclableText {
 
     public void draw(SpriteBatch batch) {
         back.draw(batch);
+        font.setColor(Colors.P_ORANGE);
         font.draw(batch, options[currentIndex] instanceof Boolean ? booleanToEnglish((boolean) options[currentIndex]) : options[currentIndex].toString(), tx, ty);
         forward.draw(batch);
     }

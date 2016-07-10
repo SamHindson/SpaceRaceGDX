@@ -1,11 +1,11 @@
 package com.semdog.spacerace.io;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Sam on 2016/07/05.

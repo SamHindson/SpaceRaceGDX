@@ -1,13 +1,13 @@
 package com.semdog.spacerace.graphics;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-
-import java.util.HashMap;
 
 public class Art {
     private static HashMap<String, Texture> artwork;

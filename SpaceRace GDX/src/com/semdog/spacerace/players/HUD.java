@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.universe.Universe;
 
 /**
@@ -20,254 +20,250 @@ import com.semdog.spacerace.universe.Universe;
  */
 
 public class HUD implements Disposable {
-    private Player owner;
-    private String title, subtitle;
-    private boolean showingMessage = false;
-    private boolean showingStats, showingTimer;
+	private Player owner;
+	private String title, subtitle;
+	private boolean showingMessage = false;
+	private boolean showingStats, showingTimer;
 
-    private boolean initialSpawn;
+	private boolean initialSpawn;
 
-    private boolean respawning = false, respawnable = false;
-    private float respawnCounter;
+	private boolean respawning = false, respawnable = false;
+	private float respawnCounter;
 
-    @SuppressWarnings("unused")
-    private boolean countdownActive;
-    private float timeLeft;
+	@SuppressWarnings("unused")
+	private boolean countdownActive;
+	private float timeLeft;
 
-    private BitmapFont titleFont, subtitleFont, countdownFont, notificationFont;
-    private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
+	private BitmapFont titleFont, subtitleFont, countdownFont, notificationFont;
+	private float titleX, titleY, subtitleX, subtitleY, respawnX, respawnY;
 
-    private boolean showingNotification, notificationEntering, notificationExiting;
-    private String notification;
-    private float notificationHeight, notificationTime;
+	private boolean showingNotification, notificationEntering, notificationExiting;
+	private String notification;
+	private float notificationHeight, notificationTime;
 
-    private boolean showingToast;
-    private float toastTime, currentToast;
-    private String toast;
-    private Color toastColor;
+	private boolean showingToast;
+	private float toastTime, currentToast;
+	private String toast;
+	private Color toastColor;
 
-    public HUD(Player owner) {
-        this.owner = owner;
+	public HUD(Player owner) {
+		this.owner = owner;
+		titleFont = FontManager.getFont("mohave-64");
+		subtitleFont = FontManager.getFont("mohave-40");
+		countdownFont = FontManager.getFont("mohave-48");
+		notificationFont = FontManager.getFont("mohave-18");
+		title = subtitle = "";
+	}
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Mohave.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 64;
-        titleFont = generator.generateFont(parameter);
-        parameter.size = 40;
-        subtitleFont = generator.generateFont(parameter);
-        parameter.size = 45;
-        countdownFont = generator.generateFont(parameter);
-        parameter.size = 18;
-        notificationFont = generator.generateFont(parameter);
-        generator.dispose();
+	public void update(float dt) {
+		if (respawning) {
+			respawnCounter -= dt;
 
-        title = subtitle = "";
-    }
+			if (respawnCounter <= 0) {
+				respawning = false;
+				showingMessage = false;
 
-    public void update(float dt) {
-        if (respawning) {
-            respawnCounter -= dt;
+				if (initialSpawn) {
+					Universe.currentUniverse.setPlayerEnabled(true);
+					initialSpawn = false;
+				}
 
-            if (respawnCounter <= 0) {
-                respawning = false;
-                showingMessage = false;
+				if (respawnable)
+					Universe.currentUniverse.respawnPlayer();
+			}
+		} else {
+			if (showingNotification) {
+				if (notificationEntering) {
+					notificationHeight += 500 * dt;
 
-                if (initialSpawn) {
-                    Universe.currentUniverse.setPlayerEnabled(true);
-                    initialSpawn = false;
-                }
+					if (notificationHeight >= 25) {
+						notificationHeight = 25;
+						notificationEntering = false;
+					}
+				} else if (notificationExiting) {
+					notificationHeight -= 500 * dt;
 
-                if (respawnable)
-                    Universe.currentUniverse.respawnPlayer();
-            }
-        } else {
-            if (showingNotification) {
-                if (notificationEntering) {
-                    notificationHeight += 500 * dt;
+					if (notificationHeight <= 0) {
+						notificationHeight = 0;
+						notificationExiting = false;
+						showingNotification = false;
+					}
+				} else {
+					notificationTime += dt;
 
-                    if (notificationHeight >= 25) {
-                        notificationHeight = 25;
-                        notificationEntering = false;
-                    }
-                } else if (notificationExiting) {
-                    notificationHeight -= 500 * dt;
+					if (notificationTime > 3) {
+						notificationExiting = true;
+					}
+				}
+			} else if (showingToast) {
+				currentToast += dt;
+				if (currentToast > toastTime) {
+					showingToast = false;
+				}
+			}
+		}
+	}
 
-                    if (notificationHeight <= 0) {
-                        notificationHeight = 0;
-                        notificationExiting = false;
-                        showingNotification = false;
-                    }
-                } else {
-                    notificationTime += dt;
+	public void showNotification(String text) {
+		showingNotification = true;
+		notificationEntering = true;
 
-                    if (notificationTime > 3) {
-                        notificationExiting = true;
-                    }
-                }
-            } else if (showingToast) {
-                currentToast += dt;
-                if (currentToast > toastTime) {
-                    showingToast = false;
-                }
-            }
-        }
-    }
+		notification = text;
 
-    public void showNotification(String text) {
-        showingNotification = true;
-        notificationEntering = true;
+		notificationTime = 0;
+	}
 
-        notification = text;
+	public void draw(SpriteBatch spriteBatch) {
+		if (respawning) {
+			String time = "[" + (int) (respawnCounter) + "]";
+			subtitleFont.setColor(new Color(MathUtils.random(2147483646)));
+			subtitleFont.draw(spriteBatch, time, 0, 10 + subtitleFont.getCapHeight(), Gdx.graphics.getWidth(), 1, false);
+		}
 
-        notificationTime = 0;
-    }
+		if (showingTimer) {
+			int min = (int) (timeLeft / 60);
+			int sec = (int) (timeLeft % 60);
+			String time = String.format("%01d:%02d", min, sec);
 
-    public void draw(SpriteBatch spriteBatch) {
-        if (respawning) {
-            subtitleFont.setColor(new Color(MathUtils.random(2147483646)));
-            subtitleFont.draw(spriteBatch, "[" + (int) (respawnCounter) + "]", respawnX, respawnY);
-        }
+			if (timeLeft < 10) {
+				countdownFont.setColor(Colors.P_RED);
+			} else {
+				countdownFont.setColor(Color.WHITE);
+			}
 
-        if (showingTimer) {
-            int min = (int) (timeLeft / 60);
-            int sec = (int) (timeLeft % 60);
-            String time = String.format("%01d:%02d", min, sec);
+			countdownFont.draw(spriteBatch, time, 0, Gdx.graphics.getHeight() - 10, Gdx.graphics.getWidth(), 1, false);
+		}
 
-            if (timeLeft < 10) {
-                countdownFont.setColor(Colors.P_RED);
-            }
-            countdownFont.draw(spriteBatch, time,
-                    Gdx.graphics.getWidth() / 2 - 24, Gdx.graphics.getHeight() - 10);
-            if (timeLeft < 10) {
-                countdownFont.setColor(Color.WHITE);
-            }
-        }
+		if (showingMessage) {
+			titleFont.draw(spriteBatch, title, 0, 30 + 2 * subtitleFont.getCapHeight() + titleFont.getCapHeight(), Gdx.graphics.getWidth(), 1, false);
+			subtitleFont.setColor(Color.WHITE);
+			subtitleFont.draw(spriteBatch, subtitle, 0, 20 + 2 * subtitleFont.getCapHeight(), Gdx.graphics.getWidth(), 1, false);
+		}
 
-        if (showingMessage) {
-            titleFont.draw(spriteBatch, title, titleX, titleY);
-            subtitleFont.setColor(Color.WHITE);
-            subtitleFont.draw(spriteBatch, subtitle, subtitleX, subtitleY);
-        }
+		if (showingStats) {
+			int size = owner.getPrimarySigns().getSigns().values().size();
+			spriteBatch.setColor(0, 0, 0, 0.5f);
+			spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 0, 245, 15 + 40 * size);
+			spriteBatch.setColor(Color.WHITE);
+			spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 5, 245, 15 + 40 * size);
+			int h = 0;
+			for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
+				if (vitality.getValueType() == VitalSigns.Type.CONTINUOUS) {
+					spriteBatch.setColor(new Color(vitality.getColor()));
+					spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
+							235.f * (vitality.getValue() / vitality.getMaxValue()), 40);
+					spriteBatch.setColor(0, 0, 0, 0.5f);
+					spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
+							235.f * (vitality.getValue() / vitality.getMaxValue()), 5);
+					spriteBatch.setColor(Color.WHITE);
 
-        if (showingStats) {
-            int size = owner.getPrimarySigns().getSigns().values().size();
-            spriteBatch.setColor(0, 0, 0, 0.5f);
-            spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 0, 245, 15 + 40 * size);
-            spriteBatch.setColor(Color.WHITE);
-            spriteBatch.draw(Art.get("pixel_gray"), Gdx.graphics.getWidth() - 245, 5, 245, 15 + 40 * size);
-            int h = 0;
-            for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
-                if (vitality.getValueType() == VitalSigns.Type.CONTINUOUS) {
-                    spriteBatch.setColor(new Color(vitality.getColor()));
-                    spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
-                            235.f * (vitality.getValue() / vitality.getMaxValue()), 40);
-                    spriteBatch.setColor(0, 0, 0, 0.5f);
-                    spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 240, 40 * h + h * 2 + 10,
-                            235.f * (vitality.getValue() / vitality.getMaxValue()), 5);
-                    spriteBatch.setColor(Color.WHITE);
+				} else {
+					float maxParts = vitality.getMaxValue();
+					float partCount = vitality.getValue();
+					float interblockSpaces = 2 * (maxParts - 1);
+					float blockTotal = 235 - interblockSpaces;
+					float blockWidth = blockTotal / maxParts;
+					float interval = blockWidth + 2;
 
-                } else {
-                    float maxParts = vitality.getMaxValue();
-                    float partCount = vitality.getValue();
-                    float interblockSpaces = 2 * (maxParts - 1);
-                    float blockTotal = 235 - interblockSpaces;
-                    float blockWidth = blockTotal / maxParts;
-                    float interval = blockWidth + 2;
+					for (int j = 0; j < partCount; j++) {
+						spriteBatch.setColor(new Color(vitality.getColor()));
+						spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
+								40 * h + h * 2 + 10, blockWidth, 40);
+						spriteBatch.setColor(0, 0, 0, 0.5f);
+						spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
+								40 * h + h * 2 + 10, blockWidth, 5);
+						spriteBatch.setColor(Color.WHITE);
+					}
+				}
+				h++;
+			}
 
-                    for (int j = 0; j < partCount; j++) {
-                        spriteBatch.setColor(new Color(vitality.getColor()));
-                        spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
-                                40 * h + h * 2 + 10, blockWidth, 40);
-                        spriteBatch.setColor(0, 0, 0, 0.5f);
-                        spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245 + 5 + j * interval,
-                                40 * h + h * 2 + 10, blockWidth, 5);
-                        spriteBatch.setColor(Color.WHITE);
-                    }
-                }
-                h++;
-            }
+			if (showingToast) {
+				subtitleFont.setColor(toastColor);
+				subtitleFont.draw(spriteBatch, toast, 0, subtitleFont.getCapHeight() * 1.5f, Gdx.graphics.getWidth(), 1,
+						false);
+			}
 
-            if (showingToast) {
-                subtitleFont.setColor(toastColor);
-                subtitleFont.draw(spriteBatch, toast, 0, subtitleFont.getCapHeight() * 1.5f, Gdx.graphics.getWidth(), 1, false);
-            }
+			if (showingNotification) {
+				notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 5);
+			}
+		}
+	}
 
-            if (showingNotification) {
-                notificationFont.draw(spriteBatch, notification, 10, notificationHeight - 5);
-            }
-        }
-    }
+	public void setCountdownValue(int time) {
+		timeLeft = time;
+	}
 
-    public void setCountdownValue(int time) {
-        timeLeft = time;
-    }
+	public void setDead(DamageCause reason, boolean respawnable) {
+		this.respawnable = respawnable;
 
-    public void setDead(DamageCause reason, boolean respawnable) {
-        this.respawnable = respawnable;
+		showingStats = false;
 
-        showingStats = false;
+		if (respawnable) {
+			respawning = true;
+			respawnCounter = 6;
+		}
 
-        if (respawnable) {
-            respawning = true;
-            respawnCounter = 6;
-        }
+		setText(LifeAndDeath.getRandomCondolence(), reason.getDetails());
+	}
 
-        setText(LifeAndDeath.getRandomCondolence(), reason.getDetails());
-    }
+	public void displayMessage() {
+		showingMessage = true;
+	}
 
-    public void displayMessage() {
-        showingMessage = true;
-    }
+	public void hideMessage() {
+		showingMessage = false;
+	}
 
-    public void hideMessage() {
-        showingMessage = false;
-    }
+	public void setText(String title, String subtitle) {
+		this.title = title;
+		this.subtitle = subtitle;
 
-    public void setText(String title, String subtitle) {
-        this.title = title;
-        this.subtitle = subtitle;
+		GlyphLayout titGlyph = new GlyphLayout(titleFont, title);
+		titleX = Gdx.graphics.getWidth() / 2 - titGlyph.width / 2.f;
+		titleY = Gdx.graphics.getHeight() * 0.22f - titGlyph.height / 2.f;
 
-        GlyphLayout titGlyph = new GlyphLayout(titleFont, title);
-        titleX = Gdx.graphics.getWidth() / 2 - titGlyph.width / 2.f;
-        titleY = Gdx.graphics.getHeight() * 0.22f - titGlyph.height / 2.f;
+		GlyphLayout subGlyph = new GlyphLayout(subtitleFont, subtitle);
+		subtitleX = Gdx.graphics.getWidth() / 2 - subGlyph.width / 2.f;
+		subtitleY = Gdx.graphics.getHeight() * 0.1f - subGlyph.height / 2.f + 20;
 
-        GlyphLayout subGlyph = new GlyphLayout(subtitleFont, subtitle);
-        subtitleX = Gdx.graphics.getWidth() / 2 - subGlyph.width / 2.f;
-        subtitleY = Gdx.graphics.getHeight() * 0.1f - subGlyph.height / 2.f + 20;
+		GlyphLayout resGlyph = new GlyphLayout(subtitleFont, "[0]");
+		respawnX = Gdx.graphics.getWidth() / 2 - resGlyph.width / 2.f;
+		respawnY = Gdx.graphics.getHeight() * 0.070f - resGlyph.height / 2.f;
+	}
 
-        GlyphLayout resGlyph = new GlyphLayout(subtitleFont, "[0]");
-        respawnX = Gdx.graphics.getWidth() / 2 - resGlyph.width / 2.f;
-        respawnY = Gdx.graphics.getHeight() * 0.070f - resGlyph.height / 2.f;
-    }
+	public void hideAll() {
+		showingStats = false;
+		showingMessage = false;
+		showingTimer = false;
+	}
 
-    public void hideAll() {
-        showingStats = false;
-        showingMessage = false;
-        showingTimer = false;
-    }
+	public void showStats() {
+		showingStats = true;
+	}
 
-    public void showStats() {
-        showingStats = true;
-    }
+	public void showTimer() {
+		showingTimer = true;
+	}
 
-    public void showTimer() {
-        showingTimer = true;
-    }
+	@Override
+	public void dispose() {
+		// TODO figure out what to dispose here
+		// titleFont.dispose();
+		// subtitleFont.dispose();
+		// countdownFont.dispose();
+	}
 
-    @Override
-    public void dispose() {
-        // TODO figure out what to dispose here
-        //titleFont.dispose();
-        //subtitleFont.dispose();
-        //countdownFont.dispose();
-    }
-
-    public void makeToast(String toast, float time, Color toastColor) {
-        this.toast = toast;
-        this.toastColor = toastColor;
-        toastTime = 3;
-        currentToast = 0;
-        showingToast = true;
-    }
+	public void makeToast(String toast, float time, Color toastColor) {
+		this.toast = toast;
+		this.toastColor = toastColor;
+		toastTime = time;
+		currentToast = 0;
+		showingToast = true;
+	}
+	
+	public void hideToast() {
+		showingToast = false;
+		currentToast = toastTime;
+	}
 }

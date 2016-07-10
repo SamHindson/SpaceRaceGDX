@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 
 /**
  * Created by Sam on 2016/07/09.
@@ -31,12 +31,7 @@ public class Notification {
         one = new Button("One", false, Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 - 10, 175, 50, true, eventOne);
         two = new Button("Two", false, Gdx.graphics.getWidth() / 2 + 100, Gdx.graphics.getHeight() / 2 - 10, 175, 50, true, eventTwo);
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 20;
-        font = generator.generateFont(parameter);
-        generator.dispose();
+        font = FontManager.getFont("inconsolata-28");
 
         batch = new SpriteBatch();
     }
@@ -96,6 +91,7 @@ public class Notification {
         batch.setColor(Color.DARK_GRAY);
         batch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 2 - height / 2, Gdx.graphics.getWidth() / 3, height);
         batch.setColor(Color.WHITE);
+        font.setColor(Colors.UI_WHITE);
         font.draw(batch, title, Gdx.graphics.getWidth() / 3 + 10, Gdx.graphics.getHeight() / 2 + 0 + textHeight + 110 - height / 2, Gdx.graphics.getWidth() / 3 - 20, 1, true);
         one.draw(batch);
 

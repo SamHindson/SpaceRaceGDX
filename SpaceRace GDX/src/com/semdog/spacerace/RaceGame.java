@@ -12,8 +12,17 @@ import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.screens.*;
+import com.semdog.spacerace.screens.BugReportScreen;
+import com.semdog.spacerace.screens.HelpScreen;
+import com.semdog.spacerace.screens.KeysScreen;
+import com.semdog.spacerace.screens.MenuScreen;
+import com.semdog.spacerace.screens.PlayScreen;
+import com.semdog.spacerace.screens.RaceScreen;
+import com.semdog.spacerace.screens.SettingsScreen;
+import com.semdog.spacerace.screens.SingleplayerMenu;
+import com.semdog.spacerace.screens.ThankYouScreen;
 import com.semdog.spacerace.ui.Notification;
 
 public class RaceGame extends ApplicationAdapter {
@@ -39,6 +48,7 @@ public class RaceGame extends ApplicationAdapter {
     @Override
     public void create() {
         Gdx.app.log("RaceGame", "Welcome! Loading bits and pieces...");
+        FontManager.initialize();
         SettingsManager.initialize();
         Art.initialize();
         Gdx.app.log("RaceGame", "Loaded Graphics...");

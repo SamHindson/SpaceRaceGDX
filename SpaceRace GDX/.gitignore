@@ -1,3 +1,6 @@
 .settings/
 /build/
-.gradle/.idea/
+.gradle/
+.idea/
+.bin/
+.build/

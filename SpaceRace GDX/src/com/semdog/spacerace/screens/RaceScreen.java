@@ -5,9 +5,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.semdog.spacerace.RaceGame;
+import com.semdog.spacerace.misc.FontManager;
 
 public abstract class RaceScreen extends ScreenAdapter {
 	
@@ -24,11 +23,7 @@ public abstract class RaceScreen extends ScreenAdapter {
 	}
 	
 	protected void setTitle(String title) {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 24;
-		titleFont = generator.generateFont(parameter);
-		generator.dispose();
+		titleFont = FontManager.getFont("fipps-24");
 		
 		this.title = title;
 		

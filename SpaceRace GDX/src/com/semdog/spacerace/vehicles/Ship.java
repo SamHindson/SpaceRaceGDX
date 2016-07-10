@@ -16,7 +16,11 @@ import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.players.VitalSigns;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.players.Vitality;
-import com.semdog.spacerace.universe.*;
+import com.semdog.spacerace.universe.Collideable;
+import com.semdog.spacerace.universe.Grenade;
+import com.semdog.spacerace.universe.Mass;
+import com.semdog.spacerace.universe.Planet;
+import com.semdog.spacerace.universe.Universe;
 
 /***
  * The ship class, which all of the in-game vehicles derive from.

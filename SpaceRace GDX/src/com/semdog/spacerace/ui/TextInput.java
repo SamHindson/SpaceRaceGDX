@@ -1,13 +1,12 @@
 package com.semdog.spacerace.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 
 /**
  * Created by Sam on 2016/07/08.
@@ -26,12 +25,7 @@ public class TextInput implements InputProcessor {
         this.height = height;
         this.limit = limit;
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        font = generator.generateFont(parameter);
-        generator.dispose();
+        font = FontManager.getFont("inconsolata-18");
     }
 
     public void draw(SpriteBatch batch) {

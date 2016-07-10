@@ -1,14 +1,12 @@
 package com.semdog.spacerace.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.Race;
 import com.semdog.spacerace.screens.SingleplayerMenu;
 
@@ -32,18 +30,8 @@ public class RaceInfoViewer implements Disposable {
 		this.width = width;
 		this.height = height;
 
-        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-
-        parameter.size = 36;
-        titleFont = generator1.generateFont(parameter);
-        generator1.dispose();
-
-        parameter.size = 24;
-        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
-        descriptionFont = generator2.generateFont(parameter);
+        titleFont = FontManager.getFont("fipps-36");
+        descriptionFont = FontManager.getFont("inconsolata-28");
 
         borderColor = Colors.P_BLUE;
 
@@ -96,7 +84,6 @@ public class RaceInfoViewer implements Disposable {
 
     @Override
     public void dispose() {
-        titleFont.dispose();
-        descriptionFont.dispose();
+    	
     }
 }

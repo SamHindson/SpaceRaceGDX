@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
 
@@ -32,14 +32,8 @@ public class ThankYouScreen extends RaceScreen {
 
     public ThankYouScreen(RaceGame game) {
         super(game);
-
-        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Consolas.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-        parameter.size = 26;
-        font = generator1.generateFont(parameter);
-        generator1.dispose();
+        
+        font = FontManager.getFont("inconsolata-28");
 
         batch = new SpriteBatch();
 

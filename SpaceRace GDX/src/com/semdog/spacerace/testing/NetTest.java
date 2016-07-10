@@ -1,5 +1,9 @@
 package com.semdog.spacerace.testing;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,10 +16,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.screens.RaceScreen;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Sam on 2016/07/05.

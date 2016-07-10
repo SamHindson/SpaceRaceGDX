@@ -3,7 +3,11 @@ package com.semdog.spacerace.players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -188,6 +192,7 @@ public class Player implements Collideable, Disposable {
         this.ship = ship;
         ship.setPilot(this);
 
+        hud.hideToast();
         hud.showNotification("Boarded ship " + ship.getID());
     }
 
@@ -357,19 +362,23 @@ public class Player implements Collideable, Disposable {
                 float m = sprinting ? 3 : 1;
 
                 jetpack.setSize(20, 20);
-                jetpack.setFlip(flipped, false);
                 jetpack.setPosition(position.x - 10, position.y - 10);
                 jetpack.setOriginCenter();
                 jetpack.setRotation(getAngle() * MathUtils.radiansToDegrees);
                 jetpack.draw(batch);
 
-                if (righting)
+                if (righting) {
                     batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
                             20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
-                else if (lefting)
+                    jetpack.setFlip(true, false);
+                }
+                else if (lefting) {
                     batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
                             20, -1, 1, getAngle() * MathUtils.radiansToDegrees);
+                    jetpack.setFlip(false, false);
+                }
                 else {
+                    jetpack.setFlip(flipped, false);
                     idleTexture.setSize(20, 20);
                     idleTexture.setFlip(flipped, false);
                     idleTexture.setPosition(position.x - 10, position.y - 10);
@@ -464,7 +473,12 @@ public class Player implements Collideable, Disposable {
 
     public void setBoarding(boolean boarding, Ship boardingShip) {
         if (!this.boarding && boarding) {
-            hud.makeToast("Press E to board", 0.02f, Colors.UI_RED);
+            hud.makeToast("Press E to board", 2f, Colors.UI_RED);
+            this.boarding = true;
+        }
+        
+        if(!boarding) {
+        	hud.hideToast();
         }
 
         this.boarding = boarding;

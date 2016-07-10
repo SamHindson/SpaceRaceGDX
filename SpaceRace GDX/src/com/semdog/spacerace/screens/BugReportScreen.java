@@ -4,10 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
-import com.semdog.spacerace.ui.*;
+import com.semdog.spacerace.misc.FontManager;
+import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.CyclableText;
+import com.semdog.spacerace.ui.Notification;
+import com.semdog.spacerace.ui.TextInput;
+import com.semdog.spacerace.ui.TitleCard;
 
 /**
  * Created by Sam on 2016/07/08.
@@ -30,21 +34,9 @@ public class BugReportScreen extends RaceScreen {
         super(raceGame);
 
         titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        subtitleFont = generator.generateFont(parameter);
-        generator.dispose();
-
-        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter2.size = 24;
-        mainFont = generator2.generateFont(parameter2);
+        subtitleFont = FontManager.getFont("fipps-18");
+        mainFont = FontManager.getFont("inconsolata-32");
         mainFont.setColor(Colors.UI_WHITE);
-        generator2.dispose();
 
         setTitle("Let's Squash Some Bugs!");
 

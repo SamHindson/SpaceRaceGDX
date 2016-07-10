@@ -1,21 +1,25 @@
 package com.semdog.spacerace.collectables;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
-import com.semdog.spacerace.weapons.*;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+import com.semdog.spacerace.weapons.Carbine;
+import com.semdog.spacerace.weapons.RocketLauncher;
+import com.semdog.spacerace.weapons.SMG;
+import com.semdog.spacerace.weapons.Shotgun;
+import com.semdog.spacerace.weapons.Weapon;
 
 /**
  * Created by Sam on 2016/07/04.
  */
 public class WeaponPickup extends Collectible {
-    static final HashMap<String, Class> weaponTypes;
+    static final HashMap<String, Class<?>> weaponTypes;
 
     static {
         weaponTypes = new HashMap<>();
@@ -25,7 +29,7 @@ public class WeaponPickup extends Collectible {
         weaponTypes.put("rocketlauncher", RocketLauncher.class);
     }
 
-    private Class weaponType;
+    private Class<?> weaponType;
 
     public WeaponPickup(float h, float a, String type) {
         super(h, a, 10, 10, type, 0x01);

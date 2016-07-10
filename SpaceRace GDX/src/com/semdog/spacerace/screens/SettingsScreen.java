@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.CyclableText;
 import com.semdog.spacerace.ui.Notification;
@@ -27,19 +27,10 @@ public class SettingsScreen extends RaceScreen {
         batch = new SpriteBatch();
 
         titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        subtitleFont = generator.generateFont(parameter);
-
-        parameter.size = 20;
-        categoryFont = generator.generateFont(parameter);
+        subtitleFont = FontManager.getFont("fipps-18");
+        categoryFont = FontManager.getFont("fipps-20");
         categoryFont.setColor(Colors.UI_WHITE);
-
-        generator.dispose();
-
+        
         Object[] volumes = new Object[11];
 
         for (int r = 10; r >= 0; r--) {

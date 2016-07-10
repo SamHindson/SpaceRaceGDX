@@ -1,14 +1,11 @@
 package com.semdog.spacerace.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 
-public class TitleCard implements Disposable {
+public class TitleCard {
 
     public static final int BIG = 1, SMALL = 0;
     private BitmapFont titleFont;
@@ -16,11 +13,7 @@ public class TitleCard implements Disposable {
 	private int size;
 	
 	public TitleCard(int size, float x, float y) {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = size == 0 ? 36 : 72;
-		titleFont = generator.generateFont(parameter);
-		generator.dispose();
+		titleFont = size == SMALL ? FontManager.getFont("fipps-36") : FontManager.getFont("fipps-72");
 		
 		this.x = x;
 		this.y = y;
@@ -40,9 +33,4 @@ public class TitleCard implements Disposable {
 			titleFont.draw(batch, "Race!", x - 92, y - 30);
 		}
 	}
-
-	@Override
-	public void dispose() {
-        titleFont.dispose();
-    }
 }

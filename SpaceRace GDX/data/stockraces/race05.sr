@@ -23,8 +23,8 @@
   ],
   "runt": [
     {
-        "x": 800,
-        "y": -50,
+        "x": 820,
+        "y": 0,
         "id": "Tiangong"
     }
     {
@@ -33,7 +33,7 @@
   ],
   "playercriteria": [
     {
-      "float-getPlayerVisitedPlanetsNo": 2
+      "float-getPlayerVisitedPlanetsNo": 1
     }
   ]
 }

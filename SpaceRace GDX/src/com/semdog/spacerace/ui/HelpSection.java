@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.Exhibit;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.misc.HelpAnimation;
 import com.semdog.spacerace.misc.HelpLoader;
 
@@ -38,19 +38,8 @@ public class HelpSection implements Disposable {
         this.y = y;
         this.width = width;
         this.height = height;
-
-        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-        parameter.size = 36;
-        titleFont = generator1.generateFont(parameter);
-        generator1.dispose();
-
-        parameter.size = 20;
-        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(
-                Gdx.files.internal("assets/fonts/OldSansBlack.ttf"));
-        descriptionFont = generator2.generateFont(parameter);
+        titleFont = FontManager.getFont("fipps-36");
+        descriptionFont = FontManager.getFont("inconsolata-28");
         descriptionFont.setColor(Colors.UI_WHITE);
 
         borderColor = Colors.P_YELLOW;
@@ -64,9 +53,9 @@ public class HelpSection implements Disposable {
         }
 
         exhibits = new Array<>();
-        exhibits.add(new Exhibit(width - 40, (width - 40) * 350f / 1280f, "rubbish", "needle", "runt"));
-        exhibits.add(new Exhibit(width - 40, (width - 40) * 350f / 1280f, "carbine", "smg", "shotgun", "rocketlauncher"));
-        exhibits.add(new Exhibit(width - 40, (width - 40) * 350f / 1280f, "toast", "health", "ammo", "fuel"));
+        exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "rubbish", "needle", "runt"));
+        exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "carbine", "smg", "shotgun", "rocketlauncher"));
+        exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "toast", "health", "ammo", "fuel"));
 
         images = new Array<>();
         images.add(new Texture(Gdx.files.internal("assets/help/images/img0.jpg")));
@@ -125,21 +114,22 @@ public class HelpSection implements Disposable {
                 continue;
             } else if (thing.contains("[exh")) {
                 int id = Integer.parseInt(thing.substring(4, 5));
-                float h = (width - 40) * 350f / 1280f;
+                float h = descriptionFont.getLineHeight() * 6;
                 exhibits.get(id).draw(batch, x + 20, yy - h);
                 yy -= h;
                 continue;
             } else if (thing.contains("[img")) {
                 int id = Integer.parseInt(thing.substring(4, 5));
-                float h = (width - 40) * 500f / 1280f;
+                float h = descriptionFont.getLineHeight() * 10;
+                float w = h * 128f / 50f;
                 batch.setColor(Color.WHITE);
-                batch.draw(images.get(id), x + 20, yy - h, (width - 40), h);
+                batch.draw(images.get(id), x + width / 2 - w / 2, yy - h, w, h);
                 yy -= h;
                 continue;
             }
 
             descriptionFont.draw(batch, thing, xx, yy);
-            if (xx + glyphLayout.width + 5 - x > width - 80) {
+            if (xx + glyphLayout.width + 5 - x > width - 150) {
                 xx = x + 20;
                 yy -= lineHeight;
             } else {
@@ -158,9 +148,6 @@ public class HelpSection implements Disposable {
 
     @Override
     public void dispose() {
-        titleFont.dispose();
-        descriptionFont.dispose();
-
         for (HelpAnimation animation : animations) {
             animation.dispose();
         }

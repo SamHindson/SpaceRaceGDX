@@ -1,9 +1,9 @@
 package com.semdog.spacerace.universe;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import com.badlogic.gdx.Gdx;
 
 public class GoalChecker {
 	private HashMap<String, Boolean> booleans;

@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.Race;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.ui.*;
+import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.ListView;
+import com.semdog.spacerace.ui.ListViewListener;
+import com.semdog.spacerace.ui.RaceInfoViewer;
+import com.semdog.spacerace.ui.TitleCard;
 
 /**
  * A screen where players can choose a singleplayer race to play.
@@ -35,13 +38,7 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 		super(game);
 
 		titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-				Gdx.files.internal("assets/fonts/Fipps-Regular.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 18;
-		subtitleFont = generator.generateFont(parameter);
-		generator.dispose();
+		subtitleFont = FontManager.getFont("fipps-18");
 
 		setTitle("Select a Race!");
 
@@ -87,8 +84,6 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 	public void dispose() {
         super.dispose();
         batch.dispose();
-        titleFont.dispose();
-        subtitleFont.dispose();
         raceChooser.dispose();
         raceViewer.dispose();
     }

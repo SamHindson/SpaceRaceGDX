@@ -2,6 +2,8 @@ package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.semdog.spacerace.GameLoader;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.races.RaceManager;
@@ -12,87 +14,67 @@ import com.semdog.spacerace.universe.UniverseLoader;
 public class PlayScreen extends RaceScreen {
 
 	private Universe universe;
-    private Briefing briefing;
-    //private Thread physicsThread;
-	//private PhysicsRunnable runnable;
+	private Briefing briefing;
+	private SpriteBatch briefBatch;
+
+	private float timescale = 0.05f;
+	private boolean shownBrief = false;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
+		
+		Gdx.app.log("PlayScreen", "New PlayScreen, yo");
 
-        briefing = new Briefing(RaceManager.getCurrentRace().getName(), RaceManager.getCurrentRace().getBriefing());
+		briefBatch = new SpriteBatch();
+		briefing = new Briefing(this, RaceManager.getCurrentRace().getName(),
+				RaceManager.getCurrentRace().getBriefing());
 
-        bigBang();
-        //runnable = new PhysicsRunnable();
-		//physicsThread = new Thread(runnable, "SpaceRace! Physics Thread");
-		//physicsThread.start();
+		bigBang();
 	}
 
 	@Override
 	public void update(float dt) {
-        float t = 0.05f;
-
-        if (!universe.isLoading()) {
-			universe.tick(t * dt);
-			universe.tickPhysics(t * dt);
-			universe.finalizeState();
+		if (briefing.isActive()) {
+			briefing.update(dt);
 		}
 
-        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
-            game.changeScreen("play");
+		universe.tick(timescale * dt);
+		
+		if(Universe.isExiting())
+			return;
+		
+		universe.tickPhysics(timescale * dt);
+		universe.finalizeState();
+
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			game.changeScreen("play");
 	}
 
-    public void bigBang() {
-        universe = new Universe(this);
-        new UniverseLoader().load(universe);
+	public void activate() {
+		universe.setActivated(true);
+		timescale = 1;
+		shownBrief = true;
+	}
 
-        SoundManager.playMusic("oxidiser", true);
-    }
+	public void bigBang() {
+		universe = new Universe(this);
+		new UniverseLoader().load(universe);
+
+		SoundManager.playMusic("oxidiser", true);
+		
+		if(shownBrief)
+			universe.setActivated(true);
+	}
 
 	@Override
 	public void render() {
 		universe.render();
+
+		if (briefing.isActive()) {
+			briefBatch.begin();
+			briefing.draw(briefBatch);
+			briefBatch.end();
+		}
 	}
-
-	@Override
-	public void dispose() {
-        super.dispose();
-    }
-
-    /*private class PhysicsRunnable implements Runnable {
-
-		boolean running = false;
-
-		@Override
-		public void run() {
-			running = true;
-			
-			long lastTime = System.currentTimeMillis();
-			long thisTime = System.currentTimeMillis();
-			float dt = 0;
-
-			while (running) {
-				if (!universe.isLoading()) {
-					thisTime = System.currentTimeMillis();
-					dt = (thisTime - lastTime) / 1000.f;
-					universe.tickPhysics(dt);
-					universe.finalizeState();
-					lastTime = thisTime;
-
-					try {
-						Thread.sleep(16);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				} else {
-					Gdx.app.log("PhysicsRunnable", "Universe is still loading!");
-				}
-			}
-		}
-
-		public void stop() {
-			running = false;
-		}
-
-	}*/
 
 }
