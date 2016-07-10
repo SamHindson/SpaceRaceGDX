@@ -41,8 +41,6 @@ public class Box extends Mass {
 
         sprite.setRotation(angle * MathUtils.radiansToDegrees);
 
-        System.out.println("Woof");
-
         if (ouchTime > 0) {
             silhouette.setRotation(angle * MathUtils.radiansToDegrees);
             silhouette.setPosition(position.x - width / 2, position.y - height / 2);

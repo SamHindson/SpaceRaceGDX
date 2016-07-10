@@ -90,11 +90,6 @@ public class RaceManager {
         return races.get(index);
     }
 
-    public static void setCurrentRace(Race race) {
-        currentRaceSchematics = race.getContent();
-        currentRace = race;
-    }
-
     public static String getCurrentRaceSchematics() {
         return currentRaceSchematics;
     }
@@ -107,5 +102,14 @@ public class RaceManager {
         currentRace.setBestTime(newBestTime);
         times.setTime(currentRace.getID(), newBestTime);
         times.writeTimes();
+    }
+
+    public static Race getCurrentRace() {
+        return currentRace;
+    }
+
+    public static void setCurrentRace(Race race) {
+        currentRaceSchematics = race.getContent();
+        currentRace = race;
     }
 }

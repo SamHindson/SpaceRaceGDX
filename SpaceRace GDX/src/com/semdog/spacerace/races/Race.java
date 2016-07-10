@@ -70,4 +70,8 @@ public class Race {
     public void setBestTime(float bestTime) {
         this.bestTime = bestTime;
     }
+
+    public String getBriefing() {
+        return briefing;
+    }
 }

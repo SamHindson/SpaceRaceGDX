@@ -17,10 +17,15 @@ import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
 public abstract class Collectible implements Disposable {
+
+    public static final byte PLAYER = 0x01;
+    public static final byte SHIP = 0x10;
+
     protected float x;
     protected float y;
     protected float h, a;
-    String target;
+    protected int target;
+
     float width;
     float height;
     Sprite sprite;
@@ -31,7 +36,7 @@ public abstract class Collectible implements Disposable {
 
     private ParticleEffect particleEffect;
 
-    Collectible(float h, float a, float width, float height, String textureName, String target) {
+    Collectible(float h, float a, float width, float height, String textureName, int target) {
         this.h = h;
         this.a = a;
         this.width = width;
@@ -74,11 +79,14 @@ public abstract class Collectible implements Disposable {
             particleEffect.setPosition(x, y);
         }
         sprite.setOriginCenter();
-		sprite.setPosition(x, y);
+        sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
 
 		for (int q = 0; q < collideables.size; q++) {
 			Collideable collideable = collideables.get(q);
-			if (collideable.getType().equals(target) && collideable.canCollect(this)) {
+            int cID = collideable.getType();
+            int check = cID & target;
+
+            if (check != 0 && collideable.canCollect(this)) {
                 if (collideable.getBounds().overlaps(bounds)) {
                     get(collideable);
 					collideable.collectCollectible(this);

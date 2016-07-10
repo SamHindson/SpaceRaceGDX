@@ -7,6 +7,7 @@ ext {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 dependencies {
     compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -19,6 +20,9 @@ dependencies {
     compile("com.esotericsoftware:kryonet:2.22.0-RC1") {
         exclude module: 'kryo'
     }
+    compile "com.google.api-client:google-api-client:1.22.0"
+    compile "com.google.oauth-client:google-oauth-client-jetty:1.22.0"
+    compile "com.google.apis:google-api-services-sheets:v4-rev9-1.22.0"
 }
 
 sourceSets {

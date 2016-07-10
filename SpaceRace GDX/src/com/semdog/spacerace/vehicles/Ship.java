@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Explosion;
@@ -15,10 +16,7 @@ import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.players.VitalSigns;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.players.Vitality;
-import com.semdog.spacerace.universe.Grenade;
-import com.semdog.spacerace.universe.Mass;
-import com.semdog.spacerace.universe.Planet;
-import com.semdog.spacerace.universe.Universe;
+import com.semdog.spacerace.universe.*;
 
 /***
  * The ship class, which all of the in-game vehicles derive from.
@@ -26,7 +24,7 @@ import com.semdog.spacerace.universe.Universe;
  * @author Sam
  */
 
-public abstract class Ship extends Mass {
+public abstract class Ship extends Mass implements Collideable {
 
 	protected Player pilot;
 	protected Sprite sprite, silhouette;
@@ -282,8 +280,13 @@ public abstract class Ship extends Mass {
         }
     }
 
-	@Override
-	protected void hitPlayer(Player player) {
+    @Override
+    public int getType() {
+        return Collectible.SHIP;
+    }
+
+    @Override
+    protected void hitPlayer(Player player) {
 		player.addSpeed(velocity);
 		player.doDamage(getVelocity().len(), DamageCause.SHIP);
 	}
@@ -294,7 +297,15 @@ public abstract class Ship extends Mass {
 
 	public void setPilot(Player pilot) {
 		this.pilot = pilot;
-	}
+
+        if (pilot == null) {
+            playerExited();
+        }
+    }
+
+    protected void playerExited() {
+
+    }
 
 	public Texture getTexture() {
 		return sprite.getTexture();
@@ -347,5 +358,14 @@ public abstract class Ship extends Mass {
 
     public float getFY() {
         return position.y;
+    }
+
+    public void replenishFuel() {
+        currentFuel = totalFuel;
+    }
+
+    @Override
+    public void collectCollectible(Collectible collectible) {
+        System.out.println("Cool");
     }
 }

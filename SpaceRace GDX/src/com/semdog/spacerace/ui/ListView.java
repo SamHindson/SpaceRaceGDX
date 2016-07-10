@@ -66,7 +66,7 @@ public class ListView implements Disposable {
 
     // TODO fix this stupid button placement
     private void recomposeItems() {
-        int usableSpace = (int) height - 80;
+        int usableSpace = (int) height - 80 + 4;
         int buttonHeight = usableSpace / maxItems;
 
 		items = new Button[maxItems];

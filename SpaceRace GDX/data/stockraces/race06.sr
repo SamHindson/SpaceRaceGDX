@@ -7,7 +7,7 @@
   "planet": [
     {
       "id": "home",
-      "radius": 500,
+      "radius": 250,
       "x": 0,
       "y": 0
     }
@@ -23,29 +23,28 @@
   "playerstuff": [
     {
       "x": 0,
-      "y": 600
+      "y": 290
+    }
+  ],
+  "fuel": [
+    {
+      "h": 50,
+      "a": 0
+    }
+  ],
+  "weaponpickup-smg": [
+    {
+        "h": 25,
+        "a": 180
     }
   ],
   "runt": [
     {
-        "x": 200,
-        "y": 500,
+        "x": 50,
+        "y": 290,
         "id": "Tiangong"
     }
     ],
-    "rubbish": [
-        {
-            "x": -200,
-            "y": 500,
-            "id": "Woof"
-        }
-  ],
-  "weaponpickup-smg": [
-            {
-                "h": 10,
-                "a": 135
-            }
-          ],
   "playercriteria": [
     {
       "float-getPlayerVisitedPlanetsNo": 3

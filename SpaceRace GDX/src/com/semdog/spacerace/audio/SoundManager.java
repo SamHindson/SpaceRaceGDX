@@ -57,6 +57,9 @@ public class SoundManager {
 		load("healthget.wav");
         load("toastget.wav");
         load("weaponget.wav");
+        load("ammoget.wav");
+        load("fuelget.wav");
+        load("fueldrink.wav");
 
         load("goggleson.wav");
         load("gogglesoff.wav");

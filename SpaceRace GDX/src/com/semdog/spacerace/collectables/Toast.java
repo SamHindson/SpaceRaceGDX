@@ -9,7 +9,7 @@ import com.semdog.spacerace.universe.Universe;
  */
 public class Toast extends Collectible {
     public Toast(float x, float y) {
-        super(x, y, 20, 20, "toast", "player");
+        super(x, y, 20, 20, "toast", 0x11);
     }
 
     @Override

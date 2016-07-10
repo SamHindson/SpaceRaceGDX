@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
@@ -96,5 +97,10 @@ public class Needle extends Ship {
     @Override
     public void dispose() {
         particleEffect.dispose();
+    }
+
+    // TODO get rid of this being needed
+    public boolean canCollect(Collectible collectible) {
+        return currentFuel < totalFuel;
     }
 }

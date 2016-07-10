@@ -4,17 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
+import com.semdog.spacerace.races.RaceManager;
+import com.semdog.spacerace.ui.Briefing;
 import com.semdog.spacerace.universe.Universe;
 import com.semdog.spacerace.universe.UniverseLoader;
 
 public class PlayScreen extends RaceScreen {
 
 	private Universe universe;
-	//private Thread physicsThread;
+    private Briefing briefing;
+    //private Thread physicsThread;
 	//private PhysicsRunnable runnable;
 
 	public PlayScreen(RaceGame game) {
 		super(game);
+
+        briefing = new Briefing(RaceManager.getCurrentRace().getName(), RaceManager.getCurrentRace().getBriefing());
 
         bigBang();
         //runnable = new PhysicsRunnable();
@@ -24,9 +29,9 @@ public class PlayScreen extends RaceScreen {
 
 	@Override
 	public void update(float dt) {
-		float t = 1;
-		
-		if (!universe.isLoading()) {
+        float t = 0.05f;
+
+        if (!universe.isLoading()) {
 			universe.tick(t * dt);
 			universe.tickPhysics(t * dt);
 			universe.finalizeState();

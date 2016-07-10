@@ -6,7 +6,7 @@ public enum DamageCause {
 					"You were caught in an explosion"), MASS("You were hit by a UFO"), FALLING(
 							"You fell out of the sky"), OLDAGE(
 									"If you're a player and you see this, REPORT IMMEDIATELY. Horrible horrible bug imo"), RPG(
-											"You were exploded by an RPG.");
+            "You were exploded by an RPG."), DRINKINGFUEL("You drank rocket fuel.");
 
 	private String details;
 

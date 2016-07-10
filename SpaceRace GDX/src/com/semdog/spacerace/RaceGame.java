@@ -14,6 +14,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.screens.*;
+import com.semdog.spacerace.ui.Notification;
 
 public class RaceGame extends ApplicationAdapter {
 
@@ -91,6 +92,7 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         screen.update(Gdx.graphics.getDeltaTime());
+        Notification.update(Gdx.graphics.getDeltaTime());
 
         SoundManager.update();
 
@@ -109,6 +111,7 @@ public class RaceGame extends ApplicationAdapter {
             }
         }
         screen.render();
+        Notification.draw();
         //frameBuffer.end();
 
         //frameBufferBatch.begin();
@@ -143,6 +146,14 @@ public class RaceGame extends ApplicationAdapter {
             case "thankyou":
                 screen.dispose();
                 screen = new ThankYouScreen(this);
+                break;
+            case "help":
+                screen.dispose();
+                screen = new HelpScreen(this);
+                break;
+            case "bug":
+                screen.dispose();
+                screen = new BugReportScreen(this);
                 break;
         }
     }

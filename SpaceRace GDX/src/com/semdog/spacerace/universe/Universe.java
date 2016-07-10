@@ -39,6 +39,8 @@ public class Universe implements Disposable {
     public static Universe currentUniverse;
     private static PlayScreen container;
     private static boolean exiting;
+    float fcx = 0;
+    float fcy = 0;
     private float age;
     private float timeLeft;
     private float timeLimit;
@@ -74,9 +76,9 @@ public class Universe implements Disposable {
     private float cameraShake = 0;
     private boolean isLoading = true;
     private Overlay raceEnd;
-
     private boolean shownEnd = false;
     private boolean gogglesActive = false;
+    private boolean activated = false;
 
     public Universe(PlayScreen _container) {
         container = _container;
@@ -177,27 +179,109 @@ public class Universe implements Disposable {
     public void tick(float dt) {
         age += dt;
 
-        if (desiredZoom >= 20) {
-            desiredZoom = 20;
+        if (desiredZoom >= 10) {
+            desiredZoom = 10;
         } else if (desiredZoom <= 0.25f) {
             desiredZoom = 0.25f;
         }
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-            desiredZoom = 1;
-        }
+        if (activated) {
 
-        float deltaZoom = (desiredZoom - camera.zoom) / 10.f;
+            if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+                desiredZoom = 1;
+            }
 
-        zoom += deltaZoom;
-        camera.zoom += deltaZoom;
+            float deltaZoom = (desiredZoom - camera.zoom) / 10.f;
 
-        if (!gogglesActive && Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
-            gogglesActive = true;
-            playUISound("goggleson");
-        } else if (gogglesActive && !Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
-            gogglesActive = false;
-            playUISound("gogglesoff");
+            zoom += deltaZoom;
+            camera.zoom += deltaZoom;
+
+            if (!gogglesActive && Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
+                gogglesActive = true;
+                playUISound("goggleson");
+            } else if (gogglesActive && !Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
+                gogglesActive = false;
+                playUISound("gogglesoff");
+            }
+
+            if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("CAMERALOCK"))) {
+                lockedRotation = !lockedRotation;
+                hud.makeToast("Camera " + (lockedRotation ? "locked" : "unlocked"), 0.5f, Colors.UI_BLUE);
+            }
+
+            if (lockedRotation)
+                camera.setRotation(-player.getAngleAroundEnvironment() * MathUtils.radiansToDegrees + 90);
+            else
+                camera.setRotation(0);
+
+            hud.update(dt);
+
+            if (countingDown) {
+                countdown -= dt * 2;
+                hud.setText("Get ready!", "[" + (int) countdown + "]");
+
+                if (countdown <= 0) {
+                    countingDown = false;
+                    playerEnabled = true;
+                    hud.hideMessage();
+                    hud.showStats();
+                    hud.showTimer();
+                }
+            } else {
+                timeLeft -= dt;
+                hud.setCountdownValue((int) timeLeft);
+
+                if (timeLeft <= 0) {
+                    raceEndDelay += dt;
+                    if (!shownEnd) {
+                        playerEnabled = false;
+                        SoundManager.stopAllSounds();
+                        shownEnd = true;
+                        hud.hideAll();
+                        SoundManager.stopMusic("oxidiser");
+                        SoundManager.playMusic("failure2", false);
+                        raceEnd.setText("Failure!", "Our deepest condolences.");
+                        raceEnd.setShowing(true);
+                    }
+                }
+            }
+            goalChecker.update(this);
+
+            if (goalChecker.isVictory()) {
+                playerEnabled = false;
+                raceEndDelay += dt;
+
+                if (!shownEnd) {
+                    shownEnd = true;
+                    SoundManager.stopAllSounds();
+
+                    boolean best = timeLeft < RaceManager.getCurrentBestTime();
+
+                    if (best) {
+                        RaceManager.setNewBestTime(timeLimit - timeLeft);
+                        Gdx.app.log("Universe", "New best time!");
+                    }
+
+                    String time = timeLeft < 10 ? String.format("%.2f", timeLeft) : (int) timeLeft + "";
+                    String text = "Race completed with " + time + "s left!" + (best ? "\nNew Record!" : "");
+                    raceEnd.setColor(best ? Colors.UI_GREEN : Colors.UI_WHITE);
+                    raceEnd.setText("Victory!", text);
+                    SoundManager.stopMusic("oxidiser");
+                    SoundManager.playMusic("victory", false);
+
+                    hud.hideAll();
+                    raceEnd.setShowing(true);
+                }
+            }
+
+
+            if (injuryAlpha > 0) {
+                injuryAlpha *= 0.5f;
+
+                if (injuryAlpha < 0.05f)
+                    injuryAlpha = 0;
+            }
+
         }
 
         for (int i = 0; i < bullets.size; i++) {
@@ -235,16 +319,6 @@ public class Universe implements Disposable {
             effect.update(dt);
         }
 
-        if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("CAMERALOCK"))) {
-            lockedRotation = !lockedRotation;
-            hud.makeToast("Camera " + (lockedRotation ? "locked" : "unlocked"));
-        }
-
-        if (lockedRotation)
-            camera.setRotation(-player.getAngleAroundEnvironment() * MathUtils.radiansToDegrees + 90);
-        else
-            camera.setRotation(0);
-
         //camera.setRotation(player.getAngleAroundEnvironment() * -MathUtils.radiansToDegrees + 90);
         //System.out.println("Gotta get: " + player.getAngleAroundEnvironment() * MathUtils.radiansToDegrees);
 
@@ -254,8 +328,8 @@ public class Universe implements Disposable {
             desiredCX = player.getFX();
             desiredCY = player.getFY();
         } else {
-            desiredCX = masses.get(0).getX();
-            desiredCY = masses.get(0).getY();
+            desiredCX = fcx;
+            desiredCY = fcy;
         }
 
         cameraX += (desiredCX - cameraX) / 10.f;
@@ -270,7 +344,6 @@ public class Universe implements Disposable {
         stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
 
         boolean f = true;
-
         if (!player.isPilotingShip()) {
             for (int k = 0; k < ships.size; k++) {
                 Ship ship = ships.get(k);
@@ -285,9 +358,6 @@ public class Universe implements Disposable {
             if (f)
                 player.setBoarding(false, null);
         }
-
-        hud.update(dt);
-
         if (cameraShake > 0) {
             if (cameraShake > 5)
                 cameraShake = 5;
@@ -298,43 +368,6 @@ public class Universe implements Disposable {
 
         if (raceEndDelay > 1.3f) {
             raceEnd.update(dt);
-        }
-
-        if (countingDown) {
-            countdown -= dt * 2;
-            hud.setText("Get ready!", "[" + (int) countdown + "]");
-
-            if (countdown <= 0) {
-                countingDown = false;
-                playerEnabled = true;
-                hud.hideMessage();
-                hud.showStats();
-                hud.showTimer();
-            }
-        } else {
-            timeLeft -= dt;
-            hud.setCountdownValue((int) timeLeft);
-
-            if (timeLeft <= 0) {
-                raceEndDelay += dt;
-                if (!shownEnd) {
-                    playerEnabled = false;
-                    SoundManager.stopAllSounds();
-                    shownEnd = true;
-                    hud.hideAll();
-                    SoundManager.stopMusic("oxidiser");
-                    SoundManager.playMusic("failure2", false);
-                    raceEnd.setText("Failure!", "Our deepest condolences.");
-                    raceEnd.setShowing(true);
-                }
-            }
-        }
-
-        if (injuryAlpha > 0) {
-            injuryAlpha *= 0.5f;
-
-            if (injuryAlpha < 0.05f)
-                injuryAlpha = 0;
         }
     }
 
@@ -367,38 +400,6 @@ public class Universe implements Disposable {
     }
 
     public void tickPhysics(float dt) {
-        if (exiting)
-            return;
-
-        goalChecker.update(this);
-
-        if (goalChecker.isVictory()) {
-            playerEnabled = false;
-            raceEndDelay += dt;
-
-            if (!shownEnd) {
-                shownEnd = true;
-                SoundManager.stopAllSounds();
-
-                boolean best = timeLeft < RaceManager.getCurrentBestTime();
-
-                if (best) {
-                    RaceManager.setNewBestTime(timeLimit - timeLeft);
-                    Gdx.app.log("Universe", "New best time!");
-                }
-
-                String time = timeLeft < 10 ? String.format("%.2f", timeLeft) : (int) timeLeft + "";
-                String text = "Race completed with " + time + "s left!" + (best ? "\nNew Record!" : "");
-                raceEnd.setColor(best ? Colors.UI_GREEN : Colors.UI_WHITE);
-                raceEnd.setText("Victory!", text);
-                SoundManager.stopMusic("oxidiser");
-                SoundManager.playMusic("victory", false);
-
-                hud.hideAll();
-                raceEnd.setShowing(true);
-            }
-        }
-
         for (int i = 0; i < masses.size; i++) {
             masses.get(i).update(dt, planets);
         }
@@ -513,6 +514,7 @@ public class Universe implements Disposable {
 
     public void addShip(Ship ship) {
         ships.add(ship);
+        collideables.add(ship);
     }
 
     public void addEffect(Effect effect) {

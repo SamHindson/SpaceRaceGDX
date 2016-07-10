@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.semdog.spacerace.collectables.Fuel;
 import com.semdog.spacerace.collectables.Health;
 import com.semdog.spacerace.collectables.Toast;
 import com.semdog.spacerace.collectables.WeaponPickup;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.races.RaceManager;
+import com.semdog.spacerace.vehicles.Bombarder;
 import com.semdog.spacerace.vehicles.Needle;
 import com.semdog.spacerace.vehicles.RubbishLander;
-import com.semdog.spacerace.vehicles.SmallBombarder;
 
 public class UniverseLoader {
     public void load(Universe universe) {
@@ -64,12 +65,12 @@ public class UniverseLoader {
                     float ry = value.get(0).getFloat("y");
                     String rid = value.get(0).getString("id");
 
-                    SmallBombarder dude = new SmallBombarder(rx, ry, rid);
+                    Bombarder dude = new Bombarder(rx, ry, rid);
 
                     try {
                         String ssname = value.get(1).get(0).name;
                         float ssvalue = value.get(1).getFloat(0);
-                        SmallBombarder.class.getDeclaredMethod(ssname, float.class).invoke(dude, ssvalue);
+                        Bombarder.class.getDeclaredMethod(ssname, float.class).invoke(dude, ssvalue);
                     } catch (NullPointerException npe) {
                         Gdx.app.error("UniverseLoader", "No extra data. But no problem!");
                     } catch (Exception e) {
@@ -155,6 +156,14 @@ public class UniverseLoader {
                     float a = value.get(0).getFloat("a") * MathUtils.degreesToRadians;
 
                     universe.addCollectable(new WeaponPickup(h, a, type));
+
+                    break;
+                case "fuel":
+
+                    float fh = value.get(0).getFloat("h");
+                    float fa = value.get(0).getFloat("a") * MathUtils.degreesToRadians;
+
+                    universe.addCollectable(new Fuel(fh, fa));
 
                     break;
                 case "box":

@@ -7,6 +7,7 @@ import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.TitleCard;
 
 public class MenuScreen extends RaceScreen {
@@ -37,14 +38,19 @@ public class MenuScreen extends RaceScreen {
         button3.setColors(Colors.UI_YELLOW, Colors.UI_WHITE);
 
         button4 = new Button("Help", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 183, 200, 60, () -> {
-
-		});
+            game.changeScreen("help");
+        });
         button4.setColors(Colors.UI_GRAY, Colors.UI_WHITE);
 
         button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 244, 200, 60, () -> {
             SoundManager.stopMusic("menu");
-            Gdx.app.exit();
-		});
+
+            Notification.show("Really quit?", "Yeah...", "No!", Colors.UI_RED, Colors.UI_GREEN, () -> {
+                Gdx.app.exit();
+            }, () -> {
+                Notification.showing = false;
+            });
+        });
         button5.setColors(Colors.UI_BLUE, Colors.UI_WHITE);
 
         secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300, () -> {

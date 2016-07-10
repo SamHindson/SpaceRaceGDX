@@ -10,6 +10,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.CyclableText;
+import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.TitleCard;
 
 public class SettingsScreen extends RaceScreen {
@@ -64,6 +65,7 @@ public class SettingsScreen extends RaceScreen {
 
         doneButton = new Button("Done", false, Gdx.graphics.getWidth() / 2, 50, 140, 50, () -> {
             saveSettings();
+            Notification.resetValues();
             game.changeScreen("menu");
         });
         doneButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);

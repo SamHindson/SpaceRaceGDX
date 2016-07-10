@@ -3,11 +3,7 @@ package com.semdog.spacerace.players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,6 +14,7 @@ import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.collectables.Health;
 import com.semdog.spacerace.collectables.Toast;
 import com.semdog.spacerace.collectables.WeaponPickup;
+import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.OrbitalHelper;
@@ -48,8 +45,9 @@ public class Player implements Collideable, Disposable {
     private Ship ship;
 
     private Animation animation;
-    private TextureRegion idleTexture;
+    private Sprite idleTexture, jetpack;
     private float animTime = 0f;
+    private boolean flipped = false;
 
     private Vector2 position, velocity;
 
@@ -77,7 +75,9 @@ public class Player implements Collideable, Disposable {
         Gdx.app.log("Player", "Player created at " + position);
         TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
         animation = new Animation(1 / 30f, textureAtlas.getRegions());
-        idleTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/graphics/idledude.png")));
+        idleTexture = new Sprite(Art.get("idledude"));
+        jetpack = new Sprite(Art.get("pinkbp"));
+
         bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
         grenadeCount = 5;
@@ -188,7 +188,7 @@ public class Player implements Collideable, Disposable {
         this.ship = ship;
         ship.setPilot(this);
 
-        hud.showNotification("Vehicles", "Boarded ship " + ship.getID());
+        hud.showNotification("Boarded ship " + ship.getID());
     }
 
     public Team getTeam() {
@@ -245,7 +245,7 @@ public class Player implements Collideable, Disposable {
 
                             if (!visitedPlanets.contains(environment, true)) {
                                 visitedPlanets.add(environment);
-                                hud.showNotification("Exploration", "Visited Planet " + environment.getID());
+                                hud.showNotification("Visited Planet " + environment.getID());
                             }
                         }
                     } else {
@@ -322,6 +322,8 @@ public class Player implements Collideable, Disposable {
                     a = MathUtils.atan2(cy - ay1, ax1 - cx);
                 }
 
+                flipped = !(a > getAngleAroundEnvironment() && a < getAngleAroundEnvironment() + MathUtils.PI);
+
                 if (weapon != null && controllable)
                     weapon.update(dt, a);
 
@@ -350,22 +352,41 @@ public class Player implements Collideable, Disposable {
 
     public void draw(SpriteBatch batch) {
         if (!pilotingShip) {
+
             if (alive) {
                 float m = sprinting ? 3 : 1;
+
+                jetpack.setSize(20, 20);
+                jetpack.setFlip(flipped, false);
+                jetpack.setPosition(position.x - 10, position.y - 10);
+                jetpack.setOriginCenter();
+                jetpack.setRotation(getAngle() * MathUtils.radiansToDegrees);
+                jetpack.draw(batch);
+
                 if (righting)
                     batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
                             20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
                 else if (lefting)
                     batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20,
                             20, -1, 1, getAngle() * MathUtils.radiansToDegrees);
-                else
-                    batch.draw(idleTexture, position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1,
-                            getAngle() * MathUtils.radiansToDegrees);
+                else {
+                    idleTexture.setSize(20, 20);
+                    idleTexture.setFlip(flipped, false);
+                    idleTexture.setPosition(position.x - 10, position.y - 10);
+                    idleTexture.setOriginCenter();
+                    idleTexture.setRotation(getAngle() * MathUtils.radiansToDegrees);
+                    idleTexture.draw(batch);
+                }
+
+                if (weapon != null)
+                    weapon.draw(batch);
             }
         }
     }
 
     public void debugDraw(ShapeRenderer sr) {
+        if (pilotingShip)
+            return;
         sr.setColor(Color.BLUE);
         sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
@@ -442,6 +463,10 @@ public class Player implements Collideable, Disposable {
     }
 
     public void setBoarding(boolean boarding, Ship boardingShip) {
+        if (!this.boarding && boarding) {
+            hud.makeToast("Press E to board", 0.02f, Colors.UI_RED);
+        }
+
         this.boarding = boarding;
         this.boardingShip = boardingShip;
     }
@@ -492,7 +517,7 @@ public class Player implements Collideable, Disposable {
         ship.setPilot(null);
         ship = null;
         Universe.currentUniverse.playUISound("egress");
-        hud.showNotification("Vehicles", "Alighted Ship");
+        hud.showNotification("Alighted Ship");
     }
 
     @Override
@@ -512,8 +537,8 @@ public class Player implements Collideable, Disposable {
     }
 
     @Override
-    public String getType() {
-        return "player";
+    public int getType() {
+        return Collectible.PLAYER;
     }
 
     public void replenishHealth() {
@@ -569,7 +594,7 @@ public class Player implements Collideable, Disposable {
 
     public void addToast() {
         toastCount++;
-        hud.showNotification("Toast", "You got toast!");
+        hud.showNotification("You got toast!");
     }
 
     public void orbit(float direction) {
@@ -587,6 +612,22 @@ public class Player implements Collideable, Disposable {
         this.weapon = weapon;
         weapon.pickup(this);
         primarySigns.addItems(weapon);
-        hud.showNotification("Equipment", "Picked up " + weapon.getName());
+        hud.showNotification("Picked up " + weapon.getName());
+    }
+
+    public void replenishAmmo() {
+        weapon.reset();
+    }
+
+    public float getWeaponX() {
+        return position.x + MathUtils.cos(angle) * 2.f + 1.5f;
+    }
+
+    public float getWeaponY() {
+        return position.y + MathUtils.sin(angle) * 2.f + 1.5f;
+    }
+
+    public boolean isFlipped() {
+        return flipped;
     }
 }

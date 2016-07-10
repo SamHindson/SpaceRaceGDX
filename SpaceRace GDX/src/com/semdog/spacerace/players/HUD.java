@@ -42,8 +42,9 @@ public class HUD implements Disposable {
     private float notificationHeight, notificationTime;
 
     private boolean showingToast;
-    private float toastTime;
+    private float toastTime, currentToast;
     private String toast;
+    private Color toastColor;
 
     public HUD(Player owner) {
         this.owner = owner;
@@ -105,8 +106,8 @@ public class HUD implements Disposable {
                     }
                 }
             } else if (showingToast) {
-                toastTime += dt;
-                if (toastTime > 0.5f) {
+                currentToast += dt;
+                if (currentToast > toastTime) {
                     showingToast = false;
                 }
             }
@@ -141,12 +142,6 @@ public class HUD implements Disposable {
             if (timeLeft < 10) {
                 countdownFont.setColor(Color.WHITE);
             }
-        }
-
-        if (owner.isBoarding()) {
-            subtitleFont.setColor(new Color((int) (MathUtils.random() * Integer.MAX_VALUE)));
-            subtitleFont.draw(spriteBatch, "PRESS [E] TO BOARD", Gdx.graphics.getWidth() / 2.f - 169.0f,
-                    Gdx.graphics.getHeight() * 0.4f - 10.5f);
         }
 
         if (showingMessage) {
@@ -194,7 +189,7 @@ public class HUD implements Disposable {
             }
 
             if (showingToast) {
-                subtitleFont.setColor(Colors.UI_BLUE);
+                subtitleFont.setColor(toastColor);
                 subtitleFont.draw(spriteBatch, toast, 0, subtitleFont.getCapHeight() * 1.5f, Gdx.graphics.getWidth(), 1, false);
             }
 
@@ -268,9 +263,11 @@ public class HUD implements Disposable {
         //countdownFont.dispose();
     }
 
-    public void makeToast(String toast) {
+    public void makeToast(String toast, float time, Color toastColor) {
         this.toast = toast;
-        toastTime = 0;
+        this.toastColor = toastColor;
+        toastTime = 3;
+        currentToast = 0;
         showingToast = true;
     }
 }

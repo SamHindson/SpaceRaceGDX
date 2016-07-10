@@ -255,7 +255,7 @@ public abstract class Mass implements GoalObject, Disposable {
 
     public void debugRender(ShapeRenderer renderer) {
         renderer.setColor(getOrbitColor(this));
-        renderer.rect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+        //renderer.rect(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
 
         if (getEccentricity() < 1) {
             float semiminor = getSemiminor();

@@ -28,7 +28,7 @@ public class WeaponPickup extends Collectible {
     private Class weaponType;
 
     public WeaponPickup(float h, float a, String type) {
-        super(h, a, 10, 10, type, "player");
+        super(h, a, 10, 10, type, 0x01);
         this.weaponType = weaponTypes.get(type);
     }
 

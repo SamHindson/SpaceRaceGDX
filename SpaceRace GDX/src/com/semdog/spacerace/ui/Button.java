@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -26,16 +25,21 @@ public class Button {
 		generator.dispose();
 	}
 
-	private float x, y, w, h, tox, toy;
-	private Event clickEvent;
+    private float x, y, w, h;
+    private Event clickEvent;
 	private boolean hovered, held;
 
 	private Color buttonColor, textColor;
     private String text;
 
 	private boolean small = false;
+    private boolean notification = false;
 
     public Button(String text, boolean small, float x, float y, float w, float h, Event clickEvent) {
+        this(text, small, x, y, w, h, false, clickEvent);
+    }
+
+    public Button(String text, boolean small, float x, float y, float w, float h, boolean notification, Event clickEvent) {
         this.x = x;
 		this.y = y;
 		this.w = w;
@@ -45,20 +49,7 @@ public class Button {
 
 		this.small = small;
 
-        GlyphLayout glyphLayout;
-
-		if (small) {
-			glyphLayout = new GlyphLayout(font10, text);
-			tox = 0;
-			toy = 0;
-		} else {
-			glyphLayout = new GlyphLayout(font16, text);
-			tox = 0;
-			toy = 0;
-		}
-		
-		tox = -glyphLayout.width / 2;
-		toy = glyphLayout.height / 2;
+        this.notification = notification;
 
 		buttonColor = Color.WHITE;
 		textColor = Color.BLACK;
@@ -70,6 +61,9 @@ public class Button {
 	}
 
 	public void update(float dt) {
+        if (Notification.showing && !notification)
+            return;
+
 		if (Gdx.input.getX() > x - w / 2 && Gdx.input.getX() < x + w / 2
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y - h / 2
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < y + h / 2) {
@@ -95,13 +89,14 @@ public class Button {
         //batch.draw(texture, x - w / 2 + 2, y - h / 2 + 2, w - 4, h - 4);
 
 		batch.setColor(Color.WHITE);
+
 		if (small) {
 			font10.setColor(hovered ? buttonColor : textColor);
-			font10.draw(batch, text, x + tox, y + toy);
-		} else {
+            font10.draw(batch, text, x - w / 2, y + font10.getLineHeight() / 4, w, 1, false);
+        } else {
 			font16.setColor(hovered ? buttonColor : textColor);
-			font16.draw(batch, text, x + tox, y + toy);
-		}
+            font16.draw(batch, text, x - w / 2, y + font16.getLineHeight() / 4, w, 1, false);
+        }
 	}
 
     public void setPosition(float x, float y) {
@@ -111,19 +106,9 @@ public class Button {
 
     public void setText(String text) {
         this.text = text;
-        GlyphLayout glyphLayout;
+    }
 
-        if (small) {
-            glyphLayout = new GlyphLayout(font10, text);
-            tox = 0;
-            toy = 0;
-        } else {
-            glyphLayout = new GlyphLayout(font16, text);
-            tox = 0;
-            toy = 0;
-        }
-
-        tox = -glyphLayout.width / 2;
-        toy = glyphLayout.height / 2;
+    public void setEvent(Event event) {
+        this.clickEvent = event;
     }
 }

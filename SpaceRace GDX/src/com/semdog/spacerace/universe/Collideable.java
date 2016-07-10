@@ -10,5 +10,5 @@ public interface Collideable {
 
     boolean canCollect(Collectible collectible);
 
-    String getType();
+    int getType();
 }
