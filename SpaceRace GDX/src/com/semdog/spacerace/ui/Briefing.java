@@ -14,6 +14,8 @@ public class Briefing extends Overlay {
         super();
         this.title = title;
         this.briefing = briefing;
+        
+        // wew
     }
 
     @Override
