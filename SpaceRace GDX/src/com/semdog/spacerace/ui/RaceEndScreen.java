@@ -8,25 +8,30 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * An overlay which shows when a race has ended either successfully or
+ * otherwise.
+ * 
+ * Only shows after a delay so as to line the motions up with the music.
+ * 
+ * @author Sam
+ */
+
 public class RaceEndScreen extends Overlay {
 
-	private Button retry, exit;
 	private boolean entering;
-
-	private BitmapFont titleFont, subtitleFont;
-
-	private float age;
 	private boolean titleShowing, subtitleShowing, buttonsShowing;
+	private float age;
+	private BitmapFont titleFont, subtitleFont;
+	private Button retry, exit;
 
 	public RaceEndScreen() {
 		super();
-		retry = new Button("Retry", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.2f + 60, 200, 30,
-				Universe::reset);
-		exit = new Button("Exit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.2f, 200, 30,
-				Universe::transcend);
+		retry = new Button("Retry", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.2f + 30, 200, 30, Universe::reset);
+		exit = new Button("Exit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.2f, 200, 30, Universe::transcend);
 
-		titleFont = FontManager.getFont("mohave-84");
-		subtitleFont = FontManager.getFont("mohave-48");
+		titleFont = FontManager.getFont("mohave-84-bold");
+		subtitleFont = FontManager.getFont("mohave-48-bold");
 
 		retry.setColors(Color.CLEAR, Colors.UI_WHITE);
 		exit.setColors(Color.CLEAR, Colors.UI_WHITE);
@@ -53,8 +58,7 @@ public class RaceEndScreen extends Overlay {
 
 		if (subtitleShowing) {
 			subtitleFont.setColor(color);
-			subtitleFont.draw(spriteBatch, subtitle, 0, Gdx.graphics.getHeight() * 0.5f, Gdx.graphics.getWidth(), 1,
-					false);
+			subtitleFont.draw(spriteBatch, subtitle, 0, Gdx.graphics.getHeight() * 0.5f, Gdx.graphics.getWidth(), 1, true);
 		}
 	}
 
@@ -63,12 +67,11 @@ public class RaceEndScreen extends Overlay {
 		if (entering) {
 			age += dt;
 
-			if (age > 0) {
+			if (age > 0)
 				titleShowing = true;
-			}
-			if (age > 0.5f) {
+
+			if (age > 0.5f)
 				subtitleShowing = true;
-			}
 
 			if (age > 4f) {
 				buttonsShowing = true;
@@ -86,23 +89,8 @@ public class RaceEndScreen extends Overlay {
 
 	@Override
 	public void setShowing(boolean showing) {
+		super.setShowing(showing);
 		entering = true;
 		age = 0;
-	}
-
-	@Override
-	public void setText(String title, String subtitle) {
-		super.setText(title, subtitle);
-		if (subtitle.contains("Record")) {
-			retry.setPosition(Gdx.graphics.getWidth() / 2,
-					(Gdx.graphics.getHeight() * 0.5f) - (subtitleFont.getLineHeight() * 2f));
-			exit.setPosition(Gdx.graphics.getWidth() / 2,
-					(Gdx.graphics.getHeight() * 0.5f) - (subtitleFont.getLineHeight() * 2f) - 30);
-		} else {
-			retry.setPosition(Gdx.graphics.getWidth() / 2,
-					(Gdx.graphics.getHeight() * 0.5f) - (subtitleFont.getCapHeight() * 1.5f));
-			exit.setPosition(Gdx.graphics.getWidth() / 2,
-					(Gdx.graphics.getHeight() * 0.5f) - (subtitleFont.getCapHeight() * 1.5f) - 30);
-		}
 	}
 }

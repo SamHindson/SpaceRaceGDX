@@ -3,11 +3,26 @@ package com.semdog.spacerace.graphics.effects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
+/**
+ * An abstract class which all in-game effects are instances of.
+ * This provides a handy way of keeping track of all the effects in the universe.
+ * 
+ * @author Sam
+ */
+
 public abstract class Effect implements Disposable {
     protected float x;
 	protected float y;
+	protected boolean loaded = false;
 	
-	public abstract void update(float dt);
+	public void load() {
+		loaded = true;
+	}
+	
+	public void update(float dt) {
+		if(!loaded) load();
+	}
+	
 	public abstract void render(SpriteBatch batch);
 	
 	public abstract boolean isAlive();
@@ -19,6 +34,4 @@ public abstract class Effect implements Disposable {
 	public float getY() {
 		return y;
 	}
-
-
 }

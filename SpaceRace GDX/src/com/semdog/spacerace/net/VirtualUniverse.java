@@ -24,6 +24,10 @@ public class VirtualUniverse {
 	public void setPlayerPosition(int id, float x, float y) {
 		players.get(id).setPosition(x, y);
 	}
+	
+	public void removePlayer(int id) {
+		players.remove(id);
+	}
 
 	public UniverseState getState() {
 		UniverseState state = new UniverseState();

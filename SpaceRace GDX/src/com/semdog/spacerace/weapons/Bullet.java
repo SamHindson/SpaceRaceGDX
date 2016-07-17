@@ -5,23 +5,34 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
-public class Bullet implements Disposable {
-    private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
-	
-	private int damage;
+/**
+ * The bullet is an object which zooms through the depths of space, looking for
+ * someone whose day it can ruin.
+ * They are more often than not fired from a gun of sorts.
+ *  
+ * @author Sam
+ */
 
-	public Bullet(float x, float y, float dx, float dy, float angle, int damage, float inaccuracy) {
+public class Bullet {
+	private float x, y, dx, dy, age, life = MathUtils.random(2f, 5f);
+	private int damage;
+	private int ownerID;
+
+	public Bullet(int ownerID, float x, float y, float dx, float dy, int damage) {
 		this.x = x;
 		this.y = y;
-		this.dx = 3500 * MathUtils.cos(angle + inaccuracy) + dx;
-		this.dy = 3500 * MathUtils.sin(angle + inaccuracy) + dy;
+		this.dx = dx;
+		this.dy = dy;
 		this.damage = damage;
-		
+		this.ownerID = ownerID;
+	}
+
+	public Bullet(float x, float y, float dx, float dy, float angle, int damage, float inaccuracy) {
+		this(0, x, y, 3500 * MathUtils.cos(angle + inaccuracy) + dx, 3500 * MathUtils.sin(angle + inaccuracy) + dy, damage);
 	}
 
 	public void updatePhysics(float dt) {
@@ -38,7 +49,7 @@ public class Bullet implements Disposable {
 			if (d < planet.getRadius()) {
 				float px = planet.getX() + MathUtils.cos(a) * planet.getRadius();
 				float py = planet.getY() + MathUtils.sin(a) * planet.getRadius();
-				if (MathUtils.randomBoolean(0.1f))
+				if (MathUtils.randomBoolean(0.5f))
 					Universe.currentUniverse.addEffect(new DustPuff(px, py, planet.getColor()));
 				age = life + 1;
 			}
@@ -62,11 +73,11 @@ public class Bullet implements Disposable {
 	public float getY() {
 		return y;
 	}
-	
+
 	public float getDx() {
 		return dx;
 	}
-	
+
 	public float getDy() {
 		return dy;
 	}
@@ -79,12 +90,11 @@ public class Bullet implements Disposable {
 		age = life * 5;
 	}
 
-    @Override
-    public void dispose() {
-        //  TODO do something here
-    }
+	public Vector2 getVelocity() {
+		return new Vector2(dx, dy);
+	}
 
-    public Vector2 getVelocity() {
-        return new Vector2(dx, dy);
-    }
+	public int getOwnerID() {
+		return ownerID;
+	}
 }

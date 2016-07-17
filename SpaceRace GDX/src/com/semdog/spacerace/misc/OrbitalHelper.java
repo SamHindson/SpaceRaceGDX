@@ -6,11 +6,12 @@ import com.semdog.spacerace.universe.Universe;
 
 /***
  * This here is the OrbitalHelper class I created last year for ULTRANAUT.
- * Credit: me
+ * 
  * @author Sam
  */
 
 public class OrbitalHelper {
+	
 	/**
 	 * This method is the reason the OrbitalHelper class exists - to help
 	 * determine the various quantities involved in orbits without each class
@@ -19,10 +20,18 @@ public class OrbitalHelper {
 	 * It takes in some orbital states and returns a whole bunch of information
 	 * packaged into a float array.
 	 *
-     * Blatantly stolen from last year's ULTRANAUT because I was not going to do
-     * all of this math again
+	 * Blatantly stolen from last year's ULTRANAUT because redoing all of this
+	 * math is not an effective way of going about things.
+	 * 
+	 * For better understanding the math used here refer to the following
+	 * resources:
+	 * 
+	 * http://wiki.kerbalspaceprogram.com/wiki/Tutorial:_Basic_Orbiting_%28Math%29
+	 * http://hyperphysics.phy-astr.gsu.edu/hbase/math/ellipse.html
+	 * http://sydney.edu.au/engineering/aeromech/AERO4701/Course_Documents/AERO4701_week2.pdf
 	 */
-	public static float[] computeOrbit(Vector2 orbiteePosition, Vector2 orbiterPosition, Vector2 orbiterVelocity, float orbiteeMass) {
+	public static float[] computeOrbit(Vector2 orbiteePosition, Vector2 orbiterPosition, Vector2 orbiterVelocity,
+			float orbiteeMass) {
 		Vector2 orP = new Vector2(orbiterPosition);
 		Vector2 offset = orP.sub(orbiteePosition);
 		Vector2 orV = new Vector2(orbiterVelocity);
@@ -42,27 +51,30 @@ public class OrbitalHelper {
 		float apoapsis = semiMajorAxis * (1 + eccentricity);
 		float periapsis = semiMajorAxis * (1 - eccentricity);
 
-        float trueAnomaly;
+		float trueAnomaly;
 
 		if (angularMomentum > 0) {
 			if (offset.dot(orV) < 0) {
 				trueAnomaly = (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
 			} else {
-				trueAnomaly = MathUtils.PI2 - (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
+				trueAnomaly = MathUtils.PI2
+						- (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
 			}
 		} else {
 			if (offset.dot(orV) < 0) {
-				trueAnomaly = MathUtils.PI2 - (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
+				trueAnomaly = MathUtils.PI2
+						- (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
 			} else {
 				trueAnomaly = (float) Math.acos(eccentricityVector.dot(offset) / (eccentricity * offset.len()));
 			}
 		}
 
-		float sinE = (float) (MathUtils.sin(trueAnomaly) * Math.sqrt(1 - (eccentricity * eccentricity)) / (1 + eccentricity * MathUtils.cos(trueAnomaly)));
-        float cosE = (eccentricity + MathUtils.cos(trueAnomaly)) / (1 + eccentricity * MathUtils.cos(trueAnomaly));
-        float eccentricAnomaly = MathUtils.atan2(sinE, cosE);
-		
-		float orbitalPeriod = MathUtils.PI2 * (float)Math.sqrt(Math.pow(semiMajorAxis, 3) / mu);
+		float sinE = (float) (MathUtils.sin(trueAnomaly) * Math.sqrt(1 - (eccentricity * eccentricity))
+				/ (1 + eccentricity * MathUtils.cos(trueAnomaly)));
+		float cosE = (eccentricity + MathUtils.cos(trueAnomaly)) / (1 + eccentricity * MathUtils.cos(trueAnomaly));
+		float eccentricAnomaly = MathUtils.atan2(sinE, cosE);
+
+		float orbitalPeriod = MathUtils.PI2 * (float) Math.sqrt(Math.pow(semiMajorAxis, 3) / mu);
 
 		float[] results = new float[10];
 		results[0] = angularMomentum;

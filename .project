@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SpaceRaceGDX</name>
-	<comment>Project SpaceRaceGDX created by Buildship.</comment>
+	<name>SpaceRace</name>
+	<comment>Project SpaceRace created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -14,24 +14,4 @@
 	<natures>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
-	<filteredResources>
-		<filter>
-			<id>1459743595608</id>
-			<name></name>
-			<type>26</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-projectRelativePath-matches-false-false-build</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1459743595629</id>
-			<name></name>
-			<type>26</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-projectRelativePath-matches-false-false-.gradle</arguments>
-			</matcher>
-		</filter>
-	</filteredResources>
 </projectDescription>

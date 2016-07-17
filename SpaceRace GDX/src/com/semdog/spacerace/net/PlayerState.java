@@ -5,6 +5,7 @@ public class PlayerState extends NetworkEvent {
 	public static final int ANIMSTATE = 1;
 	public static final int ENVSTATE = 2;
 	public static final int LIFE = 3;
+	public static final int BULLETKILL = 4;
 	
 	private int category;
 	private float[] information;

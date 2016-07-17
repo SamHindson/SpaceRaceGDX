@@ -13,20 +13,25 @@ import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * A rocket is what is shot out of the rocket launcher. It is an explosive mass.
+ * 
+ * @author Sam
+ */
+
 public class Rocket extends Mass {
-	
+
 	private Sprite sprite;
 	private ParticleEffect particleEffect;
 
 	public Rocket(float x, float y, float direction, Player owner) {
-		super(x + 20 * MathUtils.cos(direction) , y + 20 * MathUtils.sin(direction), 700 * MathUtils.cos(direction),
-				700 * MathUtils.sin(direction), 10, owner.getEnvironment(), "rocket");
+		super(x + 20 * MathUtils.cos(direction), y + 20 * MathUtils.sin(direction), 700 * MathUtils.cos(direction), 700 * MathUtils.sin(direction), 10, owner.getEnvironment(), "rocket");
 		width = 3;
 		height = 7.5f;
 		sprite = new Sprite(Art.get("rocket"));
 		sprite.setOriginCenter();
 		sprite.setSize(3, 7.5f);
-		
+
 		particleEffect = new ParticleEffect();
 		particleEffect.load(Gdx.files.internal("assets/effects/rocketflame.p"), Gdx.files.internal("assets/effects"));
 		particleEffect.setPosition(x, y);
@@ -43,38 +48,33 @@ public class Rocket extends Mass {
 		particleEffect.getEmitters().get(0).getAngle().setHigh(velocity.angle() + 180);
 		particleEffect.setPosition(position.x, position.y);
 		particleEffect.update(dt);
-		
-		if(age > 2.5f) {
+
+		if (age > 2.5f) {
 			explode();
 		}
 	}
 
 	@Override
-	public String getID() {
-		return "rocket";
-	}
-	
-	@Override
 	public void render(SpriteBatch batch) {
 		particleEffect.draw(batch);
 		sprite.draw(batch);
-    }
+	}
 
 	@Override
 	protected float getImpactThreshold() {
 		return 0;
 	}
-	
+
 	@Override
 	protected void handlePlanetCollision(float speed, boolean withPlanet) {
 		super.handlePlanetCollision(speed, withPlanet);
 		explode();
 	}
-	
+
 	public void explode() {
 		Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
 	}
-	
+
 	@Override
 	protected void handleMassCollision(Mass mass) {
 		explode();
@@ -85,8 +85,8 @@ public class Rocket extends Mass {
 		explode();
 	}
 
-    @Override
-    public void dispose() {
-        particleEffect.dispose();
-    }
+	@Override
+	public void dispose() {
+		particleEffect.dispose();
+	}
 }

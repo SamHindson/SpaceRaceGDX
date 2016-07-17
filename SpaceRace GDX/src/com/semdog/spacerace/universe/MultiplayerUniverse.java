@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -24,13 +25,17 @@ import com.semdog.spacerace.graphics.effects.Effect;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.misc.SRCamera;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.net.MultiplayerPlayer;
 import com.semdog.spacerace.net.PlayerState;
 import com.semdog.spacerace.net.Puppet;
 import com.semdog.spacerace.net.VirtualPlanet;
 import com.semdog.spacerace.net.VirtualPlayer;
 import com.semdog.spacerace.net.Wormhole;
+import com.semdog.spacerace.net.scoring.MetaPlayer;
+import com.semdog.spacerace.net.scoring.Scores;
 import com.semdog.spacerace.players.HUD;
+import com.semdog.spacerace.players.Team;
 import com.semdog.spacerace.screens.PlayScreen;
 import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.RaceEndScreen;
@@ -53,7 +58,11 @@ public class MultiplayerUniverse extends Universe {
 	private float networkTickTime = 1 / 30f;
 	private float networkTime;
 
-	public MultiplayerUniverse(PlayScreen _container) {
+	private HashMap<Integer, MetaPlayer> pinks, blues;
+	private Scores scores;
+	private boolean scoresShowing = false;
+
+	public MultiplayerUniverse(PlayScreen _container, String playerName) {
 		super();
 
 		container = _container;
@@ -67,6 +76,10 @@ public class MultiplayerUniverse extends Universe {
 		bullets = new Array<>();
 		effects = new Array<>();
 
+		pinks = new HashMap<>();
+		blues = new HashMap<>();
+		scores = new Scores();
+
 		hudBatch = new SpriteBatch();
 
 		camera = new SRCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -78,7 +91,7 @@ public class MultiplayerUniverse extends Universe {
 		universeShapeRenderer = new ShapeRenderer();
 
 		Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 6, Gdx.graphics.getWidth() * 6, Format.RGBA4444);
-		pixmap.setColor(new Color(0, 0, 0.2f, 1f));
+		pixmap.setColor(new Color(0, 0, 0.05f, 1f));
 		pixmap.fill();
 
 		for (int k = 0; k < 5000; k++) {
@@ -121,7 +134,23 @@ public class MultiplayerUniverse extends Universe {
 			container.exit();
 		}
 
-		player = new MultiplayerPlayer(wormhole, 0, 350, null);
+		player = new MultiplayerPlayer(playerName, wormhole, 0, 350, null);
+		((MultiplayerPlayer)player).setTeam(decideTeam());
+		MetaPlayer metaPlayer = new MetaPlayer();
+		metaPlayer.setTeam(player.getTeam());
+		metaPlayer.setName(player.getName());
+		
+		System.out.println("Created metaplayer with team " + metaPlayer.getTeam());
+		
+		if(metaPlayer.getTeam() == Team.PINK)  {
+			pinks.put(wormhole.getID(), metaPlayer);
+			System.out.println("We've got a pink over here");
+		}
+		else {
+			blues.put(wormhole.getID(), metaPlayer);
+			System.out.println("Adding the player to the bllues");
+		}
+
 		wormhole.registerPlayer(player);
 		hud = new HUD(player);
 		player.setHud(hud);
@@ -130,6 +159,10 @@ public class MultiplayerUniverse extends Universe {
 		trackables.add(player);
 
 		hud.showStats();
+	}
+
+	private Team decideTeam() {
+		return pinks.size() > blues.size() ? Team.BLUE : pinks.size() < blues.size() ? Team.PINK : (Team) Tools.decide(Team.PINK, Team.BLUE);
 	}
 
 	@Override
@@ -166,6 +199,12 @@ public class MultiplayerUniverse extends Universe {
 			} else if (gogglesActive && !Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
 				gogglesActive = false;
 				playUISound("gogglesoff");
+			}
+			
+			if (!scoresShowing && Gdx.input.isKeyPressed(Keys.TAB)) {
+				scoresShowing = true;
+			} else if (scoresShowing && !Gdx.input.isKeyPressed(Keys.TAB)) {
+				scoresShowing = false;
 			}
 
 			if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("LOCK"))) {
@@ -208,7 +247,7 @@ public class MultiplayerUniverse extends Universe {
 
 		stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
 
-		//boolean f = true;
+		// boolean f = true;
 		/*
 		 * if (!player.isPilotingShip()) { for (int k = 0; k < ships.size; k++)
 		 * { Ship ship = ships.get(k);
@@ -233,6 +272,7 @@ public class MultiplayerUniverse extends Universe {
 
 		player.update(dt, playerEnabled, planets, lockedRotation);
 		((MultiplayerPlayer) player).checkCollisions(bullets);
+		
 
 		for (Map.Entry<Integer, Puppet> puppet : puppets.entrySet()) {
 			if (!puppet.getValue().isLoaded())
@@ -324,6 +364,10 @@ public class MultiplayerUniverse extends Universe {
 		hudBatch.setColor(Color.WHITE);
 
 		hud.draw(hudBatch);
+		
+		if(scoresShowing) {
+			scores.draw(hudBatch, pinks, blues);
+		}
 
 		hudBatch.end();
 	}
@@ -333,10 +377,18 @@ public class MultiplayerUniverse extends Universe {
 	}
 
 	public void createPuppet(int id, VirtualPlayer player) {
-		System.out.println("Saw that there was another player. ID: " + player.getId());
 		Puppet puppet = new Puppet(player);
 		puppets.put(id, puppet);
 		trackables.add(puppet);
+		
+		System.out.println("Created a " + player.getTeam() + " puppet.");
+		
+		MetaPlayer metaPlayer = new MetaPlayer();
+		metaPlayer.setName(player.getName());
+		metaPlayer.setTeam(player.getTeam());
+		
+		if(metaPlayer.getTeam() == Team.PINK) pinks.put(player.getId(), metaPlayer);
+		else blues.put(player.getId(), metaPlayer);
 	}
 
 	public void createPlanet(VirtualPlanet planet) {
@@ -374,18 +426,29 @@ public class MultiplayerUniverse extends Universe {
 		wormhole.sendBulletRequest(bullet.getX(), bullet.getY(), bullet.getDx(), bullet.getDy(), bullet.getDamage());
 	}
 
-	public void addBullet(float x, float y, float dx, float dy, int damage) {
-		super.requestBullet(new Bullet(x, y, dx, dy, damage));
+	public void addBullet(int ownerID, float x, float y, float dx, float dy, int damage) {
+		super.requestBullet(new Bullet(ownerID, x, y, dx, dy, damage));
 	}
 
 	public void setAlive(int id, float f) {
-		System.out.println("Setting player " + id + " to " + (f < 0));
-		puppets.get(id).setAlive(f < 0);
+		puppets.get(id).setAlive(f > 0);
 	}
 
 	@Override
 	public void spawnPlayer(float x, float y) {
 		super.spawnPlayer(x, y);
 		wormhole.sendPlayerState(PlayerState.LIFE, 1);
+	}
+
+	public void removePuppet(int id) {
+		if(puppets.get(id).getTeam() == Team.PINK) pinks.remove(id);
+		else pinks.remove(id);
+		
+		puppets.remove(id);
+	}
+
+	public void killPoint(float killed, float killer) {
+		if(pinks.containsKey((int)killer)) pinks.get((int)killer).addPoint();
+		else blues.get((int)killer).addPoint();
 	}
 }

@@ -113,14 +113,10 @@ public class DebrisPiece extends Mass {
         Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_RED));
 		alive = false;
 	}
-	
-	@Override
-	public String getID() {
-		return "debris";
-	}
 
     @Override
     public void dispose() {
-        sprite.getTexture().dispose();
+        //	Nothing to dispose.
+    	//	So, I will dedicate this line to my brave beta testers
     }
 }

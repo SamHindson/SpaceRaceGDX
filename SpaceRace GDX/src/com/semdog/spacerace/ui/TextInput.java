@@ -9,13 +9,16 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.FontManager;
 
 /**
- * Created by Sam on 2016/07/08.
+ * A UI element which allows players to input text.
+ * 
+ * @author Sam
  */
+
 public class TextInput implements InputProcessor {
 
+    private float x, y, width, height;
     private int limit = 250;
     private BitmapFont font;
-    private float x, y, width, height;
     private String text = "";
 
     public TextInput(float x, float y, float width, float height, int limit) {
@@ -35,12 +38,16 @@ public class TextInput implements InputProcessor {
         batch.draw(Art.get("pixel_white"), x + 5, y + 5, width - 10, height - 10);
 
         font.setColor(Colors.UI_WHITE);
-        font.draw(batch, text, x + 10, y + height - 10, width - 20, 10, true);
+        font.draw(batch, text + "_", x + 10, y + height - 10, width - 20, 10, true);
         font.setColor(Colors.UI_GREEN);
         font.draw(batch, (limit - text.length() - 1) + "", x, y + 20, width - 10, 2, true);
     }
 
-    @Override
+    public String getText() {
+	    return text;
+	}
+
+	@Override
     public boolean keyDown(int keycode) {
         return false;
     }
@@ -89,7 +96,7 @@ public class TextInput implements InputProcessor {
         return false;
     }
 
-    public String getText() {
-        return text;
-    }
+	public void clear() {
+		text = "";
+	}
 }

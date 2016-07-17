@@ -3,10 +3,11 @@ package com.semdog.spacerace.players;
 import java.util.HashMap;
 
 /**
- * Created by Sam on 07-May-16.
- * <p>
  * A little class to hold all of the player's necessary HUD information
+ * 
+ * @author Sam
  */
+
 public class VitalSigns {
 	private HashMap<String, Vitality> signs;
 
@@ -36,5 +37,9 @@ public class VitalSigns {
 
 	public enum Type {
 		DISCRETE, CONTINUOUS
+	}
+
+	public boolean has(String string) {
+		return signs.containsKey(string);
 	}
 }

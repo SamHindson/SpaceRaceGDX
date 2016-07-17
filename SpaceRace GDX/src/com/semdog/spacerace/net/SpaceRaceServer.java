@@ -50,6 +50,7 @@ public class SpaceRaceServer extends Listener {
 		kryo.register(float[].class);
 		kryo.register(PlayerState.class);
 		kryo.register(BulletRequest.class);
+		kryo.register(PlayerDisconnect.class);
 
 		server.addListener(this);
 		server.start();
@@ -78,5 +79,11 @@ public class SpaceRaceServer extends Listener {
 		} else if (object instanceof BulletRequest) {
 			server.sendToAllTCP(object);
 		}
+	}
+	
+	@Override
+	public void disconnected(Connection connection) {
+		server.sendToAllExceptTCP(connection.getID(), new PlayerDisconnect(connection.getID()));
+		universe.removePlayer(connection.getID());
 	}
 }

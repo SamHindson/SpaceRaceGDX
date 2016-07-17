@@ -3,28 +3,26 @@ package com.semdog.spacerace.vehicles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
 /**
  * A space ship that can crash into planets ridiculously fast yet leave the player intact.
- * Kind of like a poor man's Hyperloop
+ * 
+ * @author Sam
  */
+
 public class Needle extends Ship {
 
-    private ParticleEffect particleEffect;
-
     public Needle(float x, float y, String id) {
-        super(x, y, 32, 32, 2500, 120, "needle", id);
+        super(x, y, 32, 32, 2500, 250, "needle", id);
 
         particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.internal("assets/effects/runtflame.p"), Gdx.files.internal("assets/effects"));
+        particleEffect.load(Gdx.files.internal("assets/effects/needle.p"), Gdx.files.internal("assets/effects"));
         particleEffect.setPosition(x, y);
         particleEffect.allowCompletion();
 
@@ -64,12 +62,6 @@ public class Needle extends Ship {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
-        particleEffect.draw(batch);
-        super.render(batch);
-    }
-
-    @Override
     protected void explode(DamageCause cause) {
         rud();
         velocity.set(Vector2.Zero);
@@ -99,8 +91,8 @@ public class Needle extends Ship {
         particleEffect.dispose();
     }
 
-    // TODO get rid of this being needed
-    public boolean canCollect(Collectible collectible) {
-        return currentFuel < totalFuel;
-    }
+	@Override
+	public String getGizmoLabel() {
+		return "Needle";
+	}
 }

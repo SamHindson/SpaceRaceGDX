@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.semdog.spacerace.misc.Tools;
 
 /**
- * TODO phase this out
+ * The colors used in SpaceRace.
  * @author Sam
  */
 

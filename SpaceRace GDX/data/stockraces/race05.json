@@ -1,9 +1,11 @@
 {
-  "name": "The Name's Clooney",
+  "name": "Orbits",
   "author": "Sam",
-  "description" : "You are now stuck in orbit. Climb into a nearby ship and get home! (Mind the lake though)",
-  "briefing": "To lower the height of your orbit everywhere else, point in the Retrograde direction (opposite to the direction you're currently moving in) and fire those engines.\nYou'll figure it out.",
+  "description" : "Ballistic trajectories are all well and good, but that's not how Thomas Cromwell visited the Blue Aliens of Aequmaezl'ek. He used orbits, which is what you will learn in this tutorial.",
+  "briefing": "Turn the ship slightly during the launch, so as to obtain a nice rainbow-like trajectory. Then, at the top of the rainbow, burn in the Prograde direction until you win the race. (Remember to check your flight computer often!)",
   "timelimit": 300,
+  "suddendeath": true,
+  "lockedcamera": true,
   "planet": [
     {
       "id": "home",
@@ -14,26 +16,21 @@
   ],
   "playerstuff": [
     {
-      "x": 800,
-      "y": 0
-    }
-    {
-        "orbit": 1
+      "x": 0,
+      "y": 450
     }
   ],
-  "runt": [
+  "rubbish": [
     {
-        "x": 820,
-        "y": 0,
-        "id": "Tiangong"
-    }
-    {
-        "orbit": 1
+        "x": 150,
+        "y": 420,
+        "id": "Sputnik"
     }
   ],
   "playercriteria": [
     {
-      "float-getPlayerVisitedPlanetsNo": 1
+      "boolean-isPlayerOrbiting": true,
+      "boolean-isPlayerPilotingShip": true
     }
   ]
 }

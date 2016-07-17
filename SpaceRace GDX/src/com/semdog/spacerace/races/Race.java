@@ -1,10 +1,10 @@
 package com.semdog.spacerace.races;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * A class that is populated with information about a loaded race, just so everything doesn't have to use JSON Parsing
  * whenever a piece of data is needed.
+ * 
+ * @author Sam
  */
 
 public class Race {
@@ -13,6 +13,7 @@ public class Race {
 
     private float bestTime;
     private float timeLimit;
+    private boolean completed = true;
 
     private String content;
 
@@ -38,8 +39,7 @@ public class Race {
         for (int w = 0; w < 10; w++) {
             result = result.hashCode() + "";
         }
-
-        Gdx.app.log("Race", "Generated ID " + result);
+        
         return result;
     }
 
@@ -74,4 +74,12 @@ public class Race {
     public String getBriefing() {
         return briefing;
     }
+    
+    public boolean isCompleted() {
+		return completed;
+	}
+    
+    public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
 }

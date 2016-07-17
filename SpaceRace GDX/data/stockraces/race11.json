@@ -1,0 +1,224 @@
+{
+  "name": "Hell and High Wat",
+  "author": "Sam",
+  "description": "In this ultimate race, you will learn what it is like to journey far behind enemy lines to eliminate a renegade piece of toast... \n\nThe horror, the horror...",
+  "briefing": "It's simple.\n\nGet past the orbiting enemies.\nGet to the moon.\nFetch the toast.\nCome home.\n\nGodspeed, glorious lunatic.",
+  "timelimit": 180,
+  "suddendeath": true,
+  "lockedcamera": false,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 250,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "kurtz",
+      "radius": 450,
+      "x": 2500,
+      "y": 2500
+    }
+  ],
+	"runt": [
+		{
+			"x": 350,
+			"y": 0,
+			"id": "Valkyrie #1"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": -350,
+			"y": 0,
+			"id": "Valkyrie #2"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": 350,
+			"id": "Valkyrie #3"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": -350,
+			"id": "Valkyrie #4"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	
+	"runt": [
+		{
+			"x": 420,
+			"y": 0,
+			"id": "Valkyrie #5"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": -420,
+			"y": 0,
+			"id": "Valkyrie #6"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": 420,
+			"id": "Valkyrie #7"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": -420,
+			"id": "Valkyrie #8"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"runt": [
+		{
+			"x": 490,
+			"y": 0,
+			"id": "Valkyrie #9"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": -490,
+			"y": 0,
+			"id": "Valkyrie #10"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": 490,
+			"id": "Valkyrie #11"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": -490,
+			"id": "Valkyrie #12"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	
+	"runt": [
+		{
+			"x": 560,
+			"y": 0,
+			"id": "Valkyrie #13"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": -560,
+			"y": 0,
+			"id": "Valkyrie #14"
+		},
+		{
+			"orbit": 1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": 560,
+			"id": "Valkyrie #15"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"runt": [
+		{
+			"x": 0,
+			"y": -560,
+			"id": "Valkyrie #16"
+		},
+		{
+			"orbit": -1
+		}
+	],
+	"rubbish": [
+		{
+			"x": 275,
+			"y": 275,
+			"id": "SS Magnolia"
+		}
+	],
+  "toast": [
+    {
+      "h": 10,
+      "a": 0,
+      "planet": 1
+    }
+  ],
+  
+  "fuel": [
+  {
+      "h": 120,
+      "a": -90,
+      "planet": 1
+    }
+  ],
+	
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 260
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getPlayerVisitedPlanetsNo": 2,
+      "float-getPlayerToastCount": 1,
+      "boolean-isPlayerHome": true,
+      "boolean-isPlayerPilotingShip": false
+    }
+  ],
+}

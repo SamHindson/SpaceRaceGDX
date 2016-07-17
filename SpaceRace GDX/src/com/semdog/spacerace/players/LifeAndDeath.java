@@ -1,19 +1,35 @@
 package com.semdog.spacerace.players;
 
 import com.badlogic.gdx.Gdx;
+
+/**
+ * A class which handles the various snarky messages one sees on the HUD when the die.
+ * 
+ * @author Sam
+ */
+
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
+import com.semdog.spacerace.misc.Tools;
 
 public class LifeAndDeath {
 	private static String[] condolences;
-	
+	private static String[] failures;
+
 	static {
-		FileHandle file = Gdx.files.internal("assets/text/condolences.sr");
-		String full = file.readString();
+		FileHandle condolencesFile = Gdx.files.internal("assets/text/condolences.sr");
+		String full = condolencesFile.readString();
 		condolences = full.split("\n");
+
+		FileHandle failuresFile = Gdx.files.internal("assets/text/failures.sr");
+		full = failuresFile.readString();
+		failures = full.split("\n");
 	}
-	
+
 	public static String getRandomCondolence() {
-		return condolences[MathUtils.random(condolences.length - 1)];
+		return (String) Tools.decide((Object[]) condolences);
+	}
+
+	public static String getRandomFailure() {
+		return (String) Tools.decide((Object[]) failures);
 	}
 }

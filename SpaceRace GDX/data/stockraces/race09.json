@@ -1,0 +1,84 @@
+{
+	"name": "I Hate Boxes",
+	"author": "Sam",
+	"description": "We'll be going back to our roots with this one, except with bigger guns.\n\nYou'll finally know how good it feels to shoot wooden crates from orbit.",
+	"briefing": "Climb into that Bombarder and get into orbit. Once there, turn around and click to unleash a bullet storm on those disgusting creatures.",
+	"timelimit": 90,
+	"suddendeath": true,
+	"lockedcamera": true,
+	"planet": [
+		{
+			"id": "home",
+			"radius": 500,
+			"x": 0,
+			"y": 0
+		}
+	],
+	"playerstuff": [
+		{
+			"x": -100,
+			"y": 550
+		}
+	],
+	"runt": [
+		{
+			"x": 100,
+			"y": 550,
+			"id": "apacheboy 2016"
+		}
+	],
+	"box": [
+		{
+			"x": 388,
+			"y": 388,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": 0,
+			"y": 550,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": -388,
+			"y": 388,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": 0,
+			"y": -550,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": -388,
+			"y": -388,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": -550,
+			"y": 0,
+			"id": "bleh"
+		}
+	],
+	"box": [
+		{
+			"x": -388,
+			"y": 388,
+			"id": "bleh"
+		}
+	],
+	"playercriteria": [
+		{
+			"float-getBoxCount": 0
+		}
+	],
+}

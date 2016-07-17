@@ -16,11 +16,13 @@ import com.semdog.spacerace.misc.HelpAnimation;
 import com.semdog.spacerace.misc.HelpLoader;
 
 /**
- * TODO write stuff
+ * A UI element which shows a help topic in the Help Screen.
+ * Renders text, images, exhibits and animations.
+ * 
+ * @author Sam
  */
 
 public class HelpSection implements Disposable {
-    private String title, info;
     private BitmapFont titleFont, descriptionFont;
     private Color borderColor;
 
@@ -28,10 +30,24 @@ public class HelpSection implements Disposable {
     private int helpID = 5;
 
     private HelpLoader loader;
-
-    private Array<HelpAnimation> animations;
+    
     private Array<Exhibit> exhibits;
-    private Array<Texture> images;
+
+    //	TODO do away with this needing to be static
+    private static Array<HelpAnimation> animations;
+    private static Array<Texture> images;
+    
+    public static void initialize() {
+        animations = new Array<>();
+
+        for (int w = 0; w < 4; w++) {
+            animations.add(new HelpAnimation(w));
+        }
+
+        images = new Array<>();
+        images.add(new Texture(Gdx.files.internal("assets/help/images/img0.jpg")));
+        images.add(new Texture(Gdx.files.internal("assets/help/images/img1.jpg")));
+    }
 
     public HelpSection(float x, float y, float width, float height) {
         this.x = x;
@@ -39,27 +55,17 @@ public class HelpSection implements Disposable {
         this.width = width;
         this.height = height;
         titleFont = FontManager.getFont("fipps-36");
-        descriptionFont = FontManager.getFont("inconsolata-28");
+        descriptionFont = FontManager.getFont("inconsolata-18");
         descriptionFont.setColor(Colors.UI_WHITE);
-
-        borderColor = Colors.P_YELLOW;
-
-        loader = new HelpLoader();
-
-        animations = new Array<>();
-
-        for (int w = 0; w < 4; w++) {
-            animations.add(new HelpAnimation(w));
-        }
 
         exhibits = new Array<>();
         exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "rubbish", "needle", "runt"));
         exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "carbine", "smg", "shotgun", "rocketlauncher"));
         exhibits.add(new Exhibit(width - 40, descriptionFont.getLineHeight() * 5, "toast", "health", "ammo", "fuel"));
 
-        images = new Array<>();
-        images.add(new Texture(Gdx.files.internal("assets/help/images/img0.jpg")));
-        images.add(new Texture(Gdx.files.internal("assets/help/images/img1.jpg")));
+        borderColor = Colors.P_YELLOW;
+
+        loader = new HelpLoader();
     }
 
     public void update(float dt) {
@@ -81,13 +87,14 @@ public class HelpSection implements Disposable {
         float xx = x + 20;
         float yy = y + height - titleFont.getLineHeight();
 
-        for (String thing : loader.getItem(helpID).getSplit()) {
-            switch (thing) {
-                case "*":
+        //	Parses each word from the Help file and decides what to do with it.
+        for (String word : loader.getItem(helpID).getSplit()) {
+            switch (word) {
+                case "*": // If it's an asterisk, we add a new line.
                     xx = x + 20;
                     yy -= lineHeight;
                     continue;
-                case "[blue]":
+                case "[blue]": // If it's a color in square brackets, make the font that color
                     descriptionFont.setColor(Colors.UI_BLUE);
                     continue;
                 case "[red]":
@@ -104,22 +111,25 @@ public class HelpSection implements Disposable {
                     continue;
             }
 
-            glyphLayout.setText(descriptionFont, thing + "?");
+            glyphLayout.setText(descriptionFont, word + "?");
 
-            if (thing.contains("[anim")) {
-                int id = Integer.parseInt(thing.substring(5, 6));
+            if (word.contains("[anim")) {
+                //	If it's an animation, fetch the referenced animation
+                int id = Integer.parseInt(word.substring(5, 6));
                 float h = (width - 40) * 350f / 1280f;
                 animations.get(id).draw(batch, x + 20, yy - h, (width - 40), h);
-                yy -= h;
+                yy -= h - 15;
                 continue;
-            } else if (thing.contains("[exh")) {
-                int id = Integer.parseInt(thing.substring(4, 5));
+            } else if (word.contains("[exh")) {
+                //	If it's an exhibit, fetch the referenced exhibit
+                int id = Integer.parseInt(word.substring(4, 5));
                 float h = descriptionFont.getLineHeight() * 6;
                 exhibits.get(id).draw(batch, x + 20, yy - h);
                 yy -= h;
                 continue;
-            } else if (thing.contains("[img")) {
-                int id = Integer.parseInt(thing.substring(4, 5));
+            } else if (word.contains("[img")) {
+                //	If it's an image, fetch the referenced image
+                int id = Integer.parseInt(word.substring(4, 5));
                 float h = descriptionFont.getLineHeight() * 10;
                 float w = h * 128f / 50f;
                 batch.setColor(Color.WHITE);
@@ -128,8 +138,10 @@ public class HelpSection implements Disposable {
                 continue;
             }
 
-            descriptionFont.draw(batch, thing, xx, yy);
+            descriptionFont.draw(batch, word, xx, yy);	// Draw the word
+            
             if (xx + glyphLayout.width + 5 - x > width - 150) {
+            	// If we need to, add another line
                 xx = x + 20;
                 yy -= lineHeight;
             } else {
@@ -152,4 +164,8 @@ public class HelpSection implements Disposable {
             animation.dispose();
         }
     }
+
+	public boolean[] getCompleted() {
+		return new boolean[100];
+	}
 }

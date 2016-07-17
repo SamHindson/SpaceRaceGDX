@@ -1,0 +1,52 @@
+{
+  "name": "There and Back Again",
+  "author": "Sam",
+  "description": "A little known story about Apollo 11:\nMoments after Neil Armstrong's famous words, while everyone at NASA was cracking open their beers, one engineer realized they forgot to build a vehicle that would bring them home again. NASA then had to spend hundreds of millions of dollars creating clones of Armstrong and Aldrin so as to fake their return home.\n\nDon't be like NASA. Bring your guys home.",
+  "briefing": "Get to the moon. Fetch the piece of toast, and then come home again.",
+  "timelimit": 120,
+  "suddendeath": true,
+  "lockedcamera": false,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 400,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "moon",
+      "radius": 100,
+      "x": 1500,
+      "y": 0
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 420
+    }
+  ],
+  "toast": [
+    {
+      "h": 20,
+      "a": 90,
+      "planet": 1
+    }
+  ],
+  "rubbish": [
+    {
+        "x": -420,
+        "y": 0,
+        "id": "apollo module"
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getPlayerToastCount": 1,
+      "boolean-isPlayerHome": true,
+      "boolean-isPlayerPilotingShip": false
+    }
+  ],
+}

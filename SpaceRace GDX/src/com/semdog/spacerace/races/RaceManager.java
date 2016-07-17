@@ -11,8 +11,11 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.io.Times;
 
 /**
- * Created by Sam on 2016/07/04.
+ *	A class which holds all the races loaded in from the races folder.
+ *
+ *	@author Sam
  */
+
 public class RaceManager {
     static Array<Race> races;
 
@@ -46,7 +49,32 @@ public class RaceManager {
         loadBestTimes();
     }
 
-    public static String[] getRaceTitles() {
+    public static void loadBestTimes() {
+	    for (int w = 0; w < races.size; w++) {
+	        try {
+	            races.get(w).setBestTime(times.getTime(races.get(w).getID()));
+	        } catch (NoSuchElementException nsee) {
+	        	System.out.println("No time found for " + races.get(w).getName());
+	        	races.get(w).setCompleted(false);
+	            races.get(w).setBestTime(races.get(w).getTimeLimit());
+	        }
+	    }
+	}
+
+	public static Race getCurrentRace() {
+	    return currentRace;
+	}
+
+	public static void setCurrentRace(Race race) {
+	    currentRaceSchematics = race.getContent();
+	    currentRace = race;
+	}
+
+	public static Race getRace(int index) {
+	    return races.get(index);
+	}
+
+	public static String[] getRaceTitles() {
         String[] titles = new String[races.size];
 
         for (int e = 0; e < titles.length; e++) {
@@ -76,40 +104,19 @@ public class RaceManager {
         return limits;
     }
 
-    public static void loadBestTimes() {
-        for (int w = 0; w < races.size; w++) {
-            try {
-                races.get(w).setBestTime(times.getTime(races.get(w).getID()));
-            } catch (NoSuchElementException nsee) {
-                races.get(w).setBestTime(races.get(w).getTimeLimit());
-            }
-        }
-    }
-
-    public static Race getRace(int index) {
-        return races.get(index);
-    }
-
-    public static String getCurrentRaceSchematics() {
-        return currentRaceSchematics;
-    }
-
-    public static float getCurrentBestTime() {
-        return currentRace.getBestTime();
-    }
-
     public static void setNewBestTime(float newBestTime) {
         currentRace.setBestTime(newBestTime);
         times.setTime(currentRace.getID(), newBestTime);
         times.writeTimes();
     }
 
-    public static Race getCurrentRace() {
-        return currentRace;
-    }
+	public static boolean[] getCompleted() {
+		boolean[] completed = new boolean[races.size];
 
-    public static void setCurrentRace(Race race) {
-        currentRaceSchematics = race.getContent();
-        currentRace = race;
-    }
+        for (int e = 0; e < completed.length; e++) {
+            completed[e] = races.get(e).isCompleted();
+        }
+
+        return completed;
+	}
 }

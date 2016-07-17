@@ -5,14 +5,28 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * The DustPuff appears on the surface of the planet when something hits it.
+ * Purely aesthetic.
+ * 
+ * @author Sam
+ */
+
 public class DustPuff extends Effect {
 	private ParticleEffect effect;
+	private Color color;
 	
 	public DustPuff(float x, float y, Color color) {
 		this.x = x;
 		this.y = y;
+		this.color = color;
 		
 		effect = new ParticleEffect();
+	}
+	
+	@Override
+	public void load() {
+		super.load();
 		effect.load(Gdx.files.internal("assets/effects/dustpuff.p"), Gdx.files.internal("assets/effects"));
 		effect.getEmitters().get(0).getTint().setColors(new float[] {
 				color.r, color.g, color.b, 1, color.r, color.g, color.b, 1
@@ -26,6 +40,7 @@ public class DustPuff extends Effect {
 	}
 	
 	public void update(float dt) {
+		super.update(dt);
 		effect.update(dt);
 	}
 

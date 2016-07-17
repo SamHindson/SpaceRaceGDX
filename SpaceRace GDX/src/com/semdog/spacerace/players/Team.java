@@ -4,17 +4,21 @@ import com.badlogic.gdx.graphics.Color;
 import com.semdog.spacerace.graphics.Colors;
 
 /**
- * Created by sam on 2016/05/01.
- * <p>
- * An enum for Teams. That's it
+ * An enum for the Multiplayer Teams.
+ * 
+ * @author Sam
  */
 
 public enum Team {
     PINK(Colors.P_PINK), BLUE(Colors.P_BLUE);
 
-    Color teamColor;
+    private Color teamColor;
 
     Team(Color _teamColor) {
         teamColor = _teamColor;
     }
+
+	public Color getColor() {
+		return teamColor;
+	}
 }

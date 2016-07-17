@@ -1,53 +1,35 @@
 {
-  "name": "Test Race Please Ignore",
+  "name": "Murph!",
   "author": "Sam",
-  "description" : "Don't click on this one",
-  "briefing": "I warned you. Now suffer! \nThis race is impossible to complete, because it is broken. Or is it? You'll have to see for yourself. \nGood luck, punk",
-  "timelimit": 3600,
+  "description" : "That colorful backpack you've been wearing isn't just for show. Sure, it looks pretty sweet, but it also serves a much greater purpose...\nDo you like the idea of a jetpack?",
+  "briefing": "Using your arrowkeys, make your way over to that space ship floating off into the distance and climb in.",
+  "timelimit": 30,
+  "suddendeath": true,
+  "lockedcamera": true
   "planet": [
     {
-      "id": "home",
-      "radius": 250,
+      "id": "gargantua",
+      "radius": 0.1,
       "x": 0,
       "y": 0
     }
   ],
-  "planet": [
-      {
-        "id": "nothome",
-        "radius": 500,
-        "x": 3000,
-        "y": 0
-      }
-    ],
   "playerstuff": [
     {
       "x": 0,
       "y": 290
     }
   ],
-  "fuel": [
-    {
-      "h": 50,
-      "a": 0
-    }
-  ],
-  "weaponpickup-smg": [
-    {
-        "h": 25,
-        "a": 180
-    }
-  ],
   "runt": [
     {
-        "x": 50,
-        "y": 290,
+        "x": 350,
+        "y": 0,
         "id": "Tiangong"
     }
     ],
   "playercriteria": [
     {
-      "float-getPlayerVisitedPlanetsNo": 3
+      "boolean-isPlayerPilotingShip": true
     }
   ]
 }

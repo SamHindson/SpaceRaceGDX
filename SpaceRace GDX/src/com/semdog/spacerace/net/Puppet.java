@@ -9,8 +9,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.players.Team;
 import com.semdog.spacerace.universe.Trackable;
+import com.semdog.spacerace.universe.Universe;
 
 public class Puppet implements Trackable {
 	private String name;
@@ -33,6 +36,14 @@ public class Puppet implements Trackable {
 
 	public void setAlive(boolean alive) {
 		this.alive = alive;
+		
+		if(!alive) {
+			Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_RED));
+		}
+	}
+	
+	public Team getTeam() {
+		return team;
 	}
 
 	public boolean isLoaded() {
@@ -52,7 +63,7 @@ public class Puppet implements Trackable {
 		TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
 		animation = new Animation(1 / 30f, textureAtlas.getRegions());
 		idleTexture = new Sprite(Art.get("idledude"));
-		jetpack = new Sprite(Art.get("pinkbp"));
+		jetpack = new Sprite(Art.get("bluebp"));
 		jetpack.setSize(20, 20);
 		jetpack.setOriginCenter();
 		idleTexture.setSize(20, 20);
@@ -86,6 +97,10 @@ public class Puppet implements Trackable {
 
 	public void draw(SpriteBatch batch) {
 		if (alive) {
+			if(!loaded) {
+				load();
+				loaded = true;
+			}
 			jetpack.draw(batch);
 
 			if (lefting) {
@@ -103,10 +118,16 @@ public class Puppet implements Trackable {
 	}
 
 	public void update(float dt) {
-		// Update animations etc here
+		if(!loaded) {
+			load();
+			loaded = true;
+		}
+		
 		jetpack.setFlip(lefting, false);
 		bounds.setPosition(position.x - 10, position.y - 10);
+		
 		animTime += dt;
+		
 		jetpack.setPosition(position.x - 10, position.y - 10);
 		jetpack.setRotation(getAngle() * MathUtils.radiansToDegrees);
 		idleTexture.setPosition(position.x - 10, position.y - 10);
@@ -124,6 +145,8 @@ public class Puppet implements Trackable {
 	public void setEnvironmentPosition(float x, float y) {
 		environmentX = x;
 		environmentY = y;
+		
+		System.out.println("Setting the puppet's environment.");
 	}
 
 	public float getEnvironmentX() {

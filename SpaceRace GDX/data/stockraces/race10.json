@@ -1,0 +1,66 @@
+{
+  "name": "Tour de Solar System",
+  "author": "Sam",
+  "description": "You haven't lived your life if you haven't been to all four planets. This race will help you do just that, seeing as it will probably be the one thing you regret not doing while playing this game.",
+  "briefing": "Walk on each planet, taking note of the color of the dust on each. \n\nThese colors will not play an important role in SpaceRace's story arc. Instead, they are simply just nice colors.",
+  "timelimit": 180,
+  "suddendeath": true,
+  "lockedcamera": false,
+  "planet": [
+    {
+      "id": "planet #420",
+      "radius": 400,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "some other planet",
+      "radius": 400,
+      "x": 2400,
+      "y": 0
+    }
+  ],
+  "planet": [
+    {
+      "id": "somewhere else",
+      "radius": 400,
+      "x": 2400,
+      "y": 2400
+    }
+  ],
+  "planet": [
+    {
+      "id": "disneyland",
+      "radius": 400,
+      "x": 0,
+      "y": 2400
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 420
+    }
+  ],
+  "needle": [
+    {
+        "x": 420,
+        "y": 0,
+        "id": "rosebud"
+    }
+  ],
+  "needle": [
+    {
+        "x": 1980,
+        "y": 2400,
+        "id": "rosebud jr."
+    }
+  ],
+  "playercriteria": [
+    {
+      "float-getPlayerVisitedPlanetsNo": 4
+    }
+  ],
+}

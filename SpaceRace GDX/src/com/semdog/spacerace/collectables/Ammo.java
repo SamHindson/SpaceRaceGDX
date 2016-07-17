@@ -5,8 +5,10 @@ import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Universe;
 
 /**
- * Created by Sam on 2016/07/09.
+ * A collectible that replenishes the player's ammunition supplies.
+ * @author Sam
  */
+
 public class Ammo extends Collectible {
     public Ammo(float h, float a) {
         super(h, a, 10, 10, "fuel", 0x01);

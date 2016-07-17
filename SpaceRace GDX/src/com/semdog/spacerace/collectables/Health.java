@@ -15,6 +15,4 @@ public class Health extends Collectible {
 		Universe.currentUniverse.playUISound("healthget");
 		((Player)collideable).replenishHealth();
 	}
-
-
 }

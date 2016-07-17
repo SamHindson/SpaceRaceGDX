@@ -2,12 +2,14 @@ package com.semdog.spacerace.vehicles;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.collectables.Collectible;
+import com.semdog.spacerace.collectables.Fuel;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Explosion;
@@ -20,20 +22,22 @@ import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Grenade;
 import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
+import com.semdog.spacerace.universe.Trackable;
 import com.semdog.spacerace.universe.Universe;
 
 /***
- * The ship class, which all of the in-game vehicles derive from.
+ * The ship class, which all of the in-game vehicles derive from. TODO optimize
+ * the ship classes, because they function in mostly the same way.
  * 
  * @author Sam
  */
 
-public abstract class Ship extends Mass implements Collideable {
+public abstract class Ship extends Mass implements Collideable, Trackable {
 
 	protected Player pilot;
 	protected Sprite sprite, silhouette;
 	protected float totalFuel, currentFuel;
-	protected float r, width, height;
+	protected float r, width, height, rotationalVelocity;
 	protected float power;
 	protected float boostPower = 300;
 
@@ -46,14 +50,33 @@ public abstract class Ship extends Mass implements Collideable {
 	protected float boostTime = 30, boostRemaining;
 	protected VitalSigns vitalSigns;
 	protected Vitality vFuel, vBoost, vHealth;
-    private boolean initialized;
+	private boolean initialized;
+
+	protected boolean enterable;
+	protected boolean flipping;
+
+	protected ParticleEffect particleEffect;
 
 	protected Ship(float x, float y, float w, float h, float fuel, float power, String textureName, String id) {
 		this(x, y, w, h, fuel, power, 0, 0, textureName, id);
+		System.out.println("Rudu");
 	}
 
-	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo,
-			String textureName, String id) {
+	@Override
+	protected void enteredOrbit() {
+		if (pilot != null) {
+			pilot.enteredOrbit();
+		}
+	}
+
+	@Override
+	protected void exitedOrbit() {
+		if (pilot != null) {
+			pilot.exitedOrbit();
+		}
+	}
+
+	protected Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo, String textureName, String id) {
 		super(x, y, 0, 0, 5000, w, h, null, id);
 
 		this.pAmmo = primaryAmmo;
@@ -71,7 +94,7 @@ public abstract class Ship extends Mass implements Collideable {
 
 		Universe.currentUniverse.addShip(this);
 
-		beepTime = MathUtils.random();
+		beepTime = MathUtils.random() * 5;
 
 		this.id = id;
 
@@ -80,6 +103,11 @@ public abstract class Ship extends Mass implements Collideable {
 			@Override
 			public Type getValueType() {
 				return Type.CONTINUOUS;
+			}
+
+			@Override
+			public String getDisplayName() {
+				return "Fuel";
 			}
 
 			@Override
@@ -110,6 +138,11 @@ public abstract class Ship extends Mass implements Collideable {
 			}
 
 			@Override
+			public String getDisplayName() {
+				return "Integrity";
+			}
+
+			@Override
 			public float getValue() {
 				return currentHealth;
 			}
@@ -137,6 +170,11 @@ public abstract class Ship extends Mass implements Collideable {
 			}
 
 			@Override
+			public String getDisplayName() {
+				return "Boost";
+			}
+
+			@Override
 			public float getValue() {
 				return boostRemaining;
 			}
@@ -158,7 +196,6 @@ public abstract class Ship extends Mass implements Collideable {
 		};
 
 		vitalSigns.addItems(vHealth, vFuel);
-		setBoostActive(true);
 	}
 
 	@Override
@@ -178,20 +215,36 @@ public abstract class Ship extends Mass implements Collideable {
 		if (pilot == null) {
 			beepTime += dt;
 
-			if (beepTime > 7.7f) {
+			if (onGround)
+				rotationalVelocity = 0;
+
+			r += rotationalVelocity * dt;
+
+			if (beepTime > 5f) {
 				beepTime = 0;
-				Universe.currentUniverse.playSound("beep", position.x, position.y, 0.5f);
+				Universe.currentUniverse.playSound("neet", position.x, position.y, 0.5f);
+			}
+
+			enterable = Math.abs(getAngle() - getAngleAroundEnvironment() + MathUtils.PI / 2) < 0.05f || !onGround;
+
+			if (onGround && flipping) {
+				r = getAngleAroundEnvironment() * MathUtils.radiansToDegrees - 90;
+				enterable = true;
+				flipping = false;
 			}
 		}
-		
-		if(ouchTime > 0) {
+
+		if (ouchTime > 0) {
 			silhouette.setRotation(r);
 			silhouette.setPosition(position.x - width / 2, position.y - height / 2);
 		}
 	}
 
 	protected float getCurrentPower() {
-		return power + boostPower;
+		if (boostActive)
+			return power + boostPower;
+		else
+			return power;
 	}
 
 	@Override
@@ -200,8 +253,7 @@ public abstract class Ship extends Mass implements Collideable {
 
 		if (!initialized) {
 			initialized = true;
-			r = (-MathUtils.PI / 2 + MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX()))
-					* MathUtils.radiansToDegrees;
+			r = (-MathUtils.PI / 2 + MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX())) * MathUtils.radiansToDegrees;
 		}
 
 		if (pilot != null) {
@@ -211,18 +263,18 @@ public abstract class Ship extends Mass implements Collideable {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		//if (boostActive)
-		//	sprite.setColor(MathUtils.random());
-		
+		particleEffect.draw(batch);
 		sprite.draw(batch);
-		
-		if(ouchTime > 0) {
+
+		if (ouchTime > 0) {
 			silhouette.setAlpha(MathUtils.random(0.5f, 1));
 			silhouette.draw(batch);
 		}
+	}
 
-		//if (boostActive)
-		//	sprite.setColor(Color.WHITE);
+	@Override
+	public void dispose() {
+		particleEffect.dispose();
 	}
 
 	public abstract void updateControls(float dt);
@@ -232,7 +284,7 @@ public abstract class Ship extends Mass implements Collideable {
 	}
 
 	public float getAngleAroundEnvironment() {
-		return MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
+		return environment != null ? MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX()) : 0;
 	}
 
 	public float getWidth() {
@@ -260,6 +312,10 @@ public abstract class Ship extends Mass implements Collideable {
 		}
 	}
 
+	public boolean isEnterable() {
+		return enterable;
+	}
+
 	@Override
 	protected void handlePlanetCollision(float speed, boolean v) {
 		super.handlePlanetCollision(speed, v);
@@ -272,25 +328,26 @@ public abstract class Ship extends Mass implements Collideable {
 			Universe.currentUniverse.playerKilled(pilot, cause);
 		}
 
-        rud();
-    }
+		rud();
+	}
 
-    /**
-     * This code is executed when the ship undergoes a RUD (Rapid Unscheduled Disassembly)
-     */
-    protected void rud() {
-        for (int k = 0; k < 30; k++) {
-            new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
-        }
-    }
+	/**
+	 * This code is executed when the ship undergoes a RUD (Rapid Unscheduled
+	 * Disassembly)
+	 */
+	protected void rud() {
+		for (int k = 0; k < 30; k++) {
+			new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
+		}
+	}
 
-    @Override
-    public int getType() {
-        return Collectible.SHIP;
-    }
+	@Override
+	public int getType() {
+		return Collectible.SHIP;
+	}
 
-    @Override
-    protected void hitPlayer(Player player) {
+	@Override
+	protected void hitPlayer(Player player) {
 		player.addSpeed(velocity);
 		player.doDamage(getVelocity().len(), DamageCause.SHIP);
 	}
@@ -299,17 +356,23 @@ public abstract class Ship extends Mass implements Collideable {
 
 	public abstract void fireSecondary();
 
+	public void flip() {
+		flipping = true;
+	}
+
 	public void setPilot(Player pilot) {
 		this.pilot = pilot;
 
-        if (pilot == null) {
-            playerExited();
-        }
-    }
+		rotationalVelocity = 0;
 
-    protected void playerExited() {
+		if (pilot == null) {
+			playerExited();
+		}
+	}
 
-    }
+	protected void playerExited() {
+
+	}
 
 	public Texture getTexture() {
 		return sprite.getTexture();
@@ -319,7 +382,6 @@ public abstract class Ship extends Mass implements Collideable {
 		return Vector2.dst(position.x, position.y, environment.getX(), environment.getY());
 	}
 
-	@Override
 	public String getID() {
 		return id;
 	}
@@ -341,35 +403,56 @@ public abstract class Ship extends Mass implements Collideable {
 	public boolean hasPilot() {
 		return pilot != null;
 	}
-	
+
 	public void orbit(float direction) {
-		if(environment == null)
+		if (environment == null)
 			findEnvironment();
 		angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
-		float v = (float)Math.sqrt(Universe.GRAVITY * environment.getMass() / distance(environment)) * -direction;
+		float v = (float) Math.sqrt(Universe.GRAVITY * environment.getMass() / distance(environment)) * -direction;
 		velocity.x = MathUtils.sin(angle) * v;
 		velocity.y = MathUtils.cos(angle) * v;
 	}
 
-    @Override
-    public Color getColor() {
-        return Colors.V_FUEL;
-    }
+	public float getFX() {
+		return position.x;
+	}
 
-    public float getFX() {
-        return position.x;
-    }
+	public float getFY() {
+		return position.y;
+	}
 
-    public float getFY() {
-        return position.y;
-    }
+	public void replenishFuel() {
+		currentFuel = totalFuel;
+	}
 
-    public void replenishFuel() {
-        currentFuel = totalFuel;
-    }
+	@Override
+	public void collectCollectible(Collectible collectible) {
+		System.out.println("Cool");
+	}
 
-    @Override
-    public void collectCollectible(Collectible collectible) {
-        System.out.println("Cool");
-    }
+	@Override
+	public Color getGizmoColor() {
+		return pilot != null ? Color.CLEAR : Colors.P_WHITE;
+	}
+
+	public void addToast() {
+		if (pilot != null)
+			pilot.addToast();
+	}
+
+	@Override
+	public void doDamage(float amount, DamageCause reason) {
+		super.doDamage(amount, reason);
+
+		if (pilot == null && !onGround) {
+			rotationalVelocity = MathUtils.random(-amount, amount);
+		}
+	}
+
+	@Override
+	public boolean canCollect(Collectible collectible) {
+		if (collectible instanceof Fuel)
+			return currentFuel < totalFuel;
+		return true;
+	}
 }

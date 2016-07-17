@@ -8,90 +8,98 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.FontManager;
 
 /**
- * Created by Sam on 2016/07/05.
+ * A UI element which displays a set of options, the chosen of which can be
+ * selected by navigating forward and back through the options.
+ * 
+ * @author Sam
  */
+
 public class CyclableText {
-    private static BitmapFont font;
-    private static float height;
+	private BitmapFont font;
+	private float height;
 
-    static {
-        font = FontManager.getFont("fipps-20");
+	private int currentIndex;
+	private float x, y;
+	private float width = 0;
+	
+	private boolean wrappable = true;
+	
+	private Object[] options;
+	private Button forward, back;
+	private Event onChangeEvent;
 
-        height = font.getCapHeight();
-    }
+	public CyclableText(float x, float y, Object... options) {
+		this.x = x;
+		this.y = y;
+		this.options = options;
 
-    private Object[] options;
-    private int currentIndex;
-    private float x, y;
-    private float tx, ty;
-    private Button forward, back;
+		font = FontManager.getFont("fipps-20");
+		height = font.getLineHeight();
+		width = new GlyphLayout(font, "AAAAAAAAAAAAAAA").width;
+		back = new Button("<", false, x + height / 2, y + height / 2, height, height, this::back);
+		forward = new Button(">", false, x + height / 2 + width, y + height / 2, height, height, this::forward);
+		back.setColors(Color.BLACK, Colors.P_PINK);
+		forward.setColors(Color.BLACK, Colors.P_PINK);
+		currentIndex = 0;
+	}
 
-    public CyclableText(float x, float y, Object... options) {
-        this.x = x;
-        this.y = y;
-        this.options = options;
+	public void update(float dt) {
+		back.update(dt);
+		forward.update(dt);
+	}
 
-        back = new Button("<", false, x + height / 2, y + height / 2, height, height, this::back);
-        forward = new Button(">", false, x + height / 2 + 100, y + height / 2, height, height, this::forward);
+	public void draw(SpriteBatch batch) {
+		back.draw(batch);
+		font.setColor(Colors.P_ORANGE);
+		font.draw(batch, options[currentIndex] instanceof Boolean ? booleanToEnglish((boolean) options[currentIndex]) : options[currentIndex].toString(), x + height, y + height - font.getLineHeight() / 4);
+		forward.draw(batch);
+	}
 
-        back.setColors(Color.BLACK, Colors.P_PINK);
-        forward.setColors(Color.BLACK, Colors.P_PINK);
+	public Object getValue() {
+		return options[currentIndex];
+	}
 
-        currentIndex = 0;
+	public void setValue(Object value) {
+		for (int q = 0; q < options.length; q++)
+			if (options[q].equals(value))
+				currentIndex = q;
+	}
 
-        rearrange();
-    }
+	public void setOnChangeEvent(Event onChangeEvent) {
+		this.onChangeEvent = onChangeEvent;
+	}
 
-    private void back() {
-        currentIndex--;
+	public void setWrappable(boolean wrappable) {
+		this.wrappable = wrappable;
+	}
 
-        if (currentIndex == -1)
-            currentIndex = options.length - 1;
+	private void back() {
+		currentIndex--;
 
-        rearrange();
-    }
+		if (currentIndex == -1)
+			currentIndex = wrappable ? options.length - 1 : 0;
+		
+		if (onChangeEvent != null)
+			onChangeEvent.execute();
+	}
 
-    private void forward() {
-        currentIndex++;
+	private void forward() {
+		currentIndex++;
 
-        if (currentIndex == options.length)
-            currentIndex = 0;
+		if (currentIndex == options.length) 
+			currentIndex = wrappable ? 0 : options.length - 1;
 
-        rearrange();
-    }
+		if (onChangeEvent != null)
+			onChangeEvent.execute();
+	}
 
-    private void rearrange() {
-        GlyphLayout glyphLayout = new GlyphLayout(font, options[currentIndex].toString());
-        tx = x + height + 10;
-        ty = y + height;
-        forward.setPosition(x + height * 1.5f + glyphLayout.width + 20, y + height / 2);
-    }
-
-    public void update(float dt) {
-        back.update(dt);
-        forward.update(dt);
-    }
-
-    public void draw(SpriteBatch batch) {
-        back.draw(batch);
-        font.setColor(Colors.P_ORANGE);
-        font.draw(batch, options[currentIndex] instanceof Boolean ? booleanToEnglish((boolean) options[currentIndex]) : options[currentIndex].toString(), tx, ty);
-        forward.draw(batch);
-    }
-
-    private String booleanToEnglish(boolean b) {
-        return b ? "Yes" : "No";
-    }
-
-    public Object getValue() {
-        return options[currentIndex];
-    }
-
-    public void setValue(Object value) {
-        for (int q = 0; q < options.length; q++)
-            if (options[q].equals(value))
-                currentIndex = q;
-
-        rearrange();
-    }
+	/**
+	 * Makes boolean values more readable.
+	 * 
+	 * @param b
+	 * @return yes if true, no if not
+	 */
+	private String booleanToEnglish(boolean b) {
+		return b ? "Yes" : "No";
+	}
 }

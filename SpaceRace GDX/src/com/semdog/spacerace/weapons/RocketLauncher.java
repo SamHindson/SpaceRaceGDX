@@ -5,6 +5,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * A weapon which launches rockets. 
+ * See: Rocket.java
+ * 
+ * @author Sam
+ */
+
 public class RocketLauncher extends Weapon {
 
 	public RocketLauncher() {
@@ -17,17 +24,12 @@ public class RocketLauncher extends Weapon {
 	}
 
 	@Override
-	public void update(float dt, float a) {
-		super.update(dt, a);
-	}
-
-	@Override
 	protected void fire() {
 		if (ammoleft > 0) {
 			owner.kickBack(-aimAngle - MathUtils.PI / 2.f, 200);
-            //ammoleft--;
+            ammoleft--;
             Universe.currentUniverse.playSound(fireSound, owner.getX(), owner.getY(), 1);
-			new Rocket(owner.getX(), owner.getY(), aimAngle, owner);
+			new Rocket(owner.getWeaponX(), owner.getWeaponY(), aimAngle, owner);
 		}
 	}
 }

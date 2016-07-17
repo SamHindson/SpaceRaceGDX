@@ -44,6 +44,7 @@ public class Wormhole extends Listener {
 		kryo.register(float[].class);
 		kryo.register(PlayerState.class);		
 		kryo.register(BulletRequest.class);
+		kryo.register(PlayerDisconnect.class);
 		
 		client.start();
 		client.connect(5000, "192.168.0.4", 13377, 24488);
@@ -57,22 +58,22 @@ public class Wormhole extends Listener {
 		System.out.println("My id is " + clientID);
 	}
 	
+	public int getID() {
+		return clientID;
+	}
+	
 	@Override
 	public void received(Connection connection, Object object) {
 		if(object instanceof NewPlayer) {
 			universe.createPuppet(((NewPlayer)object).getId(), ((NewPlayer)object).getPlayer());
 		} else if(object instanceof UniverseState) {
-			System.out.println("Got universe staet!");
-			
 			UniverseState state = (UniverseState)object;
 						
 			for(int r = 0; r < state.getPlanets().length; r++) {
-				System.out.println("New Planet -> " + state.getPlanets()[r].getID());
 				universe.createPlanet(state.getPlanets()[r]);
 			}
 			
 			for(int t = 0; t < state.getPlayers().length; t++) {
-				System.out.println("New Puppet -> " + state.getPlayers()[t].getName());
 				universe.createPuppet(state.getPlayerIDs()[t], state.getPlayers()[t]);
 			}
 		} else if(object instanceof PlayerState) {
@@ -91,10 +92,15 @@ public class Wormhole extends Listener {
 			case PlayerState.LIFE:
 				universe.setAlive(state.id, state.getInformation()[0]);
 				break;
+			case PlayerState.BULLETKILL:
+				universe.killPoint(state.id, state.getInformation()[0]);
+				break;
 			}
 		} else if(object instanceof BulletRequest) {
 			BulletRequest request = (BulletRequest)object;
-			universe.addBullet(request.getX(), request.getY(), request.getDx(), request.getDy(), request.getDamage());
+			universe.addBullet(connection.getID(), request.getX(), request.getY(), request.getDx(), request.getDy(), request.getDamage());
+		} else if(object instanceof PlayerDisconnect) {
+			universe.removePuppet(((PlayerDisconnect)object).getId());
 		}
 	}
 

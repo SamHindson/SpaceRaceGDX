@@ -11,40 +11,33 @@ import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
 
 /**
- * Created by Sam on 2016/07/05.
- * <p>
- * A little screen (that can be accessed by finding the secret button on the Main Menu) where I (the developer) can
+ * A little screen that can be accessed by finding the secret button on the Main Menu where I (the developer) can
  * thank players for playing SpaceRace.
+ * 
+ * @author Sam
  */
+
 public class ThankYouScreen extends RaceScreen {
 
     private SpriteBatch batch;
-
     private TitleCard titleCard;
-
     private Button neatoButton;
-
     private BitmapFont font;
-
     private String thankYou = "Developed by Sam Hindson\nCopyright Flaming Trousers Studios 2016\n\nThank you for playing! :)";
-
-    private Texture texture;
+    private Texture devPlanet;
 
     public ThankYouScreen(RaceGame game) {
         super(game);
         
         font = FontManager.getFont("inconsolata-28");
-
         batch = new SpriteBatch();
-
         titleCard = new TitleCard(TitleCard.BIG, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
+        devPlanet = new Texture(Gdx.files.internal("assets/thanks.png"));
 
         neatoButton = new Button("Neato!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.1f, 150, 75, () -> {
             game.changeScreen("menu");
         });
         neatoButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);
-
-        texture = new Texture(Gdx.files.internal("assets/thanks.png"));
     }
 
     @Override
@@ -57,8 +50,14 @@ public class ThankYouScreen extends RaceScreen {
         batch.begin();
         titleCard.draw(batch);
         neatoButton.draw(batch);
+        font.setColor(Colors.UI_WHITE);
         font.draw(batch, thankYou, Gdx.graphics.getWidth() * 0.3f, Gdx.graphics.getHeight() * 0.6f, Gdx.graphics.getWidth() * 0.4f, 1, true);
-        batch.draw(texture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(devPlanet, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
     }
+
+	@Override
+	public void exit() {
+        game.changeScreen("menu");
+	}
 }

@@ -1,7 +1,5 @@
 package com.semdog.spacerace.screens;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -16,153 +14,217 @@ import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
 
 /**
- * Created by Sam on 2016/07/05.
- * <p>
- * This screen is where the user will be able to change their preferred key bindings.
+ * This screen is where the user will be able to change their preferred key
+ * bindings.
+ * 
+ * @author Sam
  */
+
 public class KeysScreen extends RaceScreen implements InputProcessor {
-    private SpriteBatch batch;
+	private SpriteBatch batch;
 
-    private TitleCard titleCard;
-    private BitmapFont subtitleFont, categoryFont;
-    private Button doneButton;
+	private TitleCard titleCard;
+	private BitmapFont subtitleFont, categoryFont;
+	private Button doneButton;
 
-    private String[] titles, keys;
-    private int[] keyCodes;
-    private Button[] keyChangers;
+	private String[] primaries = { "Move/Rotate Left", "Move/Rotate Right", "Jump", "Toggle Sprint", "RCS_Up", "RCS_Down", "RCS_Left", "RCS_Right" };
 
-    private boolean listening;
-    private int listeningIndex;
+	private String[] secondaries = { "Activate", "Throw Grenade", "Goggles", "Camera Lock", "Engines", "Pause" };
 
-    public KeysScreen(RaceGame game) {
-        super(game);
+	private String[] primaryKeys, secondaryKeys;
+	private int[] primaryKeyCodes, secondaryKeyCodes;
+	private Button[] primaryChangers, secondaryChangers;
 
-        titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-        subtitleFont = FontManager.getFont("fipps-18");
-        categoryFont = FontManager.getFont("fipps-20");
+	private boolean listening, listeningPrimary;
+	private int listeningIndex;
 
-        setTitle("Click on a key to change it.");
+	public KeysScreen(RaceGame game) {
+		super(game);
 
-        titleFont.setColor(Colors.UI_BLUE);
+		titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
+		subtitleFont = FontManager.getFont("fipps-18");
+		categoryFont = FontManager.getFont("fipps-20");
 
-        batch = new SpriteBatch();
+		setTitle("Click on a key to change it.");
 
-        doneButton = new Button("Done", false, Gdx.graphics.getWidth() / 2, 50, 140, 50, () -> {
-            saveSettings();
-            game.changeScreen("settings");
-        });
-        doneButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);
+		titleFont.setColor(Colors.UI_BLUE);
 
-        titles = new String[SettingsManager.getKeys().entrySet().size()];
-        keys = new String[titles.length];
-        keyCodes = new int[titles.length];
-        keyChangers = new Button[keys.length];
+		batch = new SpriteBatch();
 
-        int x = 0;
-        for (Map.Entry<String, Integer> entry : SettingsManager.getKeys().entrySet()) {
-            final int i = x;
+		doneButton = new Button("Done", false, Gdx.graphics.getWidth() / 2, 50, 140, 50, () -> {
+			saveSettings();
+			exit();
+		});
+		doneButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);
 
-            titles[x] = entry.getKey().charAt(0) + entry.getKey().substring(1).toLowerCase();
-            keys[x] = Input.Keys.toString(entry.getValue());
-            keyChangers[x] = new Button(keys[x], false, Gdx.graphics.getWidth() * 0.5f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x - 15, 100, 40, () -> {
-                listen(i);
-            });
-            keyChangers[x].setColors(Color.CLEAR, Colors.P_PINK);
+		// This section instiantiates a whole bunch of arrays that are used in
+		// the process of changing the key bindings.
+		// They are in two separate sections to increase usability.
+		primaryChangers = new Button[primaries.length];
+		primaryKeys = new String[primaries.length];
+		primaryKeyCodes = new int[primaries.length];
+		int a = 0;
 
-            keyCodes[x] = entry.getValue();
-            x++;
-        }
+		for (String name : primaries) {
+			final int i = a;
+			String split = name.split(" ")[name.split(" ").length - 1].toUpperCase();
+			String key = split;
+			int keyCode = SettingsManager.getKey(key);
+			String keyName = Input.Keys.toString(SettingsManager.getKey(key));
 
-        Gdx.input.setInputProcessor(this);
-    }
+			primaryKeys[a] = keyName;
+			primaryChangers[a] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.3f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * a - 10, 100, 40, () -> {
+				// When the button is pressed, the InputProcessor will await the
+				// next keystroke with baited breath.
+				// When it receives this signal, that keystroke is recorded.
+				listen(i);
+				listeningPrimary = true;
+			});
+			primaryChangers[a].setColors(Color.CLEAR, Colors.P_PINK);
+			primaryKeyCodes[a] = keyCode;
+			a++;
+		}
 
-    private void listen(int i) {
-        listening = true;
-        listeningIndex = i;
-    }
+		secondaryChangers = new Button[secondaries.length];
+		secondaryKeys = new String[secondaries.length];
+		secondaryKeyCodes = new int[secondaries.length];
+		int b = 0;
 
-    private void saveSettings() {
-        SettingsManager.setKeys(titles, keyCodes);
-    }
+		for (String name : secondaries) {
+			final int i = b;
+			String split = name.split(" ")[name.split(" ").length - 1].toUpperCase();
+			String key = split;
+			int keyCode = SettingsManager.getKey(key);
+			String keyName = Input.Keys.toString(SettingsManager.getKey(key));
 
-    @Override
-    public void update(float dt) {
-        doneButton.update(dt);
+			secondaryKeys[b] = keyName;
+			secondaryChangers[b] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.6f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * b - 10, 100, 40, () -> {
+				listen(i);
+				listeningPrimary = false;
+			});
+			secondaryChangers[b].setColors(Color.CLEAR, Colors.P_PINK);
+			secondaryKeyCodes[b] = keyCode;
+			b++;
+		}
 
-        if (listening) {
-            keyChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandom());
-        }
+		// Allows this class' InputProcessor to handle keystrokes
+		Gdx.input.setInputProcessor(this);
+	}
 
-        for (Button button : keyChangers) {
-            button.update(dt);
-        }
-    }
+	@Override
+	public void exit() {
+		game.changeScreen("settings");
+	}
 
-    @Override
-    public void render() {
-        batch.begin();
-        titleCard.draw(batch);
-        subtitleFont.setColor(Colors.P_PURPLE);
-        subtitleFont.draw(batch, "Keys", 100, Gdx.graphics.getHeight() - 90);
-        doneButton.draw(batch);
+	private void listen(int i) {
+		listening = true;
+		listeningIndex = i;
+	}
 
-        for (int x = 0; x < titles.length; x++) {
-            categoryFont.setColor(Colors.UI_WHITE);
-            categoryFont.draw(batch, titles[x], 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        }
+	private void saveSettings() {
+		SettingsManager.setKeys(primaries, primaryKeyCodes);
+		SettingsManager.setKeys(secondaries, secondaryKeyCodes);
+		SettingsManager.writeKeys();
+	}
 
-        for (Button button : keyChangers) {
-            button.draw(batch);
-        }
+	@Override
+	public void update(float dt) {
+		doneButton.update(dt);
 
-        drawTitle(batch);
+		if (listening && listeningPrimary) {
+			primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandom());
+		}
+		if (listening && !listeningPrimary) {
+			secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandom());
+		}
 
-        batch.end();
-    }
+		for (Button button : primaryChangers) {
+			button.update(dt);
+		}
 
-    @Override
-    public boolean keyDown(int keycode) {
-        if (listening) {
-            keyCodes[listeningIndex] = keycode;
-            keys[listeningIndex] = Input.Keys.toString(keycode);
-            keyChangers[listeningIndex].setText(keys[listeningIndex]);
-            listening = false;
-        }
-        return false;
-    }
+		for (Button button : secondaryChangers) {
+			button.update(dt);
+		}
+	}
 
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
+	@Override
+	public void render() {
+		batch.begin();
+		titleCard.draw(batch);
+		subtitleFont.setColor(Colors.P_PURPLE);
+		subtitleFont.draw(batch, "Keys", 100, Gdx.graphics.getHeight() - 90);
+		doneButton.draw(batch);
 
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
+		for (int x = 0; x < primaries.length; x++) {
+			categoryFont.setColor(Colors.UI_WHITE);
+			categoryFont.draw(batch, primaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x, Gdx.graphics.getWidth() * 0.3f, 2, false);
+		}
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+		for (int x = 0; x < secondaries.length; x++) {
+			categoryFont.setColor(Colors.UI_WHITE);
+			categoryFont.draw(batch, secondaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x, Gdx.graphics.getWidth() * 0.6f, 2, false);
+		}
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+		for (Button button : primaryChangers) {
+			button.draw(batch);
+		}
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
+		for (Button button : secondaryChangers) {
+			button.draw(batch);
+		}
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+		drawTitle(batch);
 
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
+		batch.end();
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		if (listening && listeningPrimary) {
+			primaryKeyCodes[listeningIndex] = keycode;
+			primaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
+			listening = false;
+		}
+		if (listening && !listeningPrimary) {
+			secondaryKeyCodes[listeningIndex] = keycode;
+			secondaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
+			listening = false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
 }

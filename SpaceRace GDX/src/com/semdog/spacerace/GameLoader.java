@@ -3,8 +3,14 @@ package com.semdog.spacerace;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+/**
+ * The entry point of SpaceRace.
+ * 
+ * @author Sam
+ */
+
 public class GameLoader {
-    public static final String version = "0.3.0";
+    public static final String version = "0.3.2";
 
     public static void main(String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

@@ -1,6 +1,7 @@
 package com.semdog.spacerace.universe;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,23 +10,25 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.Player;
 
-/***
- * Kabuum
+/**
+ * A mass spawned by the player that detonates after a set amount of time, or on
+ * contact with masses/other players.
+ * 
+ * @author Sam
  */
 
-public class Grenade extends Mass {
+public class Grenade extends Mass implements Trackable {
 
 	private boolean exploded = false, bouncing = true;
-
-	private Sprite sprite;
-
 	private float timer = 0;
 	private float beepTimer = 0;
 
+	private Sprite sprite;
 	private ParticleEffect trail;
 
 	public Grenade(float x, float y, float dx, float dy, float mass, Planet environment, String id) {
@@ -35,37 +38,34 @@ public class Grenade extends Mass {
 
 		trail = new ParticleEffect();
 		trail.setPosition(x, y);
-	}
-
-	@Override
-	protected void load() {
 		trail.load(Gdx.files.internal("assets/effects/grenadetrail.p"), Gdx.files.internal("assets/effects"));
 		sprite = new Sprite(Art.get("grenade"));
 		sprite.setSize(2, 2);
 		sprite.setOriginCenter();
-		super.load();
 	}
 
 	@Override
 	public void update(float dt, Array<Planet> gravitySources) {
 		super.update(dt, gravitySources);
 
-		if (loaded) {
-			trail.setPosition(position.x, position.y);
-			trail.update(dt);
+		trail.setPosition(position.x, position.y);
+		trail.update(dt);
 
-			sprite.rotate(dt * 2000);
-			sprite.setPosition(position.x, position.y);
-		}
+		sprite.rotate(dt * 2000);
+		sprite.setPosition(position.x, position.y);
 
 		beepTimer += dt;
 		timer += dt;
 
-		if (beepTimer > 0.1f) {
+		if (beepTimer > 0.5f) {
 			beepTimer = 0;
-			Universe.currentUniverse.playSound("neet", position.x, position.y, -0.9f);
+			Universe.currentUniverse.playSound("grenadebeep", position.x, position.y, -0.9f);
 		}
 		bounds.set(position.x, position.y, 1, 1);
+
+		if (timer > 3.5f) {
+			explode();
+		}
 	}
 
 	@Override
@@ -80,14 +80,8 @@ public class Grenade extends Mass {
 	}
 
 	public void render(SpriteBatch batch) {
-		if (loaded) {
-			trail.draw(batch);
-			sprite.draw(batch);
-		}
-
-		if (timer > 5) {
-			explode();
-		}
+		trail.draw(batch);
+		sprite.draw(batch);
 	}
 
 	@Override
@@ -102,13 +96,13 @@ public class Grenade extends Mass {
 				position.x += velocity.x * 0.016f;
 				position.y += velocity.y * 0.016f;
 
-				if (velocity.len() < 0.5f) {
+				if (velocity.len() < 10f || distance(environment) <= environment.getRadius()) {
 					bouncing = false;
 					velocity.set(Vector2.Zero);
 				}
 			} else {
-				position.set(environment.getX() + environment.getRadius() * MathUtils.cos(angle),
-						environment.getY() + environment.getRadius() * MathUtils.sin(angle));
+				position.set(environment.getX() + environment.getRadius() * MathUtils.cos(angle), environment.getY() + environment.getRadius() * MathUtils.sin(angle));
+				System.out.println("Stoppd.");
 			}
 		}
 	}
@@ -143,18 +137,22 @@ public class Grenade extends Mass {
 	}
 
 	@Override
-	public String getID() {
-		return "grenade";
-	}
-
-	@Override
 	public void die(DamageCause reason) {
 		super.die(reason);
 	}
 
-    @Override
-    public void dispose() {
-        trail.dispose();
-        sprite.getTexture().dispose();
-    }
+	@Override
+	public void dispose() {
+		trail.dispose();
+	}
+
+	@Override
+	public Color getGizmoColor() {
+		return Colors.P_RED;
+	}
+
+	@Override
+	public String getGizmoLabel() {
+		return "LIVE GRENADE!";
+	}
 }

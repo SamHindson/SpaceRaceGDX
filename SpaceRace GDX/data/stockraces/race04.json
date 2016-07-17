@@ -1,9 +1,11 @@
 {
-  "name": "The Name's Gagarin",
+  "name": "The Mortian",
   "author": "Sam",
-  "description": "In this race, you'll learn how to place yourself into an orbit. Much easier than in Kerbal Space Program, believe me.",
-  "briefing": "Get into that space ship over there. Then, fire your engines until your Apoapsis (highest point in trajectory) is decent. When you get there, fire your engines in the direction in which you are travelling (referred to from now on as Prograde) until your Periapsis (lowest point in trajectory) is above the other side of the planet.\n\nGit gud!",
-  "timelimit": 300,
+  "description": "Piloting ships has never been easier. In this tutorial, you will learn how to get into a ship and shoot yourself to another planet, named Mors for copyright reasons.",
+  "briefing": "Find the space ship, and aim for that second planet. Fire your engines until you're going fast enough to reach it, then slow yourself down (by turning around and firing those engines in the opposite direction). \nOnce you've landed, climb out and take a deep breath...",
+  "timelimit": 150,
+  "suddendeath": true,
+  "lockedcamera": false,
   "planet": [
     {
       "id": "home",
@@ -12,22 +14,30 @@
       "y": 0
     }
   ],
+  "planet": [
+    {
+      "id": "Mors",
+      "radius": 500,
+      "x": 0,
+      "y": 3000
+    }
+  ],
   "playerstuff": [
     {
-      "x": 0,
-      "y": 550
+      "x": -550,
+      "y": 0
     }
   ],
   "rubbish": [
     {
-        "x": 200,
+        "x": 0,
         "y": 550,
         "id": "dudeman9001"
     }
   ],
   "playercriteria": [
     {
-      "boolean-isPlayerOrbiting": true
+      "float-getPlayerVisitedPlanetsNo": 2
     }
   ]
 }
