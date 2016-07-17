@@ -3,12 +3,7 @@ package com.semdog.spacerace.players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,805 +20,794 @@ import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.VitalSigns.Type;
-import com.semdog.spacerace.universe.Collideable;
-import com.semdog.spacerace.universe.Grenade;
-import com.semdog.spacerace.universe.Planet;
-import com.semdog.spacerace.universe.Trackable;
-import com.semdog.spacerace.universe.Universe;
+import com.semdog.spacerace.universe.*;
 import com.semdog.spacerace.vehicles.Ship;
 import com.semdog.spacerace.weapons.Weapon;
 
 /**
  * The Player class allows users to interact with the in-game universe.
- * 
+ *
  * @author Sam
  */
 
 public class Player implements Collideable, Disposable, Trackable {
 
-	protected Team team = Team.PINK;
-	protected Planet home, environment;
-	protected Array<Planet> visitedPlanets;
+    protected Team team;
+    protected float health = 200;
+    protected boolean lefting = false, righting = false;
+    protected boolean alive = true;
+    protected String name = (String) Tools.decide("MarlonBrando24", "TARS", "Dave", "ChrissyNolan159485", "Bang Di");
+    protected Sprite jetpack;
+    protected Vector2 position;
+    protected Rectangle bounds;
+    protected VitalSigns primarySigns;
+    protected Vitality vHealth, vGrenades, vJetpack;
+    private Planet home;
+    private Planet environment;
+    private Array<Planet> visitedPlanets;
+    private int grenadeCount;
+    private int toastCount;
+    private float angle;
+    private float animTime = 0f;
+    private float jetpackFuel = 100;
+    private boolean onGround = false;
+    private boolean sprinting = false;
+    private boolean pilotingShip = false;
+    private boolean flipped = false;
+    private boolean boarding;
+    private Ship ship;
+    private Ship boardingShip;
+    private Animation animation;
+    private Sprite idleTexture;
+    private ParticleEffect jetpackEffect;
+    private Vector2 velocity;
+    private Vector2 ghostPosition;
+    private Weapon weapon;
+    private HUD hud;
 
-	protected int grenadeCount;
-	protected int toastCount;
+    public Player(float x, float y, Planet planet) {
+        environment = planet;
+        position = new Vector2(x, y);
+        ghostPosition = new Vector2();
+        velocity = new Vector2();
 
-	protected float health = 200;
-	protected float angle;
-	protected float animTime = 0f;
-	protected float jetpackFuel = 100;
+        TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
+        animation = new Animation(1 / 30f, textureAtlas.getRegions());
+        idleTexture = new Sprite(Art.get("idledude"));
+        jetpack = new Sprite(Art.get("pinkbp"));
 
-	protected boolean onGround = false;
-	protected boolean lefting = false, righting = false;
-	protected boolean sprinting = false;
-	protected boolean alive = true;
-	protected boolean pilotingShip = false;
-	protected boolean flipped = false;
-	protected boolean boarding;
+        bounds = new Rectangle(x - 10, y - 10, 20, 20);
 
-	protected String name = (String) Tools.decide("MarlonBrando24", "TARS", "Dave", "ChrissyNolan159485", "Bang Di");
+        // Players always have grenades.
+        grenadeCount = 5;
 
-	protected Ship ship;
-	protected Ship boardingShip;
+        primarySigns = new VitalSigns();
 
-	protected Animation animation;
-	protected Sprite idleTexture, jetpack;
-	protected ParticleEffect jetpackEffect;
+        // Instead of manually creating new classes for each vitality, it is
+        // easier to create them at run time in the form of anonymous classes
+        vHealth = new Vitality() {
 
-	protected Vector2 position, velocity;
-	protected Vector2 ghostPosition;
+            @Override
+            public String getID() {
+                return "playerhealth";
+            }
 
-	protected Rectangle bounds;
-	protected Weapon weapon;
-	protected VitalSigns primarySigns;
-	protected HUD hud;
-	protected Vitality vHealth, vGrenades, vJetpack;
+            @Override
+            public String getDisplayName() {
+                return "Health";
+            }
 
-	public Player(float x, float y, Planet planet) {
-		environment = planet;
-		position = new Vector2(x, y);
-		ghostPosition = new Vector2();
-		velocity = new Vector2();
+            @Override
+            public Type getValueType() {
+                return Type.CONTINUOUS;
+            }
 
-		TextureAtlas textureAtlas = new TextureAtlas("assets/graphics/runboy.atlas");
-		animation = new Animation(1 / 30f, textureAtlas.getRegions());
-		idleTexture = new Sprite(Art.get("idledude"));
-		jetpack = new Sprite(Art.get("pinkbp"));
+            @Override
+            public float getValue() {
+                return health;
+            }
 
-		bounds = new Rectangle(x - 10, y - 10, 20, 20);
+            @Override
+            public float getMaxValue() {
+                return 200;
+            }
 
-		// Players always have grenades.
-		grenadeCount = 5;
+            @Override
+            public Color getColor() {
+                return Colors.V_PLAYERHEALTH;
+            }
+        };
 
-		primarySigns = new VitalSigns();
+        vJetpack = new Vitality() {
 
-		// Instead of manually creating new classes for each vitality, it is
-		// easier to create them at run time in the form of anonymous classes
-		vHealth = new Vitality() {
+            @Override
+            public Type getValueType() {
+                return Type.CONTINUOUS;
+            }
 
-			@Override
-			public String getID() {
-				return "playerhealth";
-			}
+            @Override
+            public String getDisplayName() {
+                return "Jetpack";
+            }
 
-			@Override
-			public String getDisplayName() {
-				return "Health";
-			}
+            @Override
+            public float getValue() {
+                return jetpackFuel;
+            }
 
-			@Override
-			public Type getValueType() {
-				return Type.CONTINUOUS;
-			}
+            @Override
+            public float getMaxValue() {
+                return 100;
+            }
 
-			@Override
-			public float getValue() {
-				return health;
-			}
+            @Override
+            public String getID() {
+                return "jetpack";
+            }
 
-			@Override
-			public float getMaxValue() {
-				return 200;
-			}
+            @Override
+            public Color getColor() {
+                return Colors.UI_GREEN;
+            }
+        };
 
-			@Override
-			public Color getColor() {
-				return Colors.V_PLAYERHEALTH;
-			}
-		};
+        vGrenades = new Vitality() {
 
-		vJetpack = new Vitality() {
+            @Override
+            public String getID() {
+                return "grenades";
+            }
 
-			@Override
-			public Type getValueType() {
-				return Type.CONTINUOUS;
-			}
+            @Override
+            public String getDisplayName() {
+                return "Grenades";
+            }
 
-			@Override
-			public String getDisplayName() {
-				return "Jetpack";
-			}
+            @Override
+            public Type getValueType() {
+                return Type.DISCRETE;
+            }
 
-			@Override
-			public float getValue() {
-				return jetpackFuel;
-			}
+            @Override
+            public float getValue() {
+                return grenadeCount;
+            }
 
-			@Override
-			public float getMaxValue() {
-				return 100;
-			}
+            @Override
+            public float getMaxValue() {
+                return 5;
+            }
 
-			@Override
-			public String getID() {
-				return "jetpack";
-			}
+            @Override
+            public Color getColor() {
+                return Colors.V_PLAYERGRENADES;
+            }
+        };
 
-			@Override
-			public Color getColor() {
-				return Colors.UI_GREEN;
-			}
-		};
+        visitedPlanets = new Array<>();
 
-		vGrenades = new Vitality() {
+        jetpackEffect = new ParticleEffect();
+        jetpackEffect.load(Gdx.files.internal("assets/effects/jetpack.p"), Gdx.files.internal("assets/effects"));
+        jetpackEffect.setPosition(x, y);
+        jetpackEffect.allowCompletion();
+    }
 
-			@Override
-			public String getID() {
-				return "grenades";
-			}
+    public void update(float dt, boolean controllable, Array<Planet> planets, boolean lockedCamera) {
+        // Eek
+        if (alive) {
+            if (pilotingShip && controllable) {
+                ship.updateControls(dt);
 
-			@Override
-			public String getDisplayName() {
-				return "Grenades";
-			}
+                if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE"))) {
+                    exitShip();
+                }
+            } else {
+                for (int r = 0; r < planets.size; r++) {
+                    Planet planet = planets.get(r);
+                    float d = Vector2.dst(planet.getX(), planet.getY(), position.x, position.y);
+                    if (d < planet.getSOI()) {
+                        if (environment != planet)
+                            setEnvironment(planet);
+                        break;
+                    }
+                }
 
-			@Override
-			public Type getValueType() {
-				return Type.DISCRETE;
-			}
+                jetpackEffect.setPosition(position.x + 2 * MathUtils.cos(getAngleAroundEnvironment()), position.y + 2 * MathUtils.sin(getAngleAroundEnvironment()));
+                jetpackEffect.update(dt);
 
-			@Override
-			public float getValue() {
-				return grenadeCount;
-			}
+                if (environment != null) {
+                    if (home == null) {
+                        home = environment;
+                    }
 
-			@Override
-			public float getMaxValue() {
-				return 5;
-			}
+                    float distance = Vector2.dst(getEnvironmentX(), getEnvironmentY(), position.x, position.y);
+                    angle = MathUtils.atan2(position.y - getEnvironmentY(), position.x - getEnvironmentX());
+                    if (!onGround) {
+                        float force = (float) (Universe.GRAVITY * environment.getMass() / Math.pow(distance, 2));
+                        float ax = -force * MathUtils.cos(angle);
+                        float ay = -force * MathUtils.sin(angle);
 
-			@Override
-			public Color getColor() {
-				return Colors.V_PLAYERGRENADES;
-			}
-		};
+                        velocity.x += ax * dt;
+                        velocity.y += ay * dt;
 
-		visitedPlanets = new Array<>();
+                        if (distance < environment.getRadius() + 10) {
+                            float vx = -velocity.x * MathUtils.cos(angle);
+                            float vy = -velocity.y * MathUtils.sin(angle);
+                            vx = vx < 0 ? 0 : vx;
+                            vy = vy < 0 ? 0 : vy;
+                            float v = Vector2.len(vx, vy);
+                            if (v > 200) {
+                                doDamage((v / getImpactThreshold()) * 50, DamageCause.FALLING);
+                            }
+                            onGround = true;
+                            position.x = getEnvironmentX() + (environment.getRadius() + 10) * MathUtils.cos(angle);
+                            position.y = getEnvironmentY() + (environment.getRadius() + 10) * MathUtils.sin(angle);
 
-		jetpackEffect = new ParticleEffect();
-		jetpackEffect.load(Gdx.files.internal("assets/effects/jetpack.p"), Gdx.files.internal("assets/effects"));
-		jetpackEffect.setPosition(x, y);
-		jetpackEffect.allowCompletion();
-	}
-
-	public void update(float dt, boolean controllable, Array<Planet> planets, boolean lockedCamera) {
-		// Eek
-		if (alive) {
-			if (pilotingShip && controllable) {
-				ship.updateControls(dt);
-	
-				if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE"))) {
-					exitShip();
-				}
-			} else {
-				for (int r = 0; r < planets.size; r++) {
-					Planet planet = planets.get(r);
-					float d = Vector2.dst(planet.getX(), planet.getY(), position.x, position.y);
-					if (d < planet.getSOI()) {
-						if(environment != planet)
-							setEnvironment(planet);
-						break;
-					}
-				}
-	
-				jetpackEffect.setPosition(position.x + 2 * MathUtils.cos(getAngleAroundEnvironment()), position.y + 2 * MathUtils.sin(getAngleAroundEnvironment()));
-				jetpackEffect.update(dt);
-	
-				if (environment != null) {
-					if (home == null) {
-						home = environment;
-					}
-	
-					float distance = Vector2.dst(getEnvironmentX(), getEnvironmentY(), position.x, position.y);
-					angle = MathUtils.atan2(position.y - getEnvironmentY(), position.x - getEnvironmentX());
-					if (!onGround) {
-						float force = (float) (Universe.GRAVITY * environment.getMass() / Math.pow(distance, 2));
-						float ax = -force * MathUtils.cos(angle);
-						float ay = -force * MathUtils.sin(angle);
-	
-						velocity.x += ax * dt;
-						velocity.y += ay * dt;
-	
-						if (distance < environment.getRadius() + 10) {
-							float vx = -velocity.x * MathUtils.cos(angle);
-							float vy = -velocity.y * MathUtils.sin(angle);
-							vx = vx < 0 ? 0 : vx;
-							vy = vy < 0 ? 0 : vy;
-							float v = Vector2.len(vx, vy);
-							if (v > 200) {
-								doDamage((v / getImpactThreshold()) * 50, DamageCause.FALLING);
-							}
-							onGround = true;
-							position.x = getEnvironmentX() + (environment.getRadius() + 10) * MathUtils.cos(angle);
-							position.y = getEnvironmentY() + (environment.getRadius() + 10) * MathUtils.sin(angle);
-	
-							if (!visitedPlanets.contains(environment, true)) {
-								visitedPlanets.add(environment);
-								hud.showNotification("Visited Planet " + environment.getID());
-							}
-						}
-					} else {
-						/*if(distance < environment.getRadius() + 9) {
-							System.out.println("Player underground!");
+                            if (!visitedPlanets.contains(environment, true)) {
+                                visitedPlanets.add(environment);
+                                hud.showNotification("Visited Planet " + environment.getID());
+                            }
+                        }
+                    } else {
+                        /*if(distance < environment.getRadius() + 9) {
+                            System.out.println("Player underground!");
 							position.set(new Vector2(environment.getPosition().x + (environment.getRadius() + 10) * MathUtils.cos(angle), 
 									environment.getPosition().y + (environment.getRadius() + 10) * MathUtils.sin(angle)));
 						}*/
-						velocity.set(Vector2.Zero);
-						
-						
-						if (!visitedPlanets.contains(environment, true)) {
-							visitedPlanets.add(environment);
-							hud.showNotification("Visited Planet " + environment.getID());
-						}
-					}
-					
-					onGround = distance < environment.getRadius() + 11;
-				}
-	
-				if (controllable) {
-					sprinting = Gdx.input.isKeyPressed(SettingsManager.getKey("SPRINT"));
-	
-					float wx = 0;
-					float wy = 0;
-					if (Gdx.input.isKeyPressed(SettingsManager.getKey("LEFT"))) {
-						animTime += dt;
-						if (onGround) {
-							// Move anti-clockwise around planet
-							float speed = sprinting ? -200 : -100;
-							wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
-							wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
-	
-							velocity.add(wx, wy);
-						}
-						lefting = true;
-						righting = false;
-					} else if (Gdx.input.isKeyPressed(SettingsManager.getKey("RIGHT"))) {
-						animTime += dt;
-						if (onGround) {
-							// Move clockwise around planet
-							float speed = sprinting ? 200 : 100;
-							wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
-							wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
-	
-							velocity.add(wx, wy);
-						}
-						righting = true;
-						lefting = false;
-					} else {
-						wx = wy = 0;
-						animTime = 0;
-						lefting = righting = false;
-					}
-	
-					if (jetpackFuel > 0) {
-						boolean rcsIng = false;
-						float effectAngle = 0;
-						if (!onGround) {
-							if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_UP"))) {
-								Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
-	
-								float rx = 150 * MathUtils.cos(angle);
-								float ry = 150 * MathUtils.sin(angle);
-	
-								velocity.add(rx * dt, ry * dt);
-	
-								onGround = false;
-								rcsIng = true;
-	
-								jetpackFuel -= dt * 10;
-							}
-	
-							if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_DOWN"))) {
-								Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
-	
-								float rx = -150 * MathUtils.cos(angle);
-								float ry = -150 * MathUtils.sin(angle);
-	
-								velocity.add(rx * dt, ry * dt);
-	
-								onGround = false;
-								rcsIng = true;
-								jetpackFuel -= dt * 10;
-	
-								effectAngle = 180;
-							}
-	
-							if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_LEFT"))) {
-								Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
-	
-								float rx = 150 * MathUtils.cos(angle + MathUtils.PI / 2.f);
-								float ry = 150 * MathUtils.sin(angle + MathUtils.PI / 2.f);
-	
-								velocity.add(rx * dt, ry * dt);
-	
-								onGround = false;
-								rcsIng = true;
-								jetpackFuel -= dt * 10;
-	
-								effectAngle = 90;
-							}
-	
-							if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_RIGHT"))) {
-								Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
-	
-								float rx = -150 * MathUtils.cos(angle + MathUtils.PI / 2.f);
-								float ry = -150 * MathUtils.sin(angle + MathUtils.PI / 2.f);
-	
-								velocity.add(rx * dt, ry * dt);
-	
-								onGround = false;
-								rcsIng = true;
-								jetpackFuel -= dt * 10;
-	
-								effectAngle = 270;
-							}
-	
-							jetpackEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90 + MathUtils.random(-15, 15) + effectAngle);
-	
-							if (!rcsIng) {
-								Universe.currentUniverse.stopSound("rcs");
-								jetpackEffect.allowCompletion();
-							} else {
-								jetpackEffect.start();
-							}
-						} else {
-							jetpackEffect.allowCompletion();
-							Universe.currentUniverse.stopSound("rcs");
-						}
-					} else {
-						jetpackEffect.allowCompletion();
-						if (primarySigns.has("jetpack")) {
-							primarySigns.removeItems("jetpack");
-							Universe.currentUniverse.stopSound("rcs");
-						}
-					}
-	
-					if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("JUMP")) && onGround) {
-						// Jump!
-						// Works out which direction is up and shoots the player
-						// in said direction
-						float jx = 5500 * MathUtils.cos(angle);
-						float jy = 5500 * MathUtils.sin(angle);
-	
-						velocity.add(jx * dt, jy * dt);
-	
-						onGround = false;
-	
-						Universe.currentUniverse.playUISound("jump");
-					}
-	
-					if (boarding && Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE"))) {
-						setShip(boardingShip);
-						boardingShip = null;
-	
-						onGround = false;
-	
-						Universe.currentUniverse.playUISound("ingress");
-					}
-				}
-	
-				position.add(velocity.x * dt, velocity.y * dt);
-				// position.add(wx * dt, wy * dt);
-	
-				bounds.setPosition(position.x - 10, position.y - 10);
-	
-				// AIMING
-				float ax1 = Gdx.input.getX();
-				float ay1 = Gdx.input.getY();
-	
-				float cx = Gdx.graphics.getWidth() / 2;
-				float cy = Gdx.graphics.getHeight() / 2;
+                        velocity.set(Vector2.Zero);
 
-				float a = 0;
-	
-				if (lockedCamera) {
-					a = -MathUtils.atan2(cy - ay1, cx - ax1) + MathUtils.PI / 2.f + getAngleAroundEnvironment();
-				} else {
-					a = MathUtils.atan2(cy - ay1, ax1 - cx);
-				}
-	
-				flipped = !(a > getAngleAroundEnvironment() && a < getAngleAroundEnvironment() + MathUtils.PI);
-	
-				if (weapon != null && controllable)
-					weapon.update(dt, a);
-	
-				if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("GRENADE")) && grenadeCount > 0 && controllable) {
-					float gx = position.x + 30 * MathUtils.cos(a);
-					float gy = position.y + 30 * MathUtils.sin(a);
-	
-					float gdx = 200 * MathUtils.cos(a) + velocity.x;
-					float gdy = 200 * MathUtils.sin(a) + velocity.y;
-	
-					new Grenade(gx, gy, gdx, gdy, 10, environment, "grenade");
-	
-					grenadeCount--;
-				}
-			}
-		}
-	}
 
-	public void draw(SpriteBatch batch) {
-		if (!pilotingShip) {
-			if (alive) {
-				float m = sprinting ? 2 : 1;
-	
-				jetpackEffect.draw(batch);
-	
-				jetpack.setSize(20, 20);
-				jetpack.setPosition(position.x - 10, position.y - 10);
-				jetpack.setOriginCenter();
-				jetpack.setRotation(getAngle() * MathUtils.radiansToDegrees);
-				jetpack.draw(batch);
-	
-				if (righting) {
-					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
-					jetpack.setFlip(true, false);
-				} else if (lefting) {
-					batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, -1, 1, getAngle() * MathUtils.radiansToDegrees);
-					jetpack.setFlip(false, false);
-				} else {
-					jetpack.setFlip(flipped, false);
-					idleTexture.setSize(20, 20);
-					idleTexture.setFlip(flipped, false);
-					idleTexture.setPosition(position.x - 10, position.y - 10);
-					idleTexture.setOriginCenter();
-					idleTexture.setRotation(getAngle() * MathUtils.radiansToDegrees);
-					idleTexture.draw(batch);
-				}
-	
-				if (weapon != null)
-					weapon.draw(batch);
-			}
-		}
-	}
+                        if (!visitedPlanets.contains(environment, true)) {
+                            visitedPlanets.add(environment);
+                            hud.showNotification("Visited Planet " + environment.getID());
+                        }
+                    }
 
-	public void debugDraw(ShapeRenderer sr) {
-		if (pilotingShip)
-			return;
-	
-		sr.setColor(team.getColor());
-		sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-	}
+                    onGround = distance < environment.getRadius() + 11;
+                }
 
-	public void spawn(float x, float y, Array<Planet> planets) {
-		position.set(x, y);
-		velocity.set(Vector2.Zero);
-		alive = true;
-	
-		health = 200;
-		grenadeCount = 5;
-		jetpackFuel = 100;
-	
-		primarySigns.addItems(vGrenades, vHealth, vJetpack);
-	
-		if (weapon != null)
-			weapon.reset();
-	
-		for (Planet planet : planets) {
-			if (planet.inRange(x, y)) {
-				environment = planet;
-				return;
-			}
-		}
-	}
+                if (controllable) {
+                    sprinting = Gdx.input.isKeyPressed(SettingsManager.getKey("SPRINT"));
 
-	public void doDamage(float amount, DamageCause cause) {
-		if (alive) {
-			health -= amount;
-	
-			Universe.currentUniverse.playUISound("playerhit" + Tools.decide(1, 2, 3, 4, 5));
-	
-			if (health < 0) {
-				die(cause);
-			}
-		}
-	}
+                    float wx, wy;
+                    if (Gdx.input.isKeyPressed(SettingsManager.getKey("LEFT"))) {
+                        animTime += dt;
+                        if (onGround) {
+                            // Move anti-clockwise around planet
+                            float speed = sprinting ? -200 : -100;
+                            wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
+                            wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
 
-	public void die(DamageCause damageCause) {
-		if (alive) {
-			ghostPosition.set(getX(), getY());
-			alive = false;
-			ship = null;
-	
-			Universe.currentUniverse.playerKilled(this, damageCause);
-			Universe.currentUniverse.stopSound("rcs");
-	
-			if (pilotingShip) {
-				primarySigns.removeItems("shipfuel");
-				pilotingShip = false;
-			}
-		}
-	}
+                            velocity.add(wx, wy);
+                        }
+                        lefting = true;
+                        righting = false;
+                    } else if (Gdx.input.isKeyPressed(SettingsManager.getKey("RIGHT"))) {
+                        animTime += dt;
+                        if (onGround) {
+                            // Move clockwise around planet
+                            float speed = sprinting ? 200 : 100;
+                            wx = speed * MathUtils.cos(angle - MathUtils.PI / 2.f);
+                            wy = speed * MathUtils.sin(angle - MathUtils.PI / 2.f);
 
-	@Override
-	public void collectCollectible(Collectible collectible) {
-		// Grabbin pills!
-	}
+                            velocity.add(wx, wy);
+                        }
+                        righting = true;
+                        lefting = false;
+                    } else {
+                        animTime = 0;
+                        lefting = righting = false;
+                    }
 
-	public void replenishHealth() {
-		health = 200;
-	}
+                    if (jetpackFuel > 0) {
+                        boolean rcsIng = false;
+                        float effectAngle = 0;
+                        if (!onGround) {
+                            if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_UP"))) {
+                                Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
 
-	public void replenishAmmo() {
-		weapon.reset();
-	}
+                                float rx = 150 * MathUtils.cos(angle);
+                                float ry = 150 * MathUtils.sin(angle);
 
-	public void setBoarding(boolean boarding, Ship boardingShip) {
-		if (!this.boarding && boarding) {
-			hud.makeToast(boardingShip.isEnterable() ? "Press E to board" : "Press E to flip", 2f, Colors.UI_WHITE);
-			this.boarding = true;
-		}
-	
-		if (!boarding) {
-			hud.hideToast();
-		}
-	
-		this.boarding = boarding;
-		this.boardingShip = boardingShip;
-	}
+                                velocity.add(rx * dt, ry * dt);
 
-	public void setHud(HUD hud) {
-		this.hud = hud;
-	}
+                                onGround = false;
+                                rcsIng = true;
 
-	public VitalSigns getPrimarySigns() {
-		return pilotingShip ? ship.getVitalSigns() : primarySigns;
-	}
+                                jetpackFuel -= dt * 10;
+                            }
 
-	public boolean isPilotingShip() {
-		return pilotingShip;
-	}
+                            if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_DOWN"))) {
+                                Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
 
-	public void setShip(Ship ship) {
-		// If the ship is upside down, flip it over and try again.
-		if (!ship.isEnterable()) {
-			ship.flip();
-			return;
-		}
+                                float rx = -150 * MathUtils.cos(angle);
+                                float ry = -150 * MathUtils.sin(angle);
 
-		this.ship = ship;
-		pilotingShip = true;
-		boarding = false;
-		ship.setPilot(this);
-		Universe.currentUniverse.stopSound("rcs");
-		hud.hideToast();
-		hud.showNotification("Boarded ship " + ship.getID());
-	}
+                                velocity.add(rx * dt, ry * dt);
 
-	public void exitShip() {
-		pilotingShip = false;
-		float shipAngle = ship.getAngleAroundEnvironment();
-		position.x = ship.getX() + 30 * MathUtils.sin(shipAngle);
-		position.y = ship.getY() + 30 * MathUtils.cos(shipAngle);
-		velocity.x = ship.getDx();
-		velocity.y = ship.getDy();
-		ship.setPilot(null);
-		ship = null;
-		Universe.currentUniverse.playUISound("egress");
-		hud.showNotification("Alighted Ship");
-	}
+                                onGround = false;
+                                rcsIng = true;
+                                jetpackFuel -= dt * 10;
 
-	public void enteredOrbit() {
-		hud.showNotification("Attained orbit around " + environment.getID());
-	}
+                                effectAngle = 180;
+                            }
 
-	public void exitedOrbit() {
-		hud.showNotification("Exited orbit around " + environment.getID());
-	}
+                            if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_LEFT"))) {
+                                Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
 
-	public boolean isOnGround() {
-		return pilotingShip ? ship.isOnGround() : onGround;
-	}
+                                float rx = 150 * MathUtils.cos(angle + MathUtils.PI / 2.f);
+                                float ry = 150 * MathUtils.sin(angle + MathUtils.PI / 2.f);
 
-	public boolean isAlive() {
-		return alive;
-	}
+                                velocity.add(rx * dt, ry * dt);
 
-	public Team getTeam() {
-		return team;
-	}
+                                onGround = false;
+                                rcsIng = true;
+                                jetpackFuel -= dt * 10;
 
-	public Vector2 getPosition() {
-		return pilotingShip ? ship.getPosition() : position;
-	}
+                                effectAngle = 90;
+                            }
 
-	public Vector2 getVelocity() {
-		return pilotingShip ? ship.getVelocity() : velocity;
-	}
+                            if (Gdx.input.isKeyPressed(SettingsManager.getKey("RCS_RIGHT"))) {
+                                Universe.currentUniverse.loopSound("rcs", position.x, position.y, 1);
 
-	public void addSpeed(Vector2 added) {
-		velocity.add(added);
-	}
+                                float rx = -150 * MathUtils.cos(angle + MathUtils.PI / 2.f);
+                                float ry = -150 * MathUtils.sin(angle + MathUtils.PI / 2.f);
 
-	public void kickBack(float angle, float force) {
-		velocity.add(force * MathUtils.sin(angle), force * MathUtils.cos(angle));
-	}
+                                velocity.add(rx * dt, ry * dt);
 
-	public float getX() {
-		return (pilotingShip) ? ship.getX() : (position.x);
-	}
+                                onGround = false;
+                                rcsIng = true;
+                                jetpackFuel -= dt * 10;
 
-	public float getY() {
-		return (pilotingShip) ? ship.getY() : (position.y);
-	}
+                                effectAngle = 270;
+                            }
 
-	public float getFX() {
-		return alive ? (pilotingShip) ? ship.getFX() : (position.x) : ghostPosition.x;
-	}
+                            jetpackEffect.getEmitters().get(0).getAngle().setHigh(getAngle() * MathUtils.radiansToDegrees - 90 + MathUtils.random(-15, 15) + effectAngle);
 
-	public float getFY() {
-		return alive ? (pilotingShip) ? ship.getFY() : (position.y) : ghostPosition.y;
-	}
+                            if (!rcsIng) {
+                                Universe.currentUniverse.stopSound("rcs");
+                                jetpackEffect.allowCompletion();
+                            } else {
+                                jetpackEffect.start();
+                            }
+                        } else {
+                            jetpackEffect.allowCompletion();
+                            Universe.currentUniverse.stopSound("rcs");
+                        }
+                    } else {
+                        jetpackEffect.allowCompletion();
+                        if (primarySigns.has("jetpack")) {
+                            primarySigns.removeItems("jetpack");
+                            Universe.currentUniverse.stopSound("rcs");
+                        }
+                    }
 
-	public float getDX() {
-		return velocity.x;
-	}
+                    if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("JUMP")) && onGround) {
+                        // Jump!
+                        // Works out which direction is up and shoots the player
+                        // in said direction
+                        float jx = 5500 * MathUtils.cos(angle);
+                        float jy = 5500 * MathUtils.sin(angle);
 
-	public float getDY() {
-		return velocity.y;
-	}
+                        velocity.add(jx * dt, jy * dt);
 
-	public float getWeaponX() {
-		return position.x + MathUtils.cos(angle) * 2.f + 1.5f;
-	}
+                        onGround = false;
 
-	public float getWeaponY() {
-		return position.y + MathUtils.sin(angle) * 2.f + 1.5f;
-	}
+                        Universe.currentUniverse.playUISound("jump");
+                    }
 
-	public Rectangle getBounds() {
-		return bounds;
-	}
-	
-	public String getName() {
-		return name;
-	}
+                    if (boarding && Gdx.input.isKeyJustPressed(SettingsManager.getKey("ACTIVATE"))) {
+                        setShip(boardingShip);
+                        boardingShip = null;
 
-	public float getAngle() {
-		return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2);
-	}
+                        onGround = false;
 
-	public float getAngleAroundEnvironment() {
-		return (pilotingShip && ship != null) ? ship.getAngleAroundEnvironment() : (angle);
-	}
+                        Universe.currentUniverse.playUISound("ingress");
+                    }
+                }
 
-	public void orbit(float direction) {
-		angle = MathUtils.atan2(position.y - getEnvironmentY(), position.x - getEnvironmentX());
-		float v = (float) Math.sqrt(Universe.GRAVITY * environment.getMass() / position.sub(getEnvironmentX(), getEnvironmentY()).len()) * -direction;
-		velocity.x = MathUtils.sin(angle) * v;
-		velocity.y = MathUtils.cos(angle) * v;
-	}
+                position.add(velocity.x * dt, velocity.y * dt);
+                // position.add(wx * dt, wy * dt);
 
-	protected float getImpactThreshold() {
-		return 200;
-	}
+                bounds.setPosition(position.x - 10, position.y - 10);
 
-	public boolean isBoarding() {
-		return boarding;
-	}
-	
-	protected float getEnvironmentX() {
-		return environment.getX();
-	}
-	
-	protected float getEnvironmentY() {
-		return environment.getY();
-	}
+                // AIMING
+                float ax1 = Gdx.input.getX();
+                float ay1 = Gdx.input.getY();
 
-	public String getEnvironmentID() {
-		return (environment != null) ? environment.getID() : "???";
-	}
+                float cx = Gdx.graphics.getWidth() / 2;
+                float cy = Gdx.graphics.getHeight() / 2;
 
-	@Override
-	public boolean canCollect(Collectible collectible) {
-		if (collectible instanceof Health)
-			return alive && health < 200;
+                float a;
 
-		if (collectible instanceof WeaponPickup) {
-			return Gdx.input.isKeyJustPressed(Keys.E);
-		}
+                if (lockedCamera) {
+                    a = -MathUtils.atan2(cy - ay1, cx - ax1) + MathUtils.PI / 2.f + getAngleAroundEnvironment();
+                } else {
+                    a = MathUtils.atan2(cy - ay1, ax1 - cx);
+                }
 
-		if (collectible instanceof Toast) {
-			return true;
-		}
+                flipped = !(a > getAngleAroundEnvironment() && a < getAngleAroundEnvironment() + MathUtils.PI);
 
-		return true;
-	}
+                if (weapon != null && controllable)
+                    weapon.update(dt, a);
 
-	@Override
-	public int getType() {
-		return Collectible.PLAYER;
-	}
+                if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("GRENADE")) && grenadeCount > 0 && controllable) {
+                    float gx = position.x + 30 * MathUtils.cos(a);
+                    float gy = position.y + 30 * MathUtils.sin(a);
 
-	public String getShipID() {
-		return pilotingShip ? ship.getID() : "???";
-	}
+                    float gdx = 200 * MathUtils.cos(a) + velocity.x;
+                    float gdy = 200 * MathUtils.sin(a) + velocity.y;
 
-	public float getPerigee() {
-		return pilotingShip ? ship.getPerigee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[6];
-	}
+                    new Grenade(gx, gy, gdx, gdy, environment, "grenade");
 
-	public float getApogee() {
-		return pilotingShip ? ship.getApogee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
-	}
+                    grenadeCount--;
+                }
+            }
+        }
+    }
 
-	public Planet getEnvironment() {
-		return environment;
-	}
+    public void draw(SpriteBatch batch) {
+        if (!pilotingShip) {
+            if (alive) {
+                float m = sprinting ? 2 : 1;
 
-	public void setEnvironment(Planet planet) {
-		environment = planet;
-		hud.showNotification("Entered gravitational influence of " + planet.getID());
-	}
+                jetpackEffect.draw(batch);
 
-	public Array<Planet> getVisitedPlanets() {
-		return visitedPlanets;
-	}
+                jetpack.setSize(20, 20);
+                jetpack.setPosition(position.x - 10, position.y - 10);
+                jetpack.setOriginCenter();
+                jetpack.setRotation(getAngle() * MathUtils.radiansToDegrees);
+                jetpack.draw(batch);
 
-	public float getVisitedPlanetsNo() {
-		return visitedPlanets.size;
-	}
+                if (righting) {
+                    batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, 1, 1, getAngle() * MathUtils.radiansToDegrees);
+                    jetpack.setFlip(true, false);
+                } else if (lefting) {
+                    batch.draw(animation.getKeyFrame(animTime * m, true), position.x - 10, position.y - 10, 10, 10, 20, 20, -1, 1, getAngle() * MathUtils.radiansToDegrees);
+                    jetpack.setFlip(false, false);
+                } else {
+                    jetpack.setFlip(flipped, false);
+                    idleTexture.setSize(20, 20);
+                    idleTexture.setFlip(flipped, false);
+                    idleTexture.setPosition(position.x - 10, position.y - 10);
+                    idleTexture.setOriginCenter();
+                    idleTexture.setRotation(getAngle() * MathUtils.radiansToDegrees);
+                    idleTexture.draw(batch);
+                }
 
-	public void addToast() {
-		toastCount++;
-		hud.showNotification("You got toast!");
-	}
+                if (weapon != null)
+                    weapon.draw(batch);
+            }
+        }
+    }
 
-	public float getToastCount() {
-		return toastCount;
-	}
+    public void debugDraw(ShapeRenderer sr) {
+        if (pilotingShip)
+            return;
 
-	public void setWeapon(Weapon weapon) {
-		this.weapon = weapon;
-		weapon.pickup(this);
-		primarySigns.addItems(weapon);
-		hud.showNotification("Picked up " + weapon.getName());
-	}
+        sr.setColor(team.getColor());
+        sr.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
 
-	public boolean isFlipped() {
-		return flipped;
-	}
+    public void spawn(float x, float y, Array<Planet> planets) {
+        position.set(x, y);
+        velocity.set(Vector2.Zero);
+        alive = true;
 
-	public boolean isHome() {
-		return environment.equals(home);
-	}
+        health = 200;
+        grenadeCount = 5;
+        jetpackFuel = 100;
 
-	@Override
-	public Color getGizmoColor() {
-		return team.getColor();
-	}
+        primarySigns.addItems(vGrenades, vHealth, vJetpack);
 
-	@Override
-	public String getGizmoLabel() {
-		return name;
-	}
+        if (weapon != null)
+            weapon.reset();
 
-	@Override
-	public void dispose() {
-		for (TextureRegion region : animation.getKeyFrames()) {
-			region.getTexture().dispose();
-		}
-	
-		jetpackEffect.dispose();
-	}
+        for (Planet planet : planets) {
+            if (planet.inRange(x, y)) {
+                environment = planet;
+                return;
+            }
+        }
+    }
+
+    public void doDamage(float amount, DamageCause cause) {
+        if (alive) {
+            health -= amount;
+
+            Universe.currentUniverse.playUISound("playerhit" + Tools.decide(1, 2, 3, 4, 5));
+
+            if (health < 0) {
+                die(cause);
+            }
+        }
+    }
+
+    protected void die(DamageCause damageCause) {
+        if (alive) {
+            ghostPosition.set(getX(), getY());
+            alive = false;
+            ship = null;
+
+            Universe.currentUniverse.playerKilled(this, damageCause);
+            Universe.currentUniverse.stopSound("rcs");
+
+            if (pilotingShip) {
+                primarySigns.removeItems("shipfuel");
+                pilotingShip = false;
+            }
+        }
+    }
+
+    @Override
+    public void collectCollectible(Collectible collectible) {
+        // Grabbin pills!
+    }
+
+    public void replenishHealth() {
+        health = 200;
+    }
+
+    public void replenishAmmo() {
+        weapon.reset();
+    }
+
+    public void setBoarding(boolean boarding, Ship boardingShip) {
+        if (!this.boarding && boarding) {
+            hud.makeToast(boardingShip.isEnterable() ? "Press E to board" : "Press E to flip", 2f, Colors.UI_WHITE);
+            this.boarding = true;
+        }
+
+        if (!boarding) {
+            hud.hideToast();
+        }
+
+        this.boarding = boarding;
+        this.boardingShip = boardingShip;
+    }
+
+    public void setHud(HUD hud) {
+        this.hud = hud;
+    }
+
+    public VitalSigns getPrimarySigns() {
+        return pilotingShip ? ship.getVitalSigns() : primarySigns;
+    }
+
+    public boolean isPilotingShip() {
+        return pilotingShip;
+    }
+
+    private void setShip(Ship ship) {
+        // If the ship is upside down, flip it over and try again.
+        if (!ship.isEnterable()) {
+            ship.flip();
+            return;
+        }
+
+        this.ship = ship;
+        pilotingShip = true;
+        boarding = false;
+        ship.setPilot(this);
+        Universe.currentUniverse.stopSound("rcs");
+        hud.hideToast();
+        hud.showNotification("Boarded ship " + ship.getID());
+    }
+
+    public void exitShip() {
+        pilotingShip = false;
+        float shipAngle = ship.getAngleAroundEnvironment();
+        position.x = ship.getX() + 30 * MathUtils.sin(shipAngle);
+        position.y = ship.getY() + 30 * MathUtils.cos(shipAngle);
+        velocity.x = ship.getDx();
+        velocity.y = ship.getDy();
+        ship.setPilot(null);
+        ship = null;
+        Universe.currentUniverse.playUISound("egress");
+        hud.showNotification("Alighted Ship");
+    }
+
+    public void enteredOrbit() {
+        hud.showNotification("Attained orbit around " + environment.getID());
+    }
+
+    public void exitedOrbit() {
+        hud.showNotification("Exited orbit around " + environment.getID());
+    }
+
+    public boolean isOnGround() {
+        return pilotingShip ? ship.isOnGround() : onGround;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public Vector2 getPosition() {
+        return pilotingShip ? ship.getPosition() : position;
+    }
+
+    public Vector2 getVelocity() {
+        return pilotingShip ? ship.getVelocity() : velocity;
+    }
+
+    public void addSpeed(Vector2 added) {
+        velocity.add(added);
+    }
+
+    public void kickBack(float angle, float force) {
+        velocity.add(force * MathUtils.sin(angle), force * MathUtils.cos(angle));
+    }
+
+    public float getX() {
+        return (pilotingShip) ? ship.getX() : (position.x);
+    }
+
+    public float getY() {
+        return (pilotingShip) ? ship.getY() : (position.y);
+    }
+
+    public float getFX() {
+        return alive ? (pilotingShip) ? ship.getFX() : (position.x) : ghostPosition.x;
+    }
+
+    public float getFY() {
+        return alive ? (pilotingShip) ? ship.getFY() : (position.y) : ghostPosition.y;
+    }
+
+    public float getDX() {
+        return velocity.x;
+    }
+
+    public float getDY() {
+        return velocity.y;
+    }
+
+    public float getWeaponX() {
+        return position.x + MathUtils.cos(angle) * 2.f + 1.5f;
+    }
+
+    public float getWeaponY() {
+        return position.y + MathUtils.sin(angle) * 2.f + 1.5f;
+    }
+
+    public Rectangle getCollisionBounds() {
+        return bounds;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public float getAngle() {
+        return (pilotingShip && ship != null) ? ship.getAngle() : (angle - MathUtils.PI / 2);
+    }
+
+    public float getAngleAroundEnvironment() {
+        return (pilotingShip && ship != null) ? ship.getAngleAroundEnvironment() : (angle);
+    }
+
+    public void orbit(float direction) {
+        angle = MathUtils.atan2(position.y - getEnvironmentY(), position.x - getEnvironmentX());
+        float v = (float) Math.sqrt(Universe.GRAVITY * environment.getMass() / position.sub(getEnvironmentX(), getEnvironmentY()).len()) * -direction;
+        velocity.x = MathUtils.sin(angle) * v;
+        velocity.y = MathUtils.cos(angle) * v;
+    }
+
+    private float getImpactThreshold() {
+        return 200;
+    }
+
+    public boolean isBoarding() {
+        return boarding;
+    }
+
+    private float getEnvironmentX() {
+        return environment.getX();
+    }
+
+    private float getEnvironmentY() {
+        return environment.getY();
+    }
+
+    public String getEnvironmentID() {
+        return (environment != null) ? environment.getID() : "???";
+    }
+
+    @Override
+    public boolean canCollect(Collectible collectible) {
+        if (collectible instanceof Health)
+            return alive && health < 200;
+
+        if (collectible instanceof WeaponPickup) {
+            return Gdx.input.isKeyJustPressed(Keys.E);
+        }
+
+        if (collectible instanceof Toast) {
+            return true;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int getType() {
+        return Collectible.PLAYER;
+    }
+
+    public String getShipID() {
+        return pilotingShip ? ship.getID() : "???";
+    }
+
+    public float getPerigee() {
+        return pilotingShip ? ship.getPerigee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[6];
+    }
+
+    public float getApogee() {
+        return pilotingShip ? ship.getApogee() : OrbitalHelper.computeOrbit(position, environment.getPosition(), velocity, environment.getMass())[5];
+    }
+
+    public Planet getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Planet planet) {
+        environment = planet;
+        hud.showNotification("Entered gravitational influence of " + planet.getID());
+    }
+
+    public Array<Planet> getVisitedPlanets() {
+        return visitedPlanets;
+    }
+
+    public float getVisitedPlanetsNo() {
+        return visitedPlanets.size;
+    }
+
+    public void addToast() {
+        toastCount++;
+        hud.showNotification("You got toast!");
+    }
+
+    public float getToastCount() {
+        return toastCount;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        weapon.pickup(this);
+        primarySigns.addItems(weapon);
+        hud.showNotification("Picked up " + weapon.getName());
+    }
+
+    public boolean isFlipped() {
+        return flipped;
+    }
+
+    public boolean isHome() {
+        return environment.equals(home);
+    }
+
+    @Override
+    public Color getGizmoColor() {
+        return team.getColor();
+    }
+
+    @Override
+    public String getGizmoLabel() {
+        return name;
+    }
+
+    @Override
+    public void dispose() {
+        for (TextureRegion region : animation.getKeyFrames()) {
+            region.getTexture().dispose();
+        }
+
+        jetpackEffect.dispose();
+    }
 }

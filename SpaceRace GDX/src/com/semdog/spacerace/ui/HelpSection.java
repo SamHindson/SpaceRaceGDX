@@ -18,36 +18,20 @@ import com.semdog.spacerace.misc.HelpLoader;
 /**
  * A UI element which shows a help topic in the Help Screen.
  * Renders text, images, exhibits and animations.
- * 
+ *
  * @author Sam
  */
 
 public class HelpSection implements Disposable {
-    private BitmapFont titleFont, descriptionFont;
-    private Color borderColor;
-
-    private float x, y, width, height;
-    private int helpID = 5;
-
-    private HelpLoader loader;
-    
-    private Array<Exhibit> exhibits;
-
     //	TODO do away with this needing to be static
     private static Array<HelpAnimation> animations;
     private static Array<Texture> images;
-    
-    public static void initialize() {
-        animations = new Array<>();
-
-        for (int w = 0; w < 4; w++) {
-            animations.add(new HelpAnimation(w));
-        }
-
-        images = new Array<>();
-        images.add(new Texture(Gdx.files.internal("assets/help/images/img0.jpg")));
-        images.add(new Texture(Gdx.files.internal("assets/help/images/img1.jpg")));
-    }
+    private BitmapFont titleFont, descriptionFont;
+    private Color borderColor;
+    private float x, y, width, height;
+    private int helpID = 5;
+    private HelpLoader loader;
+    private Array<Exhibit> exhibits;
 
     public HelpSection(float x, float y, float width, float height) {
         this.x = x;
@@ -66,6 +50,18 @@ public class HelpSection implements Disposable {
         borderColor = Colors.P_YELLOW;
 
         loader = new HelpLoader();
+    }
+
+    public static void initialize() {
+        animations = new Array<>();
+
+        for (int w = 0; w < 4; w++) {
+            animations.add(new HelpAnimation(w));
+        }
+
+        images = new Array<>();
+        images.add(new Texture(Gdx.files.internal("assets/help/images/img0.jpg")));
+        images.add(new Texture(Gdx.files.internal("assets/help/images/img1.jpg")));
     }
 
     public void update(float dt) {
@@ -138,10 +134,10 @@ public class HelpSection implements Disposable {
                 continue;
             }
 
-            descriptionFont.draw(batch, word, xx, yy);	// Draw the word
-            
+            descriptionFont.draw(batch, word, xx, yy);    // Draw the word
+
             if (xx + glyphLayout.width + 5 - x > width - 150) {
-            	// If we need to, add another line
+                // If we need to, add another line
                 xx = x + 20;
                 yy -= lineHeight;
             } else {
@@ -165,7 +161,7 @@ public class HelpSection implements Disposable {
         }
     }
 
-	public boolean[] getCompleted() {
-		return new boolean[100];
-	}
+    public boolean[] getCompleted() {
+        return new boolean[100];
+    }
 }

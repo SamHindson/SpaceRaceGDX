@@ -6,13 +6,13 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Health extends Collectible {
 
-	public Health(float x, float y) {
+    public Health(float x, float y) {
         super(x, y, 10, 10, "health", 0x01);
     }
 
-	@Override
-	public void get(Collideable collideable) {
-		Universe.currentUniverse.playUISound("healthget");
-		((Player)collideable).replenishHealth();
-	}
+    @Override
+    public void get(Collideable collideable) {
+        Universe.currentUniverse.playUISound("healthget");
+        ((Player) collideable).replenishHealth();
+    }
 }

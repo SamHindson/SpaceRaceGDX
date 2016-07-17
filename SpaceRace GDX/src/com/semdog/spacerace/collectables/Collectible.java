@@ -18,123 +18,124 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * The abstract Collectible class, which all collectibles extend. Collectibles
  * can be collected by the player and each provides some sort of effect.
- * 
+ *
  * @author Sam
  */
 
 public abstract class Collectible implements Trackable {
 
-	public static final byte PLAYER = 0x01;			//	Collision mask for Player
-	public static final byte SHIP = 0x10;			//	Collision mask for Ships
+    public static final byte PLAYER = 0x01;            //	Collision mask for Player
+    public static final byte SHIP = 0x10;            //	Collision mask for Ships
 
-	protected float x;
-	protected float y;
-	protected float width;
-	protected float height;
-	protected float h, a;
-	protected int target;
-	private Sprite sprite;
-	private Rectangle bounds;
-	private Planet environment;
-	private float originalHeight;
-	private float angle;
-	private Color color;
-	private String textureName;
-	private ParticleEffect particleEffect;
+    private float x;
+    private float y;
+    private float width;
+    private float height;
+    private float h;
+    private float a;
+    private int target;
+    private Sprite sprite;
+    private Rectangle bounds;
+    private Planet environment;
+    private float originalHeight;
+    private float angle;
+    private Color color;
+    private String textureName;
+    private ParticleEffect particleEffect;
 
-	Collectible(float h, float a, float width, float height, String textureName, int target) {
-		this.h = h;
-		this.a = a;
-		this.width = width;
-		this.height = height;
-		this.target = target;
-		this.textureName = textureName;
+    Collectible(float h, float a, float width, float height, String textureName, int target) {
+        this.h = h;
+        this.a = a;
+        this.width = width;
+        this.height = height;
+        this.target = target;
+        this.textureName = textureName;
 
-		sprite = new Sprite(Art.get(textureName));
-		sprite.setOriginCenter();
-		sprite.setSize(width, height);
+        sprite = new Sprite(Art.get(textureName));
+        sprite.setOriginCenter();
+        sprite.setSize(width, height);
 
-		color = Art.getAccent(textureName);
-		particleEffect = new ParticleEffect();
-		particleEffect.load(Gdx.files.internal("assets/effects/weaponpickup.p"), Gdx.files.internal("assets/effects"));
-		particleEffect.start();
-		particleEffect.getEmitters().first().getTint().setColors(new float[] { color.r, color.g, color.b });
-	}
+        color = Art.getAccent(textureName);
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("assets/effects/weaponpickup.p"), Gdx.files.internal("assets/effects"));
+        particleEffect.start();
+        particleEffect.getEmitters().first().getTint().setColors(new float[]{color.r, color.g, color.b});
+    }
 
-	/**
-	 * Sets the planet on which the collectible resides and allows it to bob up
-	 * and down very slightly.
-	 * 
-	 * @param planet
-	 */
-	public void setEnvironment(Planet planet) {
-		environment = planet;
+    /**
+     * Sets the planet on which the collectible resides and allows it to bob up
+     * and down very slightly.
+     *
+     * @param planet The planet on which the collectible resides.
+     */
+    public void setEnvironment(Planet planet) {
+        environment = planet;
 
-		x = environment.getX() + (environment.getRadius() + h) * MathUtils.cos(a);
-		y = environment.getY() + (environment.getRadius() + h) * MathUtils.sin(a);
+        x = environment.getX() + (environment.getRadius() + h) * MathUtils.cos(a);
+        y = environment.getY() + (environment.getRadius() + h) * MathUtils.sin(a);
 
-		bounds = new Rectangle(x, y, width, height);
+        bounds = new Rectangle(x, y, width, height);
 
-		angle = MathUtils.atan2(y - planet.getY(), x - planet.getX());
-		originalHeight = Vector2.dst(x, y, planet.getX(), planet.getY());
+        angle = MathUtils.atan2(y - planet.getY(), x - planet.getX());
+        originalHeight = Vector2.dst(x, y, planet.getX(), planet.getY());
 
-		sprite.setOriginCenter();
-		sprite.setRotation(angle * MathUtils.radiansToDegrees - 90);
-		sprite.setPosition(x, y);
-	}
+        sprite.setOriginCenter();
+        sprite.setRotation(angle * MathUtils.radiansToDegrees - 90);
+        sprite.setPosition(x, y);
+    }
 
-	public void update(float dt, Array<Collideable> collideables) {
-		if (environment != null) {
-			float bob = MathUtils.sin(Universe.currentUniverse.getAge()) * 3;
-			x = environment.getX() + (originalHeight + bob) * MathUtils.cos(angle);
-			y = environment.getY() + (originalHeight + bob) * MathUtils.sin(angle);
-			particleEffect.setPosition(x, y);
-		}
+    public void update(float dt, Array<Collideable> collideables) {
+        if (environment != null) {
+            float bob = MathUtils.sin(Universe.currentUniverse.getAge()) * 3;
+            x = environment.getX() + (originalHeight + bob) * MathUtils.cos(angle);
+            y = environment.getY() + (originalHeight + bob) * MathUtils.sin(angle);
+            particleEffect.setPosition(x, y);
+        }
 
-		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
-		particleEffect.update(dt);
+        sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
+        particleEffect.update(dt);
 
-		// Loops through all the collideables the universe has given it and
-		// checks whether they collide.
-		for (int q = 0; q < collideables.size; q++) {
-			Collideable collideable = collideables.get(q);
-			int cID = collideable.getType();
-			int check = cID & target;
+        // Loops through all the collideables the universe has given it and
+        // checks whether they collide.
+        for (int q = 0; q < collideables.size; q++) {
+            Collideable collideable = collideables.get(q);
+            int cID = collideable.getType();
+            int check = cID & target;
 
-			// This simple bitmasking method sees whether the Collideable is of
-			// the right variant (i.e. player, or space ship).
-			// If this is compatible with what the Collectible is meant to
-			// effect (i.e. the check produces a non-zero result) the collision
-			// goes ahead.
-			if (check != 0 && collideable.canCollect(this)) {
-				if (collideable.getBounds().overlaps(bounds)) {
-					get(collideable);
-					collideable.collectCollectible(this);
-					Universe.currentUniverse.killCollectible(this);
-				}
-			}
-		}
-	}
+            // This simple bitmasking method sees whether the Collideable is of
+            // the right variant (i.e. player, or space ship).
+            // If this is compatible with what the Collectible is meant to
+            // effect (i.e. the check produces a non-zero result) the collision
+            // goes ahead.
+            if (check != 0 && collideable.canCollect(this)) {
+                if (collideable.getCollisionBounds().overlaps(bounds)) {
+                    get(collideable);
+                    collideable.collectCollectible(this);
+                    Universe.currentUniverse.killCollectible(this);
+                }
+            }
+        }
+    }
 
-	public void draw(SpriteBatch batch) {
-		particleEffect.draw(batch);
-		sprite.draw(batch);
-	}
+    public void draw(SpriteBatch batch) {
+        particleEffect.draw(batch);
+        sprite.draw(batch);
+    }
 
-	protected abstract void get(Collideable collideable);
+    protected abstract void get(Collideable collideable);
 
-	@Override
-	public Vector2 getPosition() {
-		return new Vector2(x, y);
-	}
+    @Override
+    public Vector2 getPosition() {
+        return new Vector2(x, y);
+    }
 
-	@Override
-	public Color getGizmoColor() {
-		return color;
-	}
+    @Override
+    public Color getGizmoColor() {
+        return color;
+    }
 
-	@Override
-	public String getGizmoLabel() {
-		return textureName;
-	}
+    @Override
+    public String getGizmoLabel() {
+        return textureName;
+    }
 }

@@ -1,30 +1,32 @@
 package com.semdog.spacerace.net;
 
-public class NewPlayer extends NetworkEvent {
-	
-	public NewPlayer() {
+import com.semdog.spacerace.net.entities.VirtualPlayer;
 
-	}
-	
-	public NewPlayer(VirtualPlayer player) {
-		this.player = player;
-	}
-	
-	public VirtualPlayer getPlayer() {
-		return player;
-	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	private VirtualPlayer player;
-	private String name;
-	private int team;
-	private int id;
-	
-	public void setId(int id) {
-		this.id = id;
-		player.setID(id);
-	}
+class NewPlayer extends NetworkEvent {
+
+    private VirtualPlayer player;
+    private String name;
+    private int team;
+    private int id;
+
+    public NewPlayer() {
+
+    }
+
+    public NewPlayer(VirtualPlayer player) {
+        this.player = player;
+    }
+
+    public VirtualPlayer getPlayer() {
+        return player;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+        player.setID(id);
+    }
 }

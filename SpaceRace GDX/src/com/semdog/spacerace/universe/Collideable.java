@@ -5,14 +5,14 @@ import com.semdog.spacerace.collectables.Collectible;
 
 /**
  * An interface that allows certain objects to collide with the ingame Collectibles.
- * 
+ *
  * @author Sam
  */
 
 public interface Collideable {
     void collectCollectible(Collectible collectible);
 
-    Rectangle getBounds();
+    Rectangle getCollisionBounds();
 
     boolean canCollect(Collectible collectible); // Check whether it can pick up a certain collectible
 

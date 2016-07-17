@@ -12,76 +12,76 @@ import com.semdog.spacerace.screens.SingleplayerMenu;
 /**
  * A UI element which shows players information about the race chosen in the
  * Singleplayer Menu.
- * 
+ *
  * @author Sam
  */
 
 public class RaceInfoViewer {
-	private boolean showing = false;
-	private float x, y, width, height;
-	private float timeLimit, bestTime;
-	
-	private String title, info;
-	private Race race;
-	private BitmapFont titleFont, descriptionFont;
-	private Color borderColor;
-	private Button launchButton;
+    private boolean showing = false;
+    private float x, y, width, height;
+    private float timeLimit, bestTime;
 
-	public RaceInfoViewer(SingleplayerMenu container, float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+    private String title, info;
+    private Race race;
+    private BitmapFont titleFont, descriptionFont;
+    private Color borderColor;
+    private Button launchButton;
 
-		titleFont = FontManager.getFont("fipps-36");
-		descriptionFont = FontManager.getFont("inconsolata-28");
+    public RaceInfoViewer(SingleplayerMenu container, float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
 
-		borderColor = Colors.P_BLUE;
+        titleFont = FontManager.getFont("fipps-36");
+        descriptionFont = FontManager.getFont("inconsolata-28");
 
-		launchButton = new Button("Launch", false, x + width - 80, y + 35, 140, 50, () -> container.loadRace(race));
-		launchButton.setColors(Colors.UI_GREEN, Colors.UI_WHITE);
-	}
+        borderColor = Colors.P_BLUE;
 
-	public void draw(SpriteBatch batch) {
-		batch.setColor(borderColor);
-		batch.draw(Art.get("pixel_white"), x, y, width, height);
-		batch.setColor(Color.BLACK);
-		batch.draw(Art.get("pixel_white"), x + 5, y + 5, width - 10, height - 10);
+        launchButton = new Button("Launch", false, x + width - 80, y + 35, 140, 50, () -> container.loadRace(race));
+        launchButton.setColors(Colors.UI_GREEN, Colors.UI_WHITE);
+    }
 
-		if (showing) {
-			titleFont.draw(batch, title, x + 20, y + height - 20);
+    public void draw(SpriteBatch batch) {
+        batch.setColor(borderColor);
+        batch.draw(Art.get("pixel_white"), x, y, width, height);
+        batch.setColor(Color.BLACK);
+        batch.draw(Art.get("pixel_white"), x + 5, y + 5, width - 10, height - 10);
 
-			descriptionFont.setColor(Color.WHITE);
-			descriptionFont.draw(batch, info, x + 20, y + height - titleFont.getCapHeight() - 40, width - 40, 9, true);
+        if (showing) {
+            titleFont.draw(batch, title, x + 20, y + height - 20);
 
-			descriptionFont.setColor(Colors.P_PINK);
-			descriptionFont.draw(batch, "Time Limit:", x + 20, y + 110);
-			descriptionFont.setColor(Colors.P_GREEN);
-			descriptionFont.draw(batch, String.format("%.1f", timeLimit) + "s", x + 20, y + 85);
+            descriptionFont.setColor(Color.WHITE);
+            descriptionFont.draw(batch, info, x + 20, y + height - titleFont.getCapHeight() - 40, width - 40, 9, true);
 
-			descriptionFont.setColor(Colors.P_RED);
-			descriptionFont.draw(batch, "Best Time:", x + 20, y + 60);
-			descriptionFont.setColor(Colors.P_BLUE);
-			descriptionFont.draw(batch, String.format("%.1f", bestTime) + "s", x + 20, y + 35);
+            descriptionFont.setColor(Colors.P_PINK);
+            descriptionFont.draw(batch, "Time Limit:", x + 20, y + 110);
+            descriptionFont.setColor(Colors.P_GREEN);
+            descriptionFont.draw(batch, String.format("%.1f", timeLimit) + "s", x + 20, y + 85);
 
-			launchButton.draw(batch);
-		}
-	}
+            descriptionFont.setColor(Colors.P_RED);
+            descriptionFont.draw(batch, "Best Time:", x + 20, y + 60);
+            descriptionFont.setColor(Colors.P_BLUE);
+            descriptionFont.draw(batch, String.format("%.1f", bestTime) + "s", x + 20, y + 35);
 
-	public void update(float dt) {
-		launchButton.update(dt);
-	}
+            launchButton.draw(batch);
+        }
+    }
 
-	public void setRace(Race race) {
-		this.race = race;
-		setInfo(race.getName(), race.getDescription(), race.getTimeLimit(), race.getBestTime());
-	}
+    public void update(float dt) {
+        launchButton.update(dt);
+    }
 
-	private void setInfo(String title, String info, float timeLimit, float bestTime) {
-		showing = true;
-		this.title = title;
-		this.info = info;
-		this.timeLimit = timeLimit;
-		this.bestTime = bestTime;
-	}
+    public void setRace(Race race) {
+        this.race = race;
+        setInfo(race.getName(), race.getDescription(), race.getTimeLimit(), race.getBestTime());
+    }
+
+    private void setInfo(String title, String info, float timeLimit, float bestTime) {
+        showing = true;
+        this.title = title;
+        this.info = info;
+        this.timeLimit = timeLimit;
+        this.bestTime = bestTime;
+    }
 }

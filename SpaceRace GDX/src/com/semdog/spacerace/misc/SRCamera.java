@@ -12,25 +12,25 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
  */
 
 public class SRCamera extends OrthographicCamera {
-	private float currentRotation;
+    private float currentRotation;
 
-	public SRCamera(int width, int height) {
-		super(width, height);
-	}
+    public SRCamera(int width, int height) {
+        super(width, height);
+    }
 
-	public void setRotation(float rotation) {
-		if (Math.abs(rotation - currentRotation) > 345) {
-			// If there is a jarring difference between current and desired
-			// rotations, the camera will not interpolate the rotation and will just
-			// snap to whatever is asked of it for fear of making users dizzy
-			float rAmount = (rotation - currentRotation);
-			currentRotation += rAmount;
-			rotate(rAmount);
-		} else {
-			// Otherwise, we smoothly rotate to the desired rotation.
-			float rAmount = (rotation - currentRotation) / 20.f;
-			currentRotation += rAmount;
-			rotate(rAmount);
-		}
-	}
+    public void setRotation(float rotation) {
+        if (Math.abs(rotation - currentRotation) > 345) {
+            // If there is a jarring difference between current and desired
+            // rotations, the camera will not interpolate the rotation and will just
+            // snap to whatever is asked of it for fear of making users dizzy
+            float rAmount = (rotation - currentRotation);
+            currentRotation += rAmount;
+            rotate(rAmount);
+        } else {
+            // Otherwise, we smoothly rotate to the desired rotation.
+            float rAmount = (rotation - currentRotation) / 20.f;
+            currentRotation += rAmount;
+            rotate(rAmount);
+        }
+    }
 }

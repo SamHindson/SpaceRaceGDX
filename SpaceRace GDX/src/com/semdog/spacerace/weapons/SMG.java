@@ -5,7 +5,7 @@ import com.semdog.spacerace.graphics.Colors;
 
 /**
  * A submachine gun.
- * 
+ *
  * @author Sam
  */
 
@@ -14,8 +14,8 @@ public class SMG extends Weapon {
         super("SMG", 128, true, 0.05f, 7, "smg", 0.003f);
     }
 
-	@Override
-	public Color getColor() {
-		return Colors.V_SMGAMMO;
-	}
+    @Override
+    public Color getColor() {
+        return Colors.V_SMGAMMO;
+    }
 }

@@ -10,7 +10,7 @@ import com.semdog.spacerace.misc.FontManager;
 
 /**
  * A UI element which allows players to input text.
- * 
+ *
  * @author Sam
  */
 
@@ -44,10 +44,10 @@ public class TextInput implements InputProcessor {
     }
 
     public String getText() {
-	    return text;
-	}
+        return text;
+    }
 
-	@Override
+    @Override
     public boolean keyDown(int keycode) {
         return false;
     }
@@ -96,7 +96,7 @@ public class TextInput implements InputProcessor {
         return false;
     }
 
-	public void clear() {
-		text = "";
-	}
+    public void clear() {
+        text = "";
+    }
 }

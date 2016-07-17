@@ -6,14 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * An interface which allows the flight computer to track and draw certain
  * objects.
- * 
+ *
  * @author Sam
  */
 
 public interface Trackable {
-	Color getGizmoColor();
+    Color getGizmoColor();
 
-	String getGizmoLabel();
+    String getGizmoLabel();
 
-	Vector2 getPosition();
+    Vector2 getPosition();
 }

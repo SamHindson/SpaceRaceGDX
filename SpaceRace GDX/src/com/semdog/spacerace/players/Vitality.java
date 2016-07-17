@@ -4,20 +4,20 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * An interface which all things vital-sign related must implement
- * 
+ *
  * @author Sam
  */
 
 public interface Vitality {
-	String getID(); // How it will be referenced programatically
+    String getID(); // How it will be referenced programatically
 
-	String getDisplayName(); // How it will appear to the user
+    String getDisplayName(); // How it will appear to the user
 
-	float getValue(); // Its current value
+    float getValue(); // Its current value
 
-	float getMaxValue(); // Its maximum value
+    float getMaxValue(); // Its maximum value
 
-	Color getColor(); // Its color
+    Color getColor(); // Its color
 
-	VitalSigns.Type getValueType(); // Whether it is continuous or discrete
+    VitalSigns.Type getValueType(); // Whether it is continuous or discrete
 }

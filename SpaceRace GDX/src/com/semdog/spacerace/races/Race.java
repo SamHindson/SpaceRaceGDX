@@ -3,7 +3,7 @@ package com.semdog.spacerace.races;
 /**
  * A class that is populated with information about a loaded race, just so everything doesn't have to use JSON Parsing
  * whenever a piece of data is needed.
- * 
+ *
  * @author Sam
  */
 
@@ -33,13 +33,13 @@ public class Race {
      * @return the computed ID
      */
     private String computeID() {
-        String result = "";
+        String result;
         result = (author.hashCode() + "" + name.hashCode());
 
         for (int w = 0; w < 10; w++) {
             result = result.hashCode() + "";
         }
-        
+
         return result;
     }
 
@@ -74,12 +74,12 @@ public class Race {
     public String getBriefing() {
         return briefing;
     }
-    
+
     public boolean isCompleted() {
-		return completed;
-	}
-    
+        return completed;
+    }
+
     public void setCompleted(boolean completed) {
-		this.completed = completed;
-	}
+        this.completed = completed;
+    }
 }

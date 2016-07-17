@@ -9,37 +9,33 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.Race;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.ui.Button;
-import com.semdog.spacerace.ui.ListView;
-import com.semdog.spacerace.ui.ListViewListener;
-import com.semdog.spacerace.ui.RaceInfoViewer;
-import com.semdog.spacerace.ui.TitleCard;
+import com.semdog.spacerace.ui.*;
 
 /**
  * A screen where players can choose a singleplayer race to play.
  * Contains a custom ListView and a specially formatted information display area.
- * 
+ *
  * @author Sam
  */
 
 public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
-	private SpriteBatch batch;
-	private TitleCard titleCard;
-	private BitmapFont subtitleFont;
-	private ListView raceChooser;
-	private RaceInfoViewer raceViewer;
+    private SpriteBatch batch;
+    private TitleCard titleCard;
+    private BitmapFont subtitleFont;
+    private ListView raceChooser;
+    private RaceInfoViewer raceViewer;
     private Button abandonButton;
 
-	public SingleplayerMenu(RaceGame game) {
-		super(game);
+    public SingleplayerMenu(RaceGame game) {
+        super(game);
 
-		titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
-		subtitleFont = FontManager.getFont("fipps-18");
+        titleCard = new TitleCard(TitleCard.SMALL, 5, Gdx.graphics.getHeight() - 5);
+        subtitleFont = FontManager.getFont("fipps-18");
 
-		setTitle("Select a Race!");
+        setTitle("Select a Race!");
 
-		batch = new SpriteBatch();
+        batch = new SpriteBatch();
 
         raceChooser = new ListView(100, Gdx.graphics.getHeight() * 0.1f, 250, Gdx.graphics.getHeight() * 0.7f, new Color(1.f, 0, 110f / 255f, 1),
                 new Color(178f / 255f, 0, 1, 1), 6);
@@ -48,57 +44,55 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
         raceViewer = new RaceInfoViewer(this, 350, Gdx.graphics.getHeight() * 0.1f, (Gdx.graphics.getWidth() - 100 - 250 - 100), Gdx.graphics.getHeight() * 0.7f);
 
-        abandonButton = new Button("Abandon", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 140, 50, () -> {
-            game.changeScreen("menu");
-        });
+        abandonButton = new Button("Abandon", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 140, 50, () -> game.changeScreen("menu"));
         abandonButton.setColors(Colors.UI_RED, Colors.UI_WHITE);
-        
-        if(RaceManager.getCurrentRace() != null) {
-        	raceViewer.setRace(RaceManager.getCurrentRace());
+
+        if (RaceManager.getCurrentRace() != null) {
+            raceViewer.setRace(RaceManager.getCurrentRace());
         }
     }
 
-	@Override
-	public void update(float dt) {
-		raceChooser.update(dt);
+    @Override
+    public void update(float dt) {
+        raceChooser.update(dt);
         raceViewer.update(dt);
         abandonButton.update(dt);
     }
 
-	@Override
-	public void render() {
-		batch.begin();
-		
-		titleCard.draw(batch);
-		subtitleFont.setColor(Colors.P_BLUE);
-		subtitleFont.draw(batch, "Singleplayer", 100, Gdx.graphics.getHeight() - 90);
-		raceChooser.draw(batch);
-		raceViewer.draw(batch);
-        abandonButton.draw(batch);
-		drawTitle(batch);
-		
-        batch.end();
-	}
+    @Override
+    public void render() {
+        batch.begin();
 
-	@Override
-	public void dispose() {
+        titleCard.draw(batch);
+        subtitleFont.setColor(Colors.P_BLUE);
+        subtitleFont.draw(batch, "Singleplayer", 100, Gdx.graphics.getHeight() - 90);
+        raceChooser.draw(batch);
+        raceViewer.draw(batch);
+        abandonButton.draw(batch);
+        drawTitle(batch);
+
+        batch.end();
+    }
+
+    @Override
+    public void dispose() {
         super.dispose();
         batch.dispose();
     }
 
-	@Override
-	public void itemSelected(int index) {
+    @Override
+    public void itemSelected(int index) {
         raceViewer.setRace(RaceManager.getRace(index));
     }
 
-	//	Called when a race is selected
+    //	Called when a race is selected
     public void loadRace(Race race) {
         RaceManager.setCurrentRace(race);
         game.changeScreen("play");
     }
 
-	@Override
-	public void exit() {
+    @Override
+    public void exit() {
         game.changeScreen("menu");
-	}
+    }
 }

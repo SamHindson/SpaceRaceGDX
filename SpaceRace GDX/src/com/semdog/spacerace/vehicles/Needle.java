@@ -12,7 +12,7 @@ import com.semdog.spacerace.universe.Universe;
 
 /**
  * A space ship that can crash into planets ridiculously fast yet leave the player intact.
- * 
+ *
  * @author Sam
  */
 
@@ -91,8 +91,8 @@ public class Needle extends Ship {
         particleEffect.dispose();
     }
 
-	@Override
-	public String getGizmoLabel() {
-		return "Needle";
-	}
+    @Override
+    public String getGizmoLabel() {
+        return "Needle";
+    }
 }

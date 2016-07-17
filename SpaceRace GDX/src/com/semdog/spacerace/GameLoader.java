@@ -5,12 +5,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /**
  * The entry point of SpaceRace.
- * 
+ *
  * @author Sam
  */
 
 public class GameLoader {
-    public static final String version = "0.3.2";
+    private static final String version = "0.3.2";
 
     public static void main(String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

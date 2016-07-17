@@ -6,6 +6,7 @@ import com.semdog.spacerace.universe.Universe;
 
 /**
  * A collectible that replenishes the player's ammunition supplies.
+ *
  * @author Sam
  */
 

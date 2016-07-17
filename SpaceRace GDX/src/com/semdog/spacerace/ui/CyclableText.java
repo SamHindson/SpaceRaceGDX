@@ -10,96 +10,95 @@ import com.semdog.spacerace.misc.FontManager;
 /**
  * A UI element which displays a set of options, the chosen of which can be
  * selected by navigating forward and back through the options.
- * 
+ *
  * @author Sam
  */
 
 public class CyclableText {
-	private BitmapFont font;
-	private float height;
+    private BitmapFont font;
+    private float height;
 
-	private int currentIndex;
-	private float x, y;
-	private float width = 0;
-	
-	private boolean wrappable = true;
-	
-	private Object[] options;
-	private Button forward, back;
-	private Event onChangeEvent;
+    private int currentIndex;
+    private float x, y;
 
-	public CyclableText(float x, float y, Object... options) {
-		this.x = x;
-		this.y = y;
-		this.options = options;
+    private boolean wrappable = true;
 
-		font = FontManager.getFont("fipps-20");
-		height = font.getLineHeight();
-		width = new GlyphLayout(font, "AAAAAAAAAAAAAAA").width;
-		back = new Button("<", false, x + height / 2, y + height / 2, height, height, this::back);
-		forward = new Button(">", false, x + height / 2 + width, y + height / 2, height, height, this::forward);
-		back.setColors(Color.BLACK, Colors.P_PINK);
-		forward.setColors(Color.BLACK, Colors.P_PINK);
-		currentIndex = 0;
-	}
+    private Object[] options;
+    private Button forward, back;
+    private Event onChangeEvent;
 
-	public void update(float dt) {
-		back.update(dt);
-		forward.update(dt);
-	}
+    public CyclableText(float x, float y, Object... options) {
+        this.x = x;
+        this.y = y;
+        this.options = options;
 
-	public void draw(SpriteBatch batch) {
-		back.draw(batch);
-		font.setColor(Colors.P_ORANGE);
-		font.draw(batch, options[currentIndex] instanceof Boolean ? booleanToEnglish((boolean) options[currentIndex]) : options[currentIndex].toString(), x + height, y + height - font.getLineHeight() / 4);
-		forward.draw(batch);
-	}
+        font = FontManager.getFont("fipps-20");
+        height = font.getLineHeight();
+        float width = new GlyphLayout(font, "AAAAAAAAAAAAAAA").width;
+        back = new Button("<", false, x + height / 2, y + height / 2, height, height, this::back);
+        forward = new Button(">", false, x + height / 2 + width, y + height / 2, height, height, this::forward);
+        back.setColors(Color.BLACK, Colors.P_PINK);
+        forward.setColors(Color.BLACK, Colors.P_PINK);
+        currentIndex = 0;
+    }
 
-	public Object getValue() {
-		return options[currentIndex];
-	}
+    public void update(float dt) {
+        back.update(dt);
+        forward.update(dt);
+    }
 
-	public void setValue(Object value) {
-		for (int q = 0; q < options.length; q++)
-			if (options[q].equals(value))
-				currentIndex = q;
-	}
+    public void draw(SpriteBatch batch) {
+        back.draw(batch);
+        font.setColor(Colors.P_ORANGE);
+        font.draw(batch, options[currentIndex] instanceof Boolean ? booleanToEnglish((boolean) options[currentIndex]) : options[currentIndex].toString(), x + height, y + height - font.getLineHeight() / 4);
+        forward.draw(batch);
+    }
 
-	public void setOnChangeEvent(Event onChangeEvent) {
-		this.onChangeEvent = onChangeEvent;
-	}
+    public Object getValue() {
+        return options[currentIndex];
+    }
 
-	public void setWrappable(boolean wrappable) {
-		this.wrappable = wrappable;
-	}
+    public void setValue(Object value) {
+        for (int q = 0; q < options.length; q++)
+            if (options[q].equals(value))
+                currentIndex = q;
+    }
 
-	private void back() {
-		currentIndex--;
+    public void setOnChangeEvent(Event onChangeEvent) {
+        this.onChangeEvent = onChangeEvent;
+    }
 
-		if (currentIndex == -1)
-			currentIndex = wrappable ? options.length - 1 : 0;
-		
-		if (onChangeEvent != null)
-			onChangeEvent.execute();
-	}
+    public void setWrappable(boolean wrappable) {
+        this.wrappable = wrappable;
+    }
 
-	private void forward() {
-		currentIndex++;
+    private void back() {
+        currentIndex--;
 
-		if (currentIndex == options.length) 
-			currentIndex = wrappable ? 0 : options.length - 1;
+        if (currentIndex == -1)
+            currentIndex = wrappable ? options.length - 1 : 0;
 
-		if (onChangeEvent != null)
-			onChangeEvent.execute();
-	}
+        if (onChangeEvent != null)
+            onChangeEvent.execute();
+    }
 
-	/**
-	 * Makes boolean values more readable.
-	 * 
-	 * @param b
-	 * @return yes if true, no if not
-	 */
-	private String booleanToEnglish(boolean b) {
-		return b ? "Yes" : "No";
-	}
+    private void forward() {
+        currentIndex++;
+
+        if (currentIndex == options.length)
+            currentIndex = wrappable ? 0 : options.length - 1;
+
+        if (onChangeEvent != null)
+            onChangeEvent.execute();
+    }
+
+    /**
+     * Makes boolean values more readable.
+     *
+     * @param b The boolean
+     * @return yes if true, no if not
+     */
+    private String booleanToEnglish(boolean b) {
+        return b ? "Yes" : "No";
+    }
 }

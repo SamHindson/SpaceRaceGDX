@@ -5,7 +5,7 @@ import com.semdog.spacerace.graphics.Colors;
 
 /**
  * An enum for the Multiplayer Teams.
- * 
+ *
  * @author Sam
  */
 
@@ -18,7 +18,7 @@ public enum Team {
         teamColor = _teamColor;
     }
 
-	public Color getColor() {
-		return teamColor;
-	}
+    public Color getColor() {
+        return teamColor;
+    }
 }
