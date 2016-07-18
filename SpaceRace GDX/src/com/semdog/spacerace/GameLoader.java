@@ -5,8 +5,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /**
  * The entry point of SpaceRace.
- *
- * @author Sam
  */
 
 public class GameLoader {

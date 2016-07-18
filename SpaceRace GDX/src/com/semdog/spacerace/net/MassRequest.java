@@ -1,16 +1,19 @@
 package com.semdog.spacerace.net;
 
 /**
- * Created by Sam on 2016/07/17.
+ * A class sent over the Kryo server to request the instantiation of a new mass.
+ * Not yet implemented.
  */
+
 public class MassRequest {
     private int requesterID;
     private float mass, x, y;
 
+    //  Default no-parameter constructor for Kryo deserialization.
     public MassRequest() {
     }
 
-    public MassRequest(int requesterID, float x, float y, float mass) {
+    MassRequest(int requesterID, float x, float y, float mass) {
         this.requesterID = requesterID;
         this.x = x;
         this.y = y;

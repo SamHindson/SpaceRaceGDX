@@ -41,7 +41,6 @@ public class Wormhole extends Listener {
         kryo.register(NewPlayer.class);
         kryo.register(Vector2.class);
         kryo.register(Integer.class);
-        kryo.register(PlayerPosition.class);
         kryo.register(String.class);
         kryo.register(int[].class);
         kryo.register(int.class);
@@ -86,16 +85,16 @@ public class Wormhole extends Listener {
 
             switch (state.getCategory()) {
                 case PlayerState.ANIMSTATE:
-                    universe.setPlayerAnimState(state.id, state.getInformation()[0]);
+                    universe.setPlayerAnimState(state.getId(), state.getInformation()[0]);
                     break;
                 case PlayerState.SETPOS:
-                    universe.setPuppetPosition(state.id, state.getInformation()[0], state.getInformation()[1]);
+                    universe.setPuppetPosition(state.getId(), state.getInformation()[0], state.getInformation()[1]);
                     break;
                 case PlayerState.ENVSTATE:
-                    universe.setEnvironmentPosition(state.id, state.getInformation()[0], state.getInformation()[1]);
+                    universe.setEnvironmentPosition(state.getId(), state.getInformation()[0], state.getInformation()[1]);
                     break;
                 case PlayerState.LIFE:
-                    universe.setAlive(state.id, state.getInformation()[0]);
+                    universe.setAlive(state.getId(), state.getInformation()[0]);
                     break;
             }
         } else if (object instanceof BulletRequest) {
@@ -111,7 +110,7 @@ public class Wormhole extends Listener {
     }
 
     public void registerPlayer(Player player) {
-        VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY());
+        VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY(), player.getEnvironment().getX(), player.getEnvironment().getY());
         NewPlayer request = new NewPlayer(player2);
         request.setId(clientID);
         client.sendTCP(request);

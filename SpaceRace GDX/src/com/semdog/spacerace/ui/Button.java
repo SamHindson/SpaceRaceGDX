@@ -11,8 +11,6 @@ import com.semdog.spacerace.misc.FontManager;
 /**
  * A clickable UI entity that does something when clicked. Like a normal UI
  * button.
- *
- * @author Sam
  */
 
 public class Button {

@@ -15,8 +15,6 @@ import com.semdog.spacerace.universe.Universe;
 
 /**
  * A rocket is what is shot out of the rocket launcher. It is an explosive mass.
- *
- * @author Sam
  */
 
 public class Rocket extends Mass {

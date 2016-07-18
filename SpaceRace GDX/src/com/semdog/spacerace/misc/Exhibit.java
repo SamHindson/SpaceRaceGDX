@@ -14,7 +14,12 @@ import com.semdog.spacerace.graphics.Colors;
  */
 
 public class Exhibit {
+    /**
+     * The names of the textures that will be drawn
+     */
     private String[] textures;
+
+    /** Dimensions */
     private float width, height;
     private float padding;
     private float itemWidth;
@@ -23,9 +28,7 @@ public class Exhibit {
         this.textures = textures;
         this.width = width;
         this.height = height;
-
         padding = height * 0.1f;
-
         itemWidth = height - 2 * padding;
     }
 

@@ -3,9 +3,8 @@ package com.semdog.spacerace.players;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * An interface which all things vital-sign related must implement
- *
- * @author Sam
+ * An interface which all things vital-sign related must implement.
+ * Things which implement this will appear on the HUD as the little colored bars
  */
 
 public interface Vitality {

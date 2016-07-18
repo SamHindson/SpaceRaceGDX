@@ -3,9 +3,7 @@ package com.semdog.spacerace.players;
 import java.util.HashMap;
 
 /**
- * A little class to hold all of the player's necessary HUD information
- *
- * @author Sam
+ * A class to hold all of the player's necessary HUD information
  */
 
 public class VitalSigns {
@@ -42,4 +40,5 @@ public class VitalSigns {
     public enum Type {
         DISCRETE, CONTINUOUS
     }
+
 }

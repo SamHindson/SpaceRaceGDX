@@ -4,6 +4,10 @@ import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * A collectible which replenishes the player's health.
+ */
+
 public class Health extends Collectible {
 
     public Health(float x, float y) {

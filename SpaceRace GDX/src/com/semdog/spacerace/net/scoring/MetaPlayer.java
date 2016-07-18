@@ -2,6 +2,11 @@ package com.semdog.spacerace.net.scoring;
 
 import com.semdog.spacerace.players.Team;
 
+/**
+ * A class used on the client side to keep track of the points of the other players.
+ * The methods here are all self-explanatory.
+ */
+
 public class MetaPlayer {
     private int score;
     private int id;
@@ -22,6 +27,10 @@ public class MetaPlayer {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

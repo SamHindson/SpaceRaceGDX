@@ -11,8 +11,6 @@ import com.semdog.spacerace.ui.*;
 /**
  * A screen which will help players struggling with the concepts of SpaceRace,
  * like me
- *
- * @author Sam
  */
 
 public class HelpScreen extends RaceScreen implements ListViewListener {

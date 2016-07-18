@@ -8,8 +8,6 @@ import com.semdog.spacerace.misc.FontManager;
 /**
  * A UI element which draws the title of the screen in the classic SpaceRace
  * font and color scheme. Can be big or small.
- *
- * @author Sam
  */
 
 public class TitleCard {

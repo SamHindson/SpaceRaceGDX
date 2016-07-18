@@ -38,8 +38,8 @@ public abstract class Mass implements Disposable {
     protected String id;
     Rectangle bounds;
     private float mass;
-    private boolean gravityEnabled = true, physicsEnabled = true;
     private boolean orbiting = false;
+    private boolean gravityEnabled = true, physicsEnabled = true;
 
     protected Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment,
                    String id) {

@@ -10,8 +10,6 @@ import com.semdog.spacerace.misc.FontManager;
 /**
  * A UI element which displays a set of options, the chosen of which can be
  * selected by navigating forward and back through the options.
- *
- * @author Sam
  */
 
 public class CyclableText {

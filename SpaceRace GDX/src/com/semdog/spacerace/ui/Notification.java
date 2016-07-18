@@ -12,8 +12,6 @@ import com.semdog.spacerace.misc.FontManager;
 /**
  * A class which allows messages to be displayed to the user which override any
  * other UI elements currently on screen.
- *
- * @author Sam
  */
 
 public class Notification {

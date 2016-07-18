@@ -7,6 +7,7 @@ public class VirtualPlayer {
     private int id;
     private Team team;
     private float x, y, dx, dy;
+    private float environmentX, environmentY;
     private boolean alive = true;
     private int score = 0;
 
@@ -14,12 +15,14 @@ public class VirtualPlayer {
     public VirtualPlayer() {
     }
 
-    public VirtualPlayer(String name, int id, Team team, float x, float y) {
+    public VirtualPlayer(String name, int id, Team team, float x, float y, float environmentX, float environmentY) {
         this.name = name;
         this.id = id;
         this.team = team;
         this.x = x;
         this.y = y;
+        this.environmentX = environmentX;
+        this.environmentY = environmentY;
     }
 
     public boolean isAlive() {
@@ -77,5 +80,13 @@ public class VirtualPlayer {
 
     public void subtractPoint() {
         score--;
+    }
+
+    public float getEnvironmentX() {
+        return environmentX;
+    }
+
+    public float getEnvironmentY() {
+        return environmentY;
     }
 }

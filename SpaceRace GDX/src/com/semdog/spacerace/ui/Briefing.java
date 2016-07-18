@@ -10,8 +10,6 @@ import com.semdog.spacerace.screens.PlayScreen;
 
 /**
  * An overlay which shows the current race briefing in the PlayScreen.
- *
- * @author Sam
  */
 
 public class Briefing extends Overlay {

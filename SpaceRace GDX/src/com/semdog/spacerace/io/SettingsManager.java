@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Sam on 2016/07/05.
- * <p>
  * The class that handles the input/output of the game's settings
+ * These settings are found in two files:
+ *      {userfolder}\.prefs\
  */
 
 public class SettingsManager {
@@ -37,22 +37,28 @@ public class SettingsManager {
     private static boolean fullscreen = false;
     private static String resolution = "1280x720";
     private static int width, height;
+
+    //  The Gdx preferences files we will be interacting with
     private static Preferences preferences;
     private static Preferences keyBindings;
 
+    //  A HashMap to store our key bindings for use at runtime
     private static HashMap<String, Integer> keys;
 
+    //  Whether or not the player has played the game before
     private static boolean firstTime;
 
+    //  What the player's multiplayer name is
     private static String mpName;
 
+    /**
+     * Method which loads the settings in from the settings files.
+     */
     public static void initialize() {
         preferences = Gdx.app.getPreferences("srsettings");
         keyBindings = Gdx.app.getPreferences("srskeys");
 
-        // If our preferences does not contain something as elementary as the
-        // fullscreen option, that means it probably does not exist yet. So we
-        // create it.
+        // If our preferences does not contain something as basic as the 'fullscreen' parameter, we can assume that it does not actually exist. So we make it here
         if (!preferences.contains("fullscreen")) {
             Gdx.app.error("SettingsManager", "No preferences found. Writing now...");
             setFullscreen(false);
@@ -61,6 +67,9 @@ public class SettingsManager {
             setSfx(100);
             setMusic(100);
             writeSettings();
+
+            //  A missing preferences file most likely means the game has not been launched before, so we'll show the welcome message.
+            firstTime = true;
         } else {
             fullscreen = preferences.getBoolean("fullscreen");
             master = preferences.getFloat("master");
@@ -72,13 +81,10 @@ public class SettingsManager {
             height = Integer.parseInt(resolution.split("x")[1]);
         }
 
-        firstTime = !preferences.contains("firsttime") || preferences.getBoolean("firsttime");
 
         keys = new HashMap<>();
 
-        // Likewise, if the key bindings doesn't know what LEFT means, it was
-        // probably instantiated mere seconds ago and has none of that
-        // information on hand.
+        // Likewise, if the key bindings doesn't contain the key for 'left', it probably also doesn't exist.
         if (!keyBindings.contains("LEFT")) {
             Gdx.app.error("SettingsManager", "No Controls, Man!");
             keys.put("LEFT", DEF_LEFT);
@@ -109,10 +115,7 @@ public class SettingsManager {
         SoundManager.setSfxVolume(preferences.getFloat("sfx"));
     }
 
-    public static HashMap<String, Integer> getKeys() {
-        return keys;
-    }
-
+    /** Method to save custom keys to settings file */
     public static void writeKeys() {
         for (Map.Entry<String, Integer> entry : keys.entrySet()) {
             keyBindings.putInteger(entry.getKey(), entry.getValue());
@@ -120,6 +123,7 @@ public class SettingsManager {
         keyBindings.flush();
     }
 
+    /** Method to save preferences to settings file */
     public static void writeSettings() {
         preferences.putBoolean("firsttime", firstTime);
         preferences.putBoolean("fullscreen", fullscreen);
@@ -181,7 +185,6 @@ public class SettingsManager {
     }
 
     public static void setKeys(String[] titles, int[] keyCodes) {
-        System.out.println("Wew");
         for (int a = 0; a < titles.length; a++) {
             System.out.println(titles[a] + " = " + keyCodes[a]);
             String[] parts = titles[a].toUpperCase().split(" ");
@@ -193,9 +196,13 @@ public class SettingsManager {
         if (keys.containsKey(keyName)) {
             return keys.get(keyName);
         } else {
-            Gdx.app.error("SettingsManager", "NO SUCH KEY! " + keyName);
+            Gdx.app.error("SettingsManager", "No such key! [" + keyName + "]. Tell a dev!");
             return -15;
         }
+    }
+
+    public static HashMap<String, Integer> getKeys() {
+        return keys;
     }
 
     public static boolean isFirstTime() {

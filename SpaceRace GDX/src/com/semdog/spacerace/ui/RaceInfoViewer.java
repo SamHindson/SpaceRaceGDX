@@ -12,8 +12,6 @@ import com.semdog.spacerace.screens.SingleplayerMenu;
 /**
  * A UI element which shows players information about the race chosen in the
  * Singleplayer Menu.
- *
- * @author Sam
  */
 
 public class RaceInfoViewer {

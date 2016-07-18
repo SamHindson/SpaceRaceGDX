@@ -8,8 +8,6 @@ import java.util.Map.Entry;
 /**
  * A class used in the singleplayer campaign to check if players have fulfilled
  * the criteria for the current race.
- *
- * @author Sam
  */
 
 public class GoalChecker {

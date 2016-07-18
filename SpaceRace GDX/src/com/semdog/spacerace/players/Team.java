@@ -5,8 +5,6 @@ import com.semdog.spacerace.graphics.Colors;
 
 /**
  * An enum for the Multiplayer Teams.
- *
- * @author Sam
  */
 
 public enum Team {

@@ -18,8 +18,6 @@ import com.semdog.spacerace.misc.HelpLoader;
 /**
  * A UI element which shows a help topic in the Help Screen.
  * Renders text, images, exhibits and animations.
- *
- * @author Sam
  */
 
 public class HelpSection implements Disposable {

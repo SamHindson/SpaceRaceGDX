@@ -11,8 +11,6 @@ import com.semdog.spacerace.graphics.Colors;
 /**
  * An object which players can walk around, much like a normal planet, albeit
  * much smaller.
- *
- * @author Sam
  */
 
 public class Planet implements Disposable, Trackable {
@@ -37,7 +35,7 @@ public class Planet implements Disposable, Trackable {
 
         mass = radius * radius * 5f;
 
-        color = Colors.getRandom();
+        color = Colors.getRandomPlanetColor();
 
         if (radius == 0.1f)
             return;

@@ -15,29 +15,36 @@ import com.semdog.spacerace.players.Team;
 import com.semdog.spacerace.universe.Trackable;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * An object seen in the multiplayer game as the other players currently on the server.
+ * Named puppet because there is someone else controlling them.
+ *
+ * @author Sam
+ */
+
 public class Puppet implements Trackable {
     private String name;
     private Vector2 position;
     private Team team;
-
     private Rectangle bounds;
     private Animation animation;
     private Sprite idleTexture, jetpack;
 
     private boolean lefting, righting;
     private boolean flipped;
+    private boolean loaded = false;
+    private boolean alive = true;
 
     private float animTime;
-
     private float environmentX, environmentY;
-    private boolean loaded = false;
-
-    private boolean alive = true;
 
     public Puppet(VirtualPlayer player) {
         position = new Vector2(player.getX(), player.getY());
         team = player.getTeam();
         name = player.getName();
+
+        environmentX = player.getEnvironmentX();
+        environmentY = player.getEnvironmentY();
 
         bounds = new Rectangle(position.x - 10, position.y - 10, 20, 20);
     }
@@ -122,10 +129,7 @@ public class Puppet implements Trackable {
     }
 
     public void update(float dt) {
-        if (!loaded) {
-            load();
-            loaded = true;
-        }
+        if (!loaded) load();
 
         jetpack.setFlip(lefting, false);
         bounds.setPosition(position.x - 10, position.y - 10);
@@ -138,15 +142,9 @@ public class Puppet implements Trackable {
         idleTexture.setRotation(getAngle() * MathUtils.radiansToDegrees);
     }
 
-    public void setFlipped(boolean flipped) {
-        this.flipped = flipped;
-    }
-
     public void setEnvironmentPosition(float x, float y) {
         environmentX = x;
         environmentY = y;
-
-        System.out.println("Setting the puppet's environment.");
     }
 
     private float getEnvironmentX() {

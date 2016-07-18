@@ -12,33 +12,27 @@ import com.semdog.spacerace.universe.Universe;
 
 /**
  * The Heads Up Display seen by players. Shows them all sorts of useful
- * information, like their health and ammo situations
- *
- * @author Sam
+ * information, like their health and ammo situations.
  */
 
 public class HUD {
     private Player owner;
     private String title, subtitle;
-    private boolean showingMessage, showingStats, showingTimer;
-
-    private boolean initialSpawn;
-
-    private boolean respawning = false;
-    private float respawnCounter;
-
-    private float timeLeft;
-
     private BitmapFont titleFont, subtitleFont, countdownFont, notificationFont, vitalsignsFont;
-
-    private boolean showingNotification, notificationEntering, notificationExiting;
     private String notification;
-    private float notificationHeight, notificationTime;
-
-    private boolean showingToast;
-    private float toastTime, currentToast;
     private String toast;
     private Color toastColor;
+
+    private boolean showingToast;
+    private boolean showingMessage, showingStats, showingTimer;
+    private boolean showingNotification, notificationEntering, notificationExiting;
+    private boolean initialSpawn;
+    private boolean respawning = false;
+
+    private float respawnCounter;
+    private float timeLeft;
+    private float notificationHeight, notificationTime;
+    private float toastTime, currentToast;
 
     public HUD(Player owner) {
         this.owner = owner;
@@ -64,20 +58,17 @@ public class HUD {
                 Universe.currentUniverse.respawnPlayer();
             }
         } else {
-            // This handles the notifications seen along the bottom left of the
-            // hud.
+            // This handles the notifications seen along the bottom left of the  hud.
             if (showingNotification) {
                 if (notificationEntering) {
-                    // While the notification is busy entering, increase its
-                    // height
+                    // While the notification is busy entering, increase its height
                     notificationHeight += 500 * dt;
                     if (notificationHeight >= 25) {
                         notificationHeight = 25;
                         notificationEntering = false;
                     }
                 } else if (notificationExiting) {
-                    // While the notification is busy exiting, decrease its
-                    // height
+                    // While the notification is busy exiting, decrease its height
                     notificationHeight -= 500 * dt;
                     if (notificationHeight <= 0) {
                         notificationHeight = 0;
@@ -85,8 +76,7 @@ public class HUD {
                         showingNotification = false;
                     }
                 } else {
-                    // Allow the notification to show for 3s before making it
-                    // exit
+                    // Allow the notification to show for 3s before making it exit
                     notificationTime += dt;
                     if (notificationTime > 3) {
                         notificationExiting = true;
@@ -130,8 +120,7 @@ public class HUD {
             subtitleFont.draw(spriteBatch, subtitle, 0, 20 + 2 * subtitleFont.getCapHeight(), Gdx.graphics.getWidth(), 1, false);
         }
 
-        // Retrieves the player's vital signs and draws them as little bars at
-        // the bottom right of the screen.
+        // Retrieves the player's vital signs and draws them as little bars at the bottom right of the screen.
         if (showingStats) {
             // Draws a grey box as a background
             int size = owner.getPrimarySigns().getSigns().values().size();
@@ -141,8 +130,7 @@ public class HUD {
             spriteBatch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() - 245, 5, 245, 15 + 40 * size);
             int h = 0;
 
-            // Goes through each Vitality and draws it in its correct color and
-            // format.
+            // Goes through each Vitality and draws it in its correct color and format.
             for (Vitality vitality : owner.getPrimarySigns().getSigns().values()) {
                 if (vitality.getValueType() == VitalSigns.Type.CONTINUOUS) {
                     spriteBatch.setColor(new Color(vitality.getColor()));
@@ -172,9 +160,7 @@ public class HUD {
                 h++;
             }
 
-            // The toast and notification must only be drawn if the player's
-            // stats are showing.
-
+            // The toast and notification must only be drawn if the player's stats are showing.
             // Draws the toast
             if (showingToast) {
                 subtitleFont.setColor(toastColor);
@@ -188,6 +174,9 @@ public class HUD {
         }
     }
 
+    /**
+     * Makes a toast on the center of the screen
+     */
     public void makeToast(String toast, float time, Color toastColor) {
         this.toast = toast;
         this.toastColor = toastColor;
@@ -196,6 +185,7 @@ public class HUD {
         showingToast = true;
     }
 
+    /** Shows a small notification in the bottom left of the screen */
     public void showNotification(String text) {
         showingNotification = true;
         notificationEntering = true;

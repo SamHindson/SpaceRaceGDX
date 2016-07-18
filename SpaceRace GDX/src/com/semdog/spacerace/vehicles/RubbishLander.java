@@ -9,6 +9,11 @@ import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * The worst ship in the game.
+ * Nobody uses it if they can avoid it
+ */
+
 public class RubbishLander extends Ship {
 
     public RubbishLander(float x, float y, String id) {

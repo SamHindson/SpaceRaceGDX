@@ -19,8 +19,6 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * A vehicle with a big gun on top of it.
- *
- * @author Sam
  */
 
 public class Bombarder extends Ship {

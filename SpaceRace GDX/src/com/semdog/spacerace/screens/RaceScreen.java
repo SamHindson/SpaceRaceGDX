@@ -9,8 +9,6 @@ import com.semdog.spacerace.misc.FontManager;
 
 /**
  * An abstract class which all screens inherit from.
- *
- * @author Sam
  */
 
 public abstract class RaceScreen extends ScreenAdapter {

@@ -16,8 +16,6 @@ import com.semdog.spacerace.ui.TitleCard;
 
 /**
  * A screen where users can change their game settings.
- *
- * @author Sam
  */
 
 public class SettingsScreen extends RaceScreen {

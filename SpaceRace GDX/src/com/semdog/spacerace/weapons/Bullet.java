@@ -13,8 +13,6 @@ import com.semdog.spacerace.universe.Universe;
  * The bullet is an object which zooms through the depths of space, looking for
  * someone whose day it can ruin.
  * They are more often than not fired from a gun of sorts.
- *
- * @author Sam
  */
 
 public class Bullet {

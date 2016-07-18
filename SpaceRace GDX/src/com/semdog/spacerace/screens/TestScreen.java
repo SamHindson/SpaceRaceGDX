@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.graphics.Colors;
 
+/**
+ * Test scren please ignroe
+ */
+
 public class TestScreen extends RaceScreen {
 
     float ax = 150;

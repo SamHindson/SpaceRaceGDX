@@ -5,8 +5,6 @@ import com.semdog.spacerace.collectables.Collectible;
 
 /**
  * An interface that allows certain objects to collide with the ingame Collectibles.
- *
- * @author Sam
  */
 
 public interface Collideable {

@@ -122,6 +122,7 @@ public abstract class Collectible implements Trackable {
         sprite.draw(batch);
     }
 
+    //  If the collectible should do something when collected, this is what is to be executed.
     protected abstract void get(Collideable collideable);
 
     @Override

@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * An effect which simulates an explosion, with a fireball and smoke.
+ */
+
 public class Explosion extends Effect {
     private ParticleEffect effect;
 
@@ -21,7 +25,6 @@ public class Explosion extends Effect {
     @Override
     public void load() {
         super.load();
-
         effect.load(Gdx.files.internal("assets/effects/explosion3.p"), Gdx.files.internal("assets/effects"));
         effect.setPosition(x, y);
         effect.start();
@@ -37,6 +40,9 @@ public class Explosion extends Effect {
         effect.setPosition(x, y);
     }
 
+    /**
+     * Explosions expire when their particle effect is done emitting.
+     */
     @Override
     public boolean isAlive() {
         return !effect.isComplete();

@@ -2,18 +2,20 @@ package com.semdog.spacerace.net;
 
 import com.semdog.spacerace.net.entities.VirtualPlayer;
 
-class NewPlayer extends NetworkEvent {
+/**
+ * A class sent to the server when a new player has joined.
+ * Stores all the necessary information for that joining player.
+ */
 
+class NewPlayer {
     private VirtualPlayer player;
-    private String name;
-    private int team;
     private int id;
 
+    //  Default no-parameter constructor for Kryo deserialization.
     public NewPlayer() {
-
     }
 
-    public NewPlayer(VirtualPlayer player) {
+    NewPlayer(VirtualPlayer player) {
         this.player = player;
     }
 

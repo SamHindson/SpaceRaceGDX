@@ -15,6 +15,11 @@ import com.semdog.spacerace.universe.Mass;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
 
+/**
+ * The masses that spawn and fly all over the place when vehicles explode.
+ * They create their own texture based on the texture of the ship which exploded to create it, which is pretty neat
+ */
+
 public class DebrisPiece extends Mass {
 
     private Sprite sprite;

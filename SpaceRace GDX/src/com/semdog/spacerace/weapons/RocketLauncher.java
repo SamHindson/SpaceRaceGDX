@@ -8,8 +8,6 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * A weapon which launches rockets.
  * See: Rocket.java
- *
- * @author Sam
  */
 
 public class RocketLauncher extends Weapon {

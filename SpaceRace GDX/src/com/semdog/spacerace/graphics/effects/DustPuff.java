@@ -44,6 +44,9 @@ public class DustPuff extends Effect {
         effect.update(dt);
     }
 
+    /**
+     * Dust puffs expire when their particle effect is done emitting.
+     */
     @Override
     public boolean isAlive() {
         return !effect.isComplete();

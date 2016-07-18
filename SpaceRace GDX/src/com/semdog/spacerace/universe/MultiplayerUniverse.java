@@ -47,8 +47,6 @@ import java.util.Map;
 /**
  * An extended universe that communicates with a server for updates on positions
  * of masses, bullets and other players for use in Multiplayer.
- *
- * @author Sam
  */
 
 public class MultiplayerUniverse extends Universe {

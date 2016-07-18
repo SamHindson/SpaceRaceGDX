@@ -11,11 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Tools {
     /**
-     * Given an array of something, this method returns a random entry of that
-     * array.
-     *
-     * @param objects
-     * @return the chosen one
+     * Given an array of something, this method returns a random entry of that array.
      */
     public static Object decide(Object... objects) {
         return objects[MathUtils.random(objects.length - 1)];

@@ -2,12 +2,16 @@ package com.semdog.spacerace.net.entities;
 
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * A class utilized by the server to keep track of planets.
+ */
+
 public class VirtualPlanet {
     private float x, y, radius;
     private String id;
 
+    //  Default no-parameter constructor for Kryo deserialization.
     public VirtualPlanet() {
-
     }
 
     public VirtualPlanet(String id, float x, float y, float radius) {

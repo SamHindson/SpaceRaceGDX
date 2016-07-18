@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * A class designed to be a place where all fonts can be used from, nullifying
  * the need to load them from the file system every time a new screen is made.
- * <p>
+ *
  * It also does away with the need for the FreeType Font library, which does not
  * work in HTML.
  *
@@ -58,8 +58,6 @@ public class FontManager {
 
     /**
      * Loads a font from the file system and sticks it in the HashMap.
-     *
-     * @param name The name of the font
      */
     private static void load(String name) {
         FileHandle fileHandle = Gdx.files.internal("assets/fonts/" + name + ".fnt");
@@ -72,11 +70,8 @@ public class FontManager {
      * A method which resolves some font rendering issues. Credit goes to
      * StackExchange user monnef for coming up with it and mhilbrunner for
      * implementing it in Java.
-     * <p>
      * (http://stackoverflow.com/questions/25011668/bitmapfont-rendering-
      * artifacts)
-     *
-     * @param font The font to be fixed
      */
     private static void fixFont(BitmapFont font) {
         for (Glyph[] page : font.getData().glyphs) {
@@ -98,9 +93,6 @@ public class FontManager {
     /**
      * Fetches a font from the HashMap, and returns a font that is known to be
      * there if the requested one isn't.
-     *
-     * @param name Name of the font
-     * @return The font, or a default if the requested font was not found.
      */
     public static BitmapFont getFont(String name) {
         if (fonts.containsKey(name))
@@ -115,10 +107,8 @@ public class FontManager {
      * Disposes of all fonts in the HashMap to free memory when app closes.
      */
     public static void dispose() {
-        Gdx.app.log("FontManager", "Disposing of Font Cache");
         for (Map.Entry<String, BitmapFont> entry : fonts.entrySet()) {
             entry.getValue().dispose();
         }
-        Gdx.app.log("FontManager", "Done");
     }
 }

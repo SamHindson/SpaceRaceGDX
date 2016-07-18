@@ -13,8 +13,6 @@ import com.semdog.spacerace.ui.*;
  * A screen in which users can report bugs to me. Makes use of Google Forms.
  * This will probably be abused some time in the future so TODO: find a better
  * bug report method.
- *
- * @author Sam
  */
 
 public class BugReportScreen extends RaceScreen {

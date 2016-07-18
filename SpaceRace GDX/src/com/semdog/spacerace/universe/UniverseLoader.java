@@ -16,8 +16,6 @@ import com.semdog.spacerace.vehicles.RubbishLander;
 /**
  * A class that parses the json files found in the "data/stockraces" directory
  * to generate the races exactly as how they were designed.
- *
- * @author Sam
  */
 
 public class UniverseLoader {

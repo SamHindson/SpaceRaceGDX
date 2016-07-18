@@ -13,8 +13,6 @@ import com.semdog.spacerace.universe.Universe;
  * otherwise.
  * <p>
  * Only shows after a delay so as to line the motions up with the music.
- *
- * @author Sam
  */
 
 public class RaceEndScreen extends Overlay {

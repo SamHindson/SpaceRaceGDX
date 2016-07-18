@@ -10,7 +10,7 @@ import com.semdog.spacerace.vehicles.Ship;
 
 /**
  * A pickup that refuels a ship. It also kills a player if they collect it
- * naked. Rocket fuel is not safe to drink, kids.
+ * naked. Rocket fuel is not safe to drink.
  *
  * @author Sam
  */
@@ -20,6 +20,8 @@ public class Fuel extends Collectible {
         super(h, a, 10, 10, "fuel", 0x11);
     }
 
+    //  If the Collideable getting the fuel is a ship, replenish its fuel reserves.
+    //  If it is a player, kill them --- rocket fuel is not to be drunk.
     @Override
     protected void get(Collideable collideable) {
         if (collideable instanceof Ship) {

@@ -53,8 +53,6 @@ public class MultiplayerMenu extends RaceScreen {
         nameInput = new TextInput(Gdx.graphics.getWidth() * 0.4f, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth() * 0.2f, 100, 17);
         Gdx.input.setInputProcessor(nameInput);
 
-        canJoin = true;
-
         new Thread(new Runnable() {
             @Override
             public void run() {

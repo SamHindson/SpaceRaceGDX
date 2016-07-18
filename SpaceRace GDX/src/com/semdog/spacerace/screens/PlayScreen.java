@@ -15,8 +15,6 @@ import com.semdog.spacerace.universe.UniverseLoader;
 
 /**
  * The screen in which users play the actual game.
- *
- * @author Sam
  */
 
 public class PlayScreen extends RaceScreen {

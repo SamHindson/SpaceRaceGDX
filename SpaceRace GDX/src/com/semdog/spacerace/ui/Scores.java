@@ -11,6 +11,10 @@ import com.semdog.spacerace.net.scoring.MetaPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An overlay to show the multiplayer scores
+ */
+
 public class Scores extends Overlay {
 
     private BitmapFont titleFont;

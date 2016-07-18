@@ -21,8 +21,6 @@ import com.semdog.spacerace.ui.Notification;
 /**
  * The main class that handles all the screens, notifications and loading of
  * resources.
- *
- * @author Sam
  */
 
 public class RaceGame extends ApplicationAdapter {
@@ -162,7 +160,7 @@ class BackgroundElement {
         dy = MathUtils.random(50);
 
         if (MathUtils.randomBoolean(0.001f)) {
-            color = new Color(Colors.getRandom()).mul(0.7f);
+            color = new Color(Colors.getRandomPlanetColor()).mul(0.7f);
             radius = MathUtils.random(5, 20);
         } else {
             float e = MathUtils.random() * 0.7f;

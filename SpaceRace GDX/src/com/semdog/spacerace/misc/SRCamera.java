@@ -20,9 +20,7 @@ public class SRCamera extends OrthographicCamera {
 
     public void setRotation(float rotation) {
         if (Math.abs(rotation - currentRotation) > 345) {
-            // If there is a jarring difference between current and desired
-            // rotations, the camera will not interpolate the rotation and will just
-            // snap to whatever is asked of it for fear of making users dizzy
+            // If there is a jarring difference between current and desired rotations, the camera will not interpolate the rotation and will just snap to whatever is asked of it for fear of making users dizzy
             float rAmount = (rotation - currentRotation);
             currentRotation += rAmount;
             rotate(rAmount);

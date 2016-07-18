@@ -14,8 +14,6 @@ import com.semdog.spacerace.ui.*;
 /**
  * A screen where players can choose a singleplayer race to play.
  * Contains a custom ListView and a specially formatted information display area.
- *
- * @author Sam
  */
 
 public class SingleplayerMenu extends RaceScreen implements ListViewListener {

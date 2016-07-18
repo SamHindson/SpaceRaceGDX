@@ -6,8 +6,6 @@ import com.semdog.spacerace.graphics.Art;
 
 /**
  * A UI element which displays things in a list. Much easier said than done.
- *
- * @author Sam
  */
 
 public class ListView {

@@ -3,8 +3,6 @@ package com.semdog.spacerace.races;
 /**
  * A class that is populated with information about a loaded race, just so everything doesn't have to use JSON Parsing
  * whenever a piece of data is needed.
- *
- * @author Sam
  */
 
 public class Race {
@@ -29,8 +27,6 @@ public class Race {
 
     /**
      * A method that computes a unique ID for a race so as to make it easier for Best Times to be stored and identified.
-     *
-     * @return the computed ID
      */
     private String computeID() {
         String result;

@@ -12,8 +12,6 @@ import java.util.NoSuchElementException;
 
 /**
  * A class which holds all the races loaded in from the races folder.
- *
- * @author Sam
  */
 
 public class RaceManager {

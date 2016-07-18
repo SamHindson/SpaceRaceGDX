@@ -26,8 +26,6 @@ import com.semdog.spacerace.weapons.Weapon;
 
 /**
  * The Player class allows users to interact with the in-game universe.
- *
- * @author Sam
  */
 
 public class Player implements Collideable, Disposable, Trackable {
@@ -83,8 +81,7 @@ public class Player implements Collideable, Disposable, Trackable {
 
         primarySigns = new VitalSigns();
 
-        // Instead of manually creating new classes for each vitality, it is
-        // easier to create them at run time in the form of anonymous classes
+        // Instead of manually creating new classes for each vitality, it is easier to create them at run time in the form of anonymous classes
         vHealth = new Vitality() {
 
             @Override
@@ -190,10 +187,11 @@ public class Player implements Collideable, Disposable, Trackable {
         jetpackEffect.load(Gdx.files.internal("assets/effects/jetpack.p"), Gdx.files.internal("assets/effects"));
         jetpackEffect.setPosition(x, y);
         jetpackEffect.allowCompletion();
+
+        team = Team.BLUE;
     }
 
     public void update(float dt, boolean controllable, Array<Planet> planets, boolean lockedCamera) {
-        // Eek
         if (alive) {
             if (pilotingShip && controllable) {
                 ship.updateControls(dt);
@@ -541,7 +539,7 @@ public class Player implements Collideable, Disposable, Trackable {
 
     @Override
     public void collectCollectible(Collectible collectible) {
-        // Grabbin pills!
+        hud.showNotification("You collected " + collectible.getGizmoLabel());
     }
 
     public void replenishHealth() {
@@ -770,7 +768,6 @@ public class Player implements Collideable, Disposable, Trackable {
 
     public void addToast() {
         toastCount++;
-        hud.showNotification("You got toast!");
     }
 
     public float getToastCount() {

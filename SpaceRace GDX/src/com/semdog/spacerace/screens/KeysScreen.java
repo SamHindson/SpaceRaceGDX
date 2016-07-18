@@ -16,8 +16,6 @@ import com.semdog.spacerace.ui.TitleCard;
 /**
  * This screen is where the user will be able to change their preferred key
  * bindings.
- *
- * @author Sam
  */
 
 public class KeysScreen extends RaceScreen implements InputProcessor {
@@ -131,10 +129,10 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
         doneButton.update(dt);
 
         if (listening && listeningPrimary) {
-            primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandom());
+            primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
         }
         if (listening && !listeningPrimary) {
-            secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandom());
+            secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
         }
 
         for (Button button : primaryChangers) {

@@ -5,7 +5,7 @@ import com.semdog.spacerace.net.entities.VirtualPlayer;
 import java.util.HashMap;
 
 /**
- * Created by Sam on 2016/07/17.
+ * A class created to wrap the VirtualUniverse's players array.
  */
 
 public class ScoreSheet {

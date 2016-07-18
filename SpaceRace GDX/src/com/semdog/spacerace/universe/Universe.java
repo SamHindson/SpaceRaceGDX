@@ -132,7 +132,7 @@ public class Universe implements Disposable {
         universeShapeRenderer = new ShapeRenderer();
 
         Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 6, Gdx.graphics.getWidth() * 6, Format.RGBA4444);
-        pixmap.setColor(new Color(0, 0, 0.2f, 1f));
+        pixmap.setColor(new Color(0, 0, 0.05f, 1f));
         pixmap.fill();
 
         for (int k = 0; k < 5000; k++) {

@@ -7,17 +7,17 @@ package com.semdog.spacerace.misc;
  */
 
 public class HelpItem {
-    private String title, rawText;
+    private String title;
+
+    /**
+     * We need to have our text split because of the way the help section draws it -
+     * word by word, taking note of any color or image markups.
+     */
     private String[] split;
 
-    public HelpItem(String title, String rawText) {
+    HelpItem(String title, String rawText) {
         this.title = title;
-        this.rawText = rawText;
         split = rawText.split(" ");
-    }
-
-    public String getRawText() {
-        return rawText;
     }
 
     public String getTitle() {

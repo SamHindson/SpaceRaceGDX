@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.semdog.spacerace.universe.Universe;
 
-/***
+/**
  * This here is the OrbitalHelper class I created last year for ULTRANAUT.
  *
  * @author Sam
@@ -24,14 +24,13 @@ public class OrbitalHelper {
      * math is not an effective way of going about things.
      * <p>
      * For better understanding the math used here refer to the following
-     * resources:
+     * resources
      * <p>
      * http://wiki.kerbalspaceprogram.com/wiki/Tutorial:_Basic_Orbiting_%28Math%29
      * http://hyperphysics.phy-astr.gsu.edu/hbase/math/ellipse.html
      * http://sydney.edu.au/engineering/aeromech/AERO4701/Course_Documents/AERO4701_week2.pdf
      */
-    public static float[] computeOrbit(Vector2 orbiteePosition, Vector2 orbiterPosition, Vector2 orbiterVelocity,
-                                       float orbiteeMass) {
+    public static float[] computeOrbit(Vector2 orbiteePosition, Vector2 orbiterPosition, Vector2 orbiterVelocity, float orbiteeMass) {
         Vector2 orP = new Vector2(orbiterPosition);
         Vector2 offset = orP.sub(orbiteePosition);
         Vector2 orV = new Vector2(orbiterVelocity);

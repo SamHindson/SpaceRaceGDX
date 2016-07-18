@@ -6,8 +6,6 @@ import com.semdog.spacerace.misc.Tools;
 
 /**
  * A class which handles the various snarky messages one sees on the HUD when the die.
- *
- * @author Sam
  */
 
 public class LifeAndDeath {

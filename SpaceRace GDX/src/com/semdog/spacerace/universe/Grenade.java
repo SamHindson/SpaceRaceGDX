@@ -18,8 +18,6 @@ import com.semdog.spacerace.players.Player;
 /**
  * A mass spawned by the player that detonates after a set amount of time, or on
  * contact with masses/other players.
- *
- * @author Sam
  */
 
 public class Grenade extends Mass implements Trackable {

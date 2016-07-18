@@ -18,8 +18,7 @@ import java.util.Map;
  */
 
 public class Art {
-    // HashMaps which store the textures and predominant colors of each piece of
-    // art found in SpaceRace.
+    /*  HashMaps which store the textures and predominant colors of each piece of art found in SpaceRace.*/
     private static HashMap<String, Texture> artwork;
     private static HashMap<String, Color> accents;
 
@@ -48,9 +47,6 @@ public class Art {
     /**
      * Creates a texture of a certain color that is 1x1 in size. Practically
      * only ever used for the white pixel.
-     *
-     * @param color The color of the desired pixel
-     * @return the created texture
      */
     private static Texture createPixel(Color color) {
         Pixmap pix = new Pixmap(1, 1, Format.RGB565);
@@ -63,11 +59,6 @@ public class Art {
      * Calculates the saturation value of a color using R, G and B values.
      * Credit goes to StackOverflow user Mohsen
      * (http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion)
-     *
-     * @param r The red value
-     * @param g The green value
-     * @param b The blue value
-     * @return the saturation of the color (r;g;b)
      */
     private static double getSaturation(float r, float g, float b) {
         double max = Math.max(r, g);
@@ -89,9 +80,6 @@ public class Art {
     /**
      * Creates a silhouette of a given pixmap. Used mainly when a mass has
      * damage done to it and it needs that classic flashing look.
-     *
-     * @param oldPixmap The original pixmap
-     * @return a generated silhouette texture.
      */
     private static Texture createSilhouette(Pixmap oldPixmap) {
         Pixmap newPixmap = new Pixmap(oldPixmap.getWidth(), oldPixmap.getHeight(), Format.RGBA8888);
@@ -112,8 +100,6 @@ public class Art {
     /**
      * Loads a texture from a FileHandle, and puts that, its silhouette and its
      * predominant color in the respective hashmaps.
-     *
-     * @param file The file to load the texture from.
      */
     private static void load(FileHandle file) {
         Texture texture = new Texture(file);
@@ -132,8 +118,7 @@ public class Art {
         // The coordinates of the pixel with the highest saturation.
         int mx = 0, my = 0;
 
-        // Scans through entire picture looking for pixel with highest
-        // saturation.
+        // Scans through entire picture looking for pixel with highest saturation.
         for (int x = 0; x < texture.getWidth(); x++) {
             for (int y = 0; y < texture.getWidth(); y++) {
                 int raw = pixmap.getPixel(x, y);
@@ -157,9 +142,6 @@ public class Art {
 
     /**
      * Returns a texture from the textures HashMap by using the texture's ID.
-     *
-     * @param name The name of the desired texture
-     * @return the texture
      */
     public static Texture get(String name) {
         if (artwork.containsKey(name)) {
@@ -168,7 +150,7 @@ public class Art {
             try {
                 Texture texture = new Texture(Gdx.files.internal("assets/graphics/" + name + ".png"));
                 Gdx.app.error("Art",
-                        "WARNING! " + name + " was not loaded initially and as such caused a slowdown. Nyet!");
+                        "WARNING! " + name + " was not loaded initially and as such caused a slowdown. Tell a developer!");
                 artwork.put(name, texture);
                 return texture;
             } catch (Exception e) {
@@ -181,9 +163,6 @@ public class Art {
     /**
      * Returns a texture's accent color from the accents HashMap by using the
      * texture's ID.
-     *
-     * @param textureName The name of the texture whose color needs to be used.
-     * @return the color
      */
     public static Color getAccent(String textureName) {
         return accents.get(textureName);

@@ -42,7 +42,7 @@ public class Colors {
     public static final Color UI_VERMILLION = new Color(0xF85A3EFF);
     public static final Color UI_WHITE = new Color(0xE1E6E1FF);
 
-    public static Color getRandom() {
+    public static Color getRandomPlanetColor() {
         return (Color) Tools.decide(P_BLUE, P_GRAY, P_GREEN, P_ORANGE, P_PURPLE, P_RED, P_WHITE, P_YELLOW);
     }
 }
