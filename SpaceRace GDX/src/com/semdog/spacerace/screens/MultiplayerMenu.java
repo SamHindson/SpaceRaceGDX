@@ -17,8 +17,9 @@ import com.semdog.spacerace.ui.TitleCard;
 import java.net.InetAddress;
 
 /**
- * Created by Sam on 2016/07/17.
+ * The menu which allows users to join multiplayer games.
  */
+
 public class MultiplayerMenu extends RaceScreen {
 
     public static InetAddress serverAddress;
