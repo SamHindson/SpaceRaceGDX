@@ -25,7 +25,7 @@ public class SpaceRaceServer extends Listener {
     private Server server;
 
     private SpaceRaceServer() throws IOException {
-        //  Create a standard universe with four planets
+        //  Create a standard universe with five planets
         universe = new VirtualUniverse();
         universe.addPlanet("Mors", 0, 0, 200);
         universe.addPlanet("Dagobah", 1200, 0, 200);

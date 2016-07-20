@@ -53,6 +53,7 @@ public class Universe implements Disposable {
     protected Array<Mass> masses;
     float fcx = 0;
     float fcy = 0;
+    float spawnX, spawnY;
     float age;
     boolean playerEnabled;
     Array<Planet> planets;
@@ -296,12 +297,8 @@ public class Universe implements Disposable {
 
                     RaceManager.getCurrentRace().setCompleted(true);
 
-                    if (best) {
-
-                        RaceManager.setNewBestTime(timeLimit - timeLeft);
-                        Gdx.app.log("Universe", "New best time!");
-                    }
-
+                    if (best) RaceManager.setNewBestTime(time);
+                    
                     String timeString = timeLeft < 10 ? String.format("%.2f", timeLeft) : (int) timeLeft + "";
                     String text = "Race completed with " + timeString + "s left!" + (best ? "\nNew Record!" : "");
                     raceEnd.setColor(best ? Colors.UI_GREEN : Colors.UI_WHITE);
@@ -394,8 +391,7 @@ public class Universe implements Disposable {
                 }
             }
 
-            if (f)
-                player.setBoarding(false, null);
+            if (f) player.setBoarding(false, null);
         }
         if (cameraShake > 0) {
             if (cameraShake > 5)
@@ -570,8 +566,6 @@ public class Universe implements Disposable {
         effects.add(effect);
 
         if (effect instanceof Explosion) {
-            playSound("explosion" + Tools.decide(1, 2, 3), effect.getX(), effect.getY(), 1);
-
             if (cameraShake < 5) {
                 for (int i = 0; i < masses.size; i++) {
                     Mass mass = masses.get(i);
@@ -628,18 +622,13 @@ public class Universe implements Disposable {
 
     public void respawnPlayer() {
         hud.showStats();
-        switch (player.getTeam()) {
-            case PINK:
-                player.spawn(0, 550, planets);
-            case BLUE:
-                break;
-            default:
-                break;
-        }
+        player.spawn(spawnX, spawnY, planets);
     }
 
     public void spawnPlayer(float x, float y) {
         player.spawn(x, y, planets);
+        spawnX = x;
+        spawnY = y;
     }
 
     public void playUISound(String name) {

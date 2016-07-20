@@ -57,10 +57,7 @@ public class Wormhole extends Listener {
         client.connect(5000, MultiplayerMenu.serverAddress, 13377, 24488);
         client.addListener(this);
 
-        System.out.println("Cool!");
-
         clientID = client.getID();
-        System.out.println("My id is " + clientID);
     }
 
     public int getID() {
@@ -110,7 +107,9 @@ public class Wormhole extends Listener {
     }
 
     public void registerPlayer(Player player) {
-        VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY(), player.getEnvironment().getX(), player.getEnvironment().getY());
+    	System.out.println(player);
+    	System.out.println(player.getTeam());
+        VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY(), player.getEnvironmentX(), player.getEnvironmentY());
         NewPlayer request = new NewPlayer(player2);
         request.setId(clientID);
         client.sendTCP(request);
