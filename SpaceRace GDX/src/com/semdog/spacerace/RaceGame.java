@@ -89,6 +89,7 @@ public class RaceGame extends ApplicationAdapter {
         ShaderProgram.pedantic = true;
         if(!shader.isCompiled())
         {
+        	System.out.println("Welp! DId not compoiule");
         	System.err.println(shader.getLog());
         	System.exit(-5);
         }
