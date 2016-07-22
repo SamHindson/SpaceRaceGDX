@@ -1,11 +1,37 @@
-#ifdef GL_ES
-    precision mediump float;
-#endif
-
 varying vec4 v_color;
-varying vec2 v_texCoords;
-uniform sampler2D u_texture;
+varying vec2 v_texCoord0;
+
+uniform sampler2D u_sampler2D;
+
+//float4 outcolor = float4(0, 0, 0, 1);
+//if (pp == 1) outcolor.r = color.r;
+//    else if (pp == 2) outcolor.g = color.g;
+//        else outcolor.b = color.b;
+//return outcolor;
+
+uniform float _VertsColor;
+uniform float _VertsColor2;
 
 void main() {
-    gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
+	int pp = int(720 * v_texCoord0.y) % 3; 
+	vec4 outcolor = vec4(0, 0, 0, 1);
+	vec4 muls = vec4(1, 1, 1, 1);
+	vec4 color = texture2D(u_sampler2D, v_texCoord0) * v_color * vec4(1, 1, 1, 1);
+	
+	float e = 0.2f;
+	
+	if(pp == 1) {
+		muls.r = 1; 
+		muls.g = e;
+	} else if(pp == 2) {
+		muls.g = 1; 
+		muls.b = e;
+	} else {
+        muls.b = 1; 
+        muls.r = e;
+    }
+    
+    outcolor = color * muls;
+	
+	gl_FragColor = outcolor;
 }

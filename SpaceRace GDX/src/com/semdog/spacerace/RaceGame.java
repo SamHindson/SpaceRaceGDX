@@ -86,7 +86,7 @@ public class RaceGame extends ApplicationAdapter {
         mainBatch = new SpriteBatch();
         
         shader = new ShaderProgram(Gdx.files.internal("assets/shaders/shader.vsh"), Gdx.files.internal("assets/shaders/shader.fsh"));
-        ShaderProgram.pedantic = true;
+        ShaderProgram.pedantic = false;
         if(!shader.isCompiled())
         {
         	System.out.println("Welp! DId not compoiule");
@@ -128,7 +128,6 @@ public class RaceGame extends ApplicationAdapter {
         frameBuffer.end();
         
         mainBatch.begin(); 
-        mainBatch.setShader(shader);
         mainBatch.draw(frameBuffer.getColorBufferTexture(), 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
         mainBatch.end();
     }

@@ -15,7 +15,7 @@ public class GameLoader {
         config.title = "SpaceRace v" + version;
         config.width = 1280;
         config.height = 720;
-        config.samples = 4;
+        config.useGL30 = true;
         config.resizable = false;
         new LwjglApplication(new RaceGame(), config);
     }
