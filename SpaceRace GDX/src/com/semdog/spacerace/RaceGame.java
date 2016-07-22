@@ -46,19 +46,21 @@ public class RaceGame extends ApplicationAdapter {
     private FrameBuffer frameBuffer;
     private SpriteBatch mainBatch;
     private ShaderProgram shader;
+    
+    SpriteBatch test;
 
     @Override
     public void create() {
-        FontManager.initialize();
+        /*FontManager.initialize();
         SoundManager.initialize();
-        SettingsManager.initialize();
+        SettingsManager.initialize();*/
         Art.initialize();
-        HelpSection.initialize();
-        RaceManager.initialize();
+        /*HelpSection.initialize();
+        RaceManager.initialize();*/
 
-        Gdx.graphics.setDisplayMode(SettingsManager.getWidth(), SettingsManager.getHeight(), SettingsManager.isFullscreen());
+        //Gdx.graphics.setDisplayMode(SettingsManager.getWidth(), SettingsManager.getHeight(), SettingsManager.isFullscreen());
 
-        backgroundRenderer = new ShapeRenderer();
+       /* backgroundRenderer = new ShapeRenderer();
         backgroundElements = new Array<>();
 
         for (int w = 0; w < 1000; w++) {
@@ -78,7 +80,7 @@ public class RaceGame extends ApplicationAdapter {
 
             SettingsManager.setFirstTime(false);
             SettingsManager.writeSettings();
-        }
+        }*/
         
         frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         frameBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
@@ -94,28 +96,38 @@ public class RaceGame extends ApplicationAdapter {
         	System.exit(-5);
         }
         mainBatch.setShader(shader);
+        
+        test = new SpriteBatch();
     }
+    
+    float age;
 
     @Override
     public void render() {
-        if (screen.isMarkedForDestruction())
-            return;
+        /*if (screen.isMarkedForDestruction())
+            return;*/
 
-        if (!(screen instanceof PlayScreen))
+        /*if (!(screen instanceof PlayScreen))
             for (BackgroundElement element : backgroundElements) {
                 element.update(Gdx.graphics.getDeltaTime());
-            }
+            }*/
 
-        screen.update(Gdx.graphics.getDeltaTime());
-        Notification.update(Gdx.graphics.getDeltaTime());
+        /*screen.update(Gdx.graphics.getDeltaTime());
+        Notification.update(Gdx.graphics.getDeltaTime());*/
 
-        SoundManager.update();
+        //SoundManager.update();
+    	
+    	age += Gdx.graphics.getDeltaTime();
+    	
+    	shader.begin();
+    	shader.setUniformf("lol", MathUtils.sin(age));
+    	System.out.println(MathUtils.sin(age));
         
         frameBuffer.begin();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
         Gdx.gl20.glClearColor(0, 0, 0, 1f);
-        if (!(screen instanceof PlayScreen)) {
+        /*if (!(screen instanceof PlayScreen)) {
             backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
             for (BackgroundElement element : backgroundElements) {
                 backgroundRenderer.setColor(element.color);
@@ -124,7 +136,18 @@ public class RaceGame extends ApplicationAdapter {
             backgroundRenderer.end();
         }
         screen.render();
-        Notification.draw();
+        Notification.draw();*/
+        
+        test.begin();
+        
+        for(int w = 0; w < 1280; w += 30) {
+        	for(int q = 0; q < 720; q += 30) {
+        		test.draw(Art.get("runt"), w, q, 30, 30);
+        	}
+        }
+        
+        test.end();
+        
         frameBuffer.end();
         
         mainBatch.begin(); 
