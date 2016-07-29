@@ -16,7 +16,7 @@ public interface Vitality {
 
     float getMaxValue(); // Its maximum value
 
-    Color getColor(); // Its color
+    Color getColor(); // Its color on the HUD
 
     VitalSigns.Type getValueType(); // Whether it is continuous or discrete
 }

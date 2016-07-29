@@ -5,30 +5,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.bitfire.postprocessing.PostProcessor;
+import com.bitfire.postprocessing.effects.Bloom;
+import com.bitfire.postprocessing.effects.CrtMonitor;
+import com.bitfire.postprocessing.effects.Curvature;
+import com.bitfire.postprocessing.filters.CrtScreen;
+import com.bitfire.utils.ShaderLoader;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.screens.BugReportScreen;
-import com.semdog.spacerace.screens.HelpScreen;
-import com.semdog.spacerace.screens.KeysScreen;
-import com.semdog.spacerace.screens.MenuScreen;
-import com.semdog.spacerace.screens.MultiplayerMenu;
-import com.semdog.spacerace.screens.PlayScreen;
-import com.semdog.spacerace.screens.RaceScreen;
-import com.semdog.spacerace.screens.SettingsScreen;
-import com.semdog.spacerace.screens.SingleplayerMenu;
-import com.semdog.spacerace.screens.ThankYouScreen;
+import com.semdog.spacerace.screens.*;
 import com.semdog.spacerace.ui.HelpSection;
 import com.semdog.spacerace.ui.Notification;
 
@@ -42,36 +34,48 @@ public class RaceGame extends ApplicationAdapter {
     private ShapeRenderer backgroundRenderer;
     private Array<BackgroundElement> backgroundElements;
     private RaceScreen screen;
-    
-    private FrameBuffer frameBuffer;
-    private SpriteBatch mainBatch;
-    private ShaderProgram shader;
-    
-    SpriteBatch test;
 
+    private PostProcessor postProcessor;
+    private CrtMonitor crtMonitor;
+
+    private float age;
+    private float screenChangeJitter = 0;
+    private boolean exiting = false;
+
+    /**
+     * The first method called after main()
+     */
     @Override
     public void create() {
-        /*FontManager.initialize();
+        /* Initializing the managers */
+        FontManager.initialize();
         SoundManager.initialize();
-        SettingsManager.initialize();*/
+        SettingsManager.initialize();
         Art.initialize();
-        /*HelpSection.initialize();
-        RaceManager.initialize();*/
+        HelpSection.initialize();
+        RaceManager.initialize();
 
-        //Gdx.graphics.setDisplayMode(SettingsManager.getWidth(), SettingsManager.getHeight(), SettingsManager.isFullscreen());
+        /* Setting correct resolution */
+        Gdx.graphics.setWindowedMode(SettingsManager.getWidth(), SettingsManager.getHeight());
 
-       /* backgroundRenderer = new ShapeRenderer();
+        if (SettingsManager.isFullscreen())
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
+        /* Setting up the stars in the background */
+        backgroundRenderer = new ShapeRenderer();
         backgroundElements = new Array<>();
-
         for (int w = 0; w < 1000; w++) {
             backgroundElements.add(new BackgroundElement());
         }
 
+        /* Sets the custom cursor */
         Pixmap cursor = new Pixmap(Gdx.files.internal("assets/graphics/cursor.png"));
-        Gdx.input.setCursorImage(cursor, 0, 0);
+        Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
 
+        /* Initializes the screen */
         screen = new MenuScreen(this);
 
+        /* Welcomes the player if it is their first time playing */
         if (SettingsManager.isFirstTime()) {
             Notification.show("Welcome to SpaceRace!\nDespite its cute looks, this game is quite literally rocket science and thus the help section is highly recommended.", "Take Me There", "I'm Smart", Colors.P_PINK, Colors.P_BLUE, () -> {
                 changeScreen("help");
@@ -80,137 +84,161 @@ public class RaceGame extends ApplicationAdapter {
 
             SettingsManager.setFirstTime(false);
             SettingsManager.writeSettings();
-        }*/
-        
-        frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        frameBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-      
-        mainBatch = new SpriteBatch();
-        
-        shader = new ShaderProgram(Gdx.files.internal("assets/shaders/shader.vsh"), Gdx.files.internal("assets/shaders/shader.fsh"));
-        ShaderProgram.pedantic = false;
-        if(!shader.isCompiled())
-        {
-        	System.out.println("Welp! DId not compoiule");
-        	System.err.println(shader.getLog());
-        	System.exit(-5);
         }
-        mainBatch.setShader(shader);
-        
-        test = new SpriteBatch();
+
+        /* Sets up the post processor */
+        ShaderLoader.BasePath = "assets/shaders/";
+        postProcessor = new PostProcessor(false, false, true);
+
+        int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
+        crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
+        crtMonitor.setColorOffset(0.001f);
+        postProcessor.addEffect(crtMonitor);
+
+        Curvature curvature = new Curvature();
+        curvature.setDistortion(0.2f);
+        postProcessor.addEffect(curvature);
+
+        Bloom bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bloom.setBloomIntesity(0.1f);
+        postProcessor.addEffect(bloom);
     }
-    
-    float age;
 
     @Override
     public void render() {
-        /*if (screen.isMarkedForDestruction())
-            return;*/
-
-        /*if (!(screen instanceof PlayScreen))
+        /* We will update the background stars if we are not on the play screen */
+        if (!(screen instanceof PlayScreen))
             for (BackgroundElement element : backgroundElements) {
                 element.update(Gdx.graphics.getDeltaTime());
-            }*/
+            }
 
-        /*screen.update(Gdx.graphics.getDeltaTime());
-        Notification.update(Gdx.graphics.getDeltaTime());*/
+        /* Updating relevant objects */
+        screen.update(Gdx.graphics.getDeltaTime());
 
-        //SoundManager.update();
-    	
-    	age += Gdx.graphics.getDeltaTime();
-    	
-    	shader.begin();
-    	shader.setUniformf("lol", MathUtils.sin(age));
-    	System.out.println(MathUtils.sin(age));
-        
-        frameBuffer.begin();
+        if (exiting) return;
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+        Notification.update(Gdx.graphics.getDeltaTime());
+        SoundManager.update();
+
+        age += Gdx.graphics.getDeltaTime();
+
+        if (screenChangeJitter > 0.001f) {
+            screenChangeJitter -= Gdx.graphics.getDeltaTime() * 10.f;
+        } else {
+            screenChangeJitter = 0;
+        }
+
+        if (SettingsManager.isPostprocessing()) {
+            crtMonitor.setTime(age);
+            float f = MathUtils.random(screenChangeJitter);
+            crtMonitor.setColorOffset(0.00175f + f);
+
+        /* Captures screen for post processing */
+            postProcessor.capture();
+        }
+
+        /* Clears the screen for a render */
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT/* | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0)*/);
         Gdx.gl20.glClearColor(0, 0, 0, 1f);
-        /*if (!(screen instanceof PlayScreen)) {
+
+        /* Draws stars if we are not busy playing */
+        if (!(screen instanceof PlayScreen)) {
             backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            backgroundRenderer.setColor(new Color(0.05f, 0.05f, 0.06f, 1));
+            backgroundRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             for (BackgroundElement element : backgroundElements) {
                 backgroundRenderer.setColor(element.color);
                 backgroundRenderer.circle(element.x, element.y, element.radius);
             }
             backgroundRenderer.end();
         }
+
+        /* We draw our current screen */
         screen.render();
-        Notification.draw();*/
-        
-        test.begin();
-        
-        for(int w = 0; w < 1280; w += 30) {
-        	for(int q = 0; q < 720; q += 30) {
-        		test.draw(Art.get("runt"), w, q, 30, 30);
-        	}
-        }
-        
-        test.end();
-        
-        frameBuffer.end();
-        
-        mainBatch.begin(); 
-        mainBatch.draw(frameBuffer.getColorBufferTexture(), 0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), -Gdx.graphics.getHeight());
-        mainBatch.end();
+
+        /* Finally, we draw our notifications */
+        Notification.draw();
+
+        /* Finally (Part 2) we render the post-processed screen if we need to*/
+        if (SettingsManager.isPostprocessing()) postProcessor.render();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        Gdx.app.exit();
+
+        screen.dispose();
+        backgroundRenderer.dispose();
+        postProcessor.dispose();
+        Notification.dispose();
+        exiting = true;
+        System.exit(5);
+    }
+
+    /**
+     * Sets the screen to the desired one.
+     */
     public void changeScreen(String name) {
+        /* Get rid of the current screen */
+        screen.dispose();
+
+        /* Adds to the color jitter effect when changing screens */
+        screenChangeJitter = 0.1f;
+
+        /* Sets the screen accordingly */
         switch (name) {
             case "play":
-                screen.dispose();
                 screen = new PlayScreen(this, false);
                 SoundManager.stopMusic("menu");
                 break;
             case "multiplay":
-                screen.dispose();
                 screen = new PlayScreen(this, true);
                 SoundManager.stopMusic("menu");
                 break;
             case "menu":
-                screen.dispose();
                 screen = new MenuScreen(this);
                 break;
             case "playmenu":
-                screen.dispose();
                 screen = new SingleplayerMenu(this);
                 break;
             case "settings":
-                screen.dispose();
                 screen = new SettingsScreen(this);
                 break;
             case "keys":
-                screen.dispose();
                 screen = new KeysScreen(this);
                 break;
             case "thankyou":
-                screen.dispose();
                 screen = new ThankYouScreen(this);
                 break;
             case "help":
-                screen.dispose();
                 screen = new HelpScreen(this);
                 break;
             case "bug":
-                screen.dispose();
                 screen = new BugReportScreen(this);
                 break;
             case "multiplaymenu":
-                screen.dispose();
                 screen = new MultiplayerMenu(this);
                 break;
         }
 
-        if (!name.equals("play") && !SoundManager.isMusicPlaying("menu"))
+        /* Stops/starts any music that needs to do so */
+        if (!name.equals("play") && !SoundManager.isMusicPlaying("menu")) {
             SoundManager.playMusic("menu", true);
+            SoundManager.stopMusic("oxidiser");
+        }
     }
 }
 
+/**
+ * A class to define the little stars and planets you see in the menu background
+ */
 class BackgroundElement {
     float x;
     float y;
     float radius;
     Color color;
+
     private float dy;
 
     BackgroundElement() {

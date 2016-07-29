@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * A class utilized by the server to keep track of planets.
+ * It stores their position, radius and name.
  */
 
 public class VirtualPlanet {

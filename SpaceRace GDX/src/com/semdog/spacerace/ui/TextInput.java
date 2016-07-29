@@ -28,7 +28,7 @@ public class TextInput implements InputProcessor {
         this.height = height;
         this.limit = limit;
 
-        font = FontManager.getFont("inconsolata-18");
+        font = FontManager.getFont("inconsolata-24");
     }
 
     public void draw(SpriteBatch batch) {
@@ -39,8 +39,8 @@ public class TextInput implements InputProcessor {
 
         font.setColor(Colors.UI_WHITE);
         font.draw(batch, text + "_", x + 10, y + height - 10, width - 20, 10, true);
-        font.setColor(Colors.UI_GREEN);
-        font.draw(batch, (limit - text.length() - 1) + "", x, y + 20, width - 10, 2, true);
+        font.setColor(Colors.UI_BLUE);
+        font.draw(batch, (limit - text.length() - 1) + "", x, y + 25, width - 10, 2, true);
     }
 
     public String getText() {

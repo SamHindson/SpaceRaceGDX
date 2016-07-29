@@ -43,14 +43,7 @@ public class MenuScreen extends RaceScreen {
         button4.setColors(Colors.UI_GRAY, Colors.UI_WHITE);
 
         button5 = new Button("Quit", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.55f - 244, 200,
-                60, () -> Notification.show("Really quit?", "Yeah...", "No!", Colors.UI_RED, Colors.UI_GREEN, () -> {
-
-            //dispose();
-            //SoundManager.dispose();
-            //Art.dispose();
-            //FontManager.dispose();
-            exit();
-        }, () -> Notification.showing = false));
+                60, () -> Notification.show("Really quit?", "Yeah...", "No!", Colors.UI_RED, Colors.UI_GREEN, this::exit, () -> Notification.showing = false));
         button5.setColors(Colors.UI_BLUE, Colors.UI_WHITE);
 
         secretButton = new Button("???", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f, 400, 300,
@@ -96,13 +89,11 @@ public class MenuScreen extends RaceScreen {
 
     @Override
     public void dispose() {
-        //super.dispose();
         batch.dispose();
     }
 
     @Override
     public void exit() {
-        dispose();
-        Gdx.app.exit();
+        game.dispose();
     }
 }

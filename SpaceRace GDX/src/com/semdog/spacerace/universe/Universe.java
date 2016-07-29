@@ -27,7 +27,6 @@ import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.misc.SRCamera;
-import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.LifeAndDeath;
@@ -41,8 +40,6 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * The container for everything that is ingame.
- *
- * @author Sam
  */
 
 public class Universe implements Disposable {
@@ -132,8 +129,8 @@ public class Universe implements Disposable {
         universeBatch.setProjectionMatrix(camera.combined);
         universeShapeRenderer = new ShapeRenderer();
 
-        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 6, Gdx.graphics.getWidth() * 6, Format.RGBA4444);
-        pixmap.setColor(new Color(0, 0, 0.05f, 1f));
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() * 5, Gdx.graphics.getWidth() * 5, Format.RGBA4444);
+        pixmap.setColor(new Color(0.05f, 0.05f, 0.05f, 1f));
         pixmap.fill();
 
         for (int k = 0; k < 5000; k++) {

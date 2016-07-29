@@ -103,6 +103,8 @@ public class SoundManager {
      * Plays a sound at a given volume and panning.
      */
     public static void playSound(String name, float volume, float pan) {
+        System.out.println("Masters " + masterVolume);
+        System.out.println("Sex " + sfxVolume);
         if (clips.containsKey(name)) {
             clips.get(name).play(volume * masterVolume * sfxVolume, 1, pan);
         } else {
@@ -206,7 +208,6 @@ public class SoundManager {
     public static void update() {
         if (queuedMusic.size > 0) {
             String title = queuedMusic.first();
-            Gdx.app.log("SoundManager", title + " requested...");
             playMusic(title.split("-")[0], Boolean.parseBoolean(title.split("-")[1]));
             queuedMusic.removeValue(title, true);
         }
@@ -215,29 +216,26 @@ public class SoundManager {
     /**
      * Sets the overall volume.
      */
-    public static void setMasterVolume(float volume) {
-        masterVolume = volume / 10.f;
-        System.out.println("Master is now " + volume);
-        setMusicVolume(musicVolume);
-        setSfxVolume(sfxVolume);
+    public static void setMasterVolume(float percent) {
+        masterVolume = percent / 100.f;
+        setMusicVolume(musicVolume * 100);
+        setSfxVolume(sfxVolume * 100);
     }
 
     /**
      * Sets the overall music volume.
      */
-    public static void setMusicVolume(float volume) {
-        musicVolume = volume / 10.f;
-        music.entrySet().stream().filter(entry -> entry.getValue().isPlaying()).forEach(entry -> {
-            entry.getValue().setVolume(masterVolume * musicVolume);
-            System.out.println(masterVolume * musicVolume);
-        });
+    public static void setMusicVolume(float percent) {
+        musicVolume = percent / 100.f;
+        /* Sets the volume for the currently playing music */
+        music.entrySet().stream().filter(entry -> entry.getValue().isPlaying()).forEach(entry -> entry.getValue().setVolume(masterVolume * musicVolume));
     }
 
     /**
      * Sets the overall sfx volume.
      */
-    public static void setSfxVolume(float volume) {
-        sfxVolume = volume / 10.f;
+    public static void setSfxVolume(float percent) {
+        sfxVolume = percent / 100.f;
     }
 
     /**

@@ -53,24 +53,18 @@ public class MultiplayerMenu extends RaceScreen {
         nameInput = new TextInput(Gdx.graphics.getWidth() * 0.4f, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth() * 0.2f, 100, 17);
         Gdx.input.setInputProcessor(nameInput);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Client client = new Client();
-                InetAddress address = client.discoverHost(24488, 5000);
+        new Thread(() -> {
+            Client client = new Client();
+            InetAddress address = client.discoverHost(24488, 5000);
 
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (address == null) text = "Could not find any servers!";
-                        else {
-                            serverAddress = address;
-                            text = "Found a server!\nEnter your name.";
-                            canJoin = true;
-                        }
-                    }
-                });
-            }
+            Gdx.app.postRunnable(() -> {
+                if (address == null) text = "Could not find any servers!";
+                else {
+                    serverAddress = address;
+                    text = "Found a server!\nEnter your name.";
+                    canJoin = true;
+                }
+            });
         }).start();
     }
 

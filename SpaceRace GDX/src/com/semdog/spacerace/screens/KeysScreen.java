@@ -54,8 +54,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
         });
         doneButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);
 
-        // This section instiantiates a whole bunch of arrays that are used in
-        // the process of changing the key bindings.
+        // This section instiantiates a whole bunch of arrays that are used in the process of changing the key bindings.
         // They are in two separate sections to increase usability.
         primaryChangers = new Button[primaries.length];
         String[] primaryKeys = new String[primaries.length];
@@ -71,8 +70,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
 
             primaryKeys[a] = keyName;
             primaryChangers[a] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.3f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * a - 10, 100, 40, () -> {
-                // When the button is pressed, the InputProcessor will await the
-                // next keystroke with baited breath.
+                // When the button is pressed, the InputProcessor will await the  next keystroke with baited breath.
                 // When it receives this signal, that keystroke is recorded.
                 listen(i);
                 listeningPrimary = true;
@@ -89,8 +87,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
 
         for (String name : secondaries) {
             final int i = b;
-            String split = name.split(" ")[name.split(" ").length - 1].toUpperCase();
-            String key = split;
+            String key = name.split(" ")[name.split(" ").length - 1].toUpperCase();
             int keyCode = SettingsManager.getKey(key);
             String keyName = Input.Keys.toString(SettingsManager.getKey(key));
 

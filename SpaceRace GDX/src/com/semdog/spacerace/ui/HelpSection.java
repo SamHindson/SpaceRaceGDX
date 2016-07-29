@@ -37,7 +37,7 @@ public class HelpSection implements Disposable {
         this.width = width;
         this.height = height;
         titleFont = FontManager.getFont("fipps-36");
-        descriptionFont = FontManager.getFont("inconsolata-18");
+        descriptionFont = FontManager.getFont(Gdx.graphics.getWidth() > 1280 ? "inconsolata-24" : "inconsolata-18");
         descriptionFont.setColor(Colors.UI_WHITE);
 
         exhibits = new Array<>();

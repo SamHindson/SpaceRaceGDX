@@ -13,7 +13,7 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * A class which extends the functionality of the standard Player by communicating with a Wormhole whenever its state changes (i.e. starts walking, stops walking, jumps, etc.)
- * The Wormhole then processes this and notifies all other connected players to move the Puppet linked to this particular player.
+ * The Wormhole then processes this and notifies all other connected players to move the Puppet linked to this particular player. 
  */
 
 public class MultiplayerPlayer extends Player {

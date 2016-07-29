@@ -8,14 +8,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
  */
 
 public class GameLoader {
-    private static final String version = "0.3.3";
+    private static final String version = "0.3.5";
 
     public static void main(String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "SpaceRace v" + version;
         config.width = 1280;
         config.height = 720;
-        config.useGL30 = true;
         config.resizable = false;
         new LwjglApplication(new RaceGame(), config);
     }

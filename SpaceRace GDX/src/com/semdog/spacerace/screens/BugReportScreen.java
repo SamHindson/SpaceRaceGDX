@@ -11,8 +11,8 @@ import com.semdog.spacerace.ui.*;
 
 /**
  * A screen in which users can report bugs to me. Makes use of Google Forms.
- * This will probably be abused some time in the future so TODO: find a better
- * bug report method.
+ * This will probably be abused some time in the future so
+ * TODO: find a better bug report method.
  */
 
 public class BugReportScreen extends RaceScreen {
@@ -74,7 +74,7 @@ public class BugReportScreen extends RaceScreen {
                 int cod = httpResponse.getStatus().getStatusCode();
 
                 if (cod == 200) {
-                    Notification.show("Your bug has been reported!", "Nice", "Send Another", Colors.UI_BLUE, Colors.UI_RED, () -> {
+                    Notification.show("Your bug has been reported!", "Nice", "Send Another", Colors.UI_INDIGO, Colors.UI_RED, () -> {
                         Notification.showing = false;
                         exit();
                     }, () -> {
@@ -84,7 +84,7 @@ public class BugReportScreen extends RaceScreen {
                         rating.setValue(1);
                     });
                 } else {
-                    Notification.show("There was an error sending your bug report! Try report it through the Bug Report Scre... Oh wait", "Retry", "Abandon", Colors.UI_BLUE, Colors.UI_RED, () -> {
+                    Notification.show("There was an error sending your bug report! Try report it through the Bug Report Scre... Oh wait", "Retry", "Abandon", Colors.UI_INDIGO, Colors.UI_RED, () -> {
                         Notification.showing = false;
                         sendBug();
                     }, () -> {

@@ -9,9 +9,16 @@ import com.badlogic.gdx.math.Vector2;
  */
 
 public interface Trackable {
+    /**
+     * The color of the entity in the map view. Different for each one
+     */
     Color getGizmoColor();
 
+    /**
+     * What the entity's display name will be
+     */
     String getGizmoLabel();
 
+    /** Where the entity is */
     Vector2 getPosition();
 }

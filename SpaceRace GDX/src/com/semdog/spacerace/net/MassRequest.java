@@ -2,7 +2,7 @@ package com.semdog.spacerace.net;
 
 /**
  * A class sent over the Kryo server to request the instantiation of a new mass.
- * Not yet implemented.
+ * Not yet implemented. TODO: Implement!
  */
 
 public class MassRequest {

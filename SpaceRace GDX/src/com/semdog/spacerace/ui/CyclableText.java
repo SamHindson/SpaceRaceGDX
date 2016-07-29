@@ -32,7 +32,7 @@ public class CyclableText {
 
         font = FontManager.getFont("fipps-20");
         height = font.getLineHeight();
-        float width = new GlyphLayout(font, "AAAAAAAAAAAAAAA").width;
+        float width = new GlyphLayout(font, "Bug Report [br]").width;
         back = new Button("<", false, x + height / 2, y + height / 2, height, height, this::back);
         forward = new Button(">", false, x + height / 2 + width, y + height / 2, height, height, this::forward);
         back.setColors(Color.BLACK, Colors.P_PINK);

@@ -61,7 +61,7 @@ public class Button {
     }
 
     public void draw(SpriteBatch batch) {
-        batch.setColor(hovered ? textColor : buttonColor);
+        batch.setColor(hovered ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
         batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
 
         batch.setColor(Color.WHITE);

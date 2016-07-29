@@ -24,11 +24,10 @@ public class Notification {
     private static BitmapFont font;
     private static String title;
     private static Button one, two;
-    private static Event eventOne, eventTwo;
 
     static {
-        one = new Button("One", false, Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 - 10, Gdx.graphics.getWidth() / 6, 50, true, eventOne);
-        two = new Button("Two", false, Gdx.graphics.getWidth() / 2 + 100, Gdx.graphics.getHeight() / 2 - 10, Gdx.graphics.getWidth() / 6, 50, true, eventTwo);
+        one = new Button("One", false, Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 - 10, Gdx.graphics.getWidth() / 6, 50, true, null);
+        two = new Button("Two", false, Gdx.graphics.getWidth() / 2 + 100, Gdx.graphics.getHeight() / 2 - 10, Gdx.graphics.getWidth() / 6, 50, true, null);
 
         font = FontManager.getFont("inconsolata-28");
 
@@ -52,6 +51,7 @@ public class Notification {
         two.setPosition(Gdx.graphics.getWidth() / 2 + Gdx.graphics.getWidth() / 12, Gdx.graphics.getHeight() / 2 - height / 2 - 25);
 
         one.setSize(Gdx.graphics.getWidth() / 6, 50);
+        two.setSize(Gdx.graphics.getWidth() / 6, 50);
 
         showingSingle = false;
         showing = true;
@@ -76,7 +76,6 @@ public class Notification {
 
     public static void update(float dt) {
         if (showing) {
-
             one.update(dt);
 
             if (!showingSingle)
@@ -114,5 +113,9 @@ public class Notification {
      */
     public static void resetValues() {
         batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public static void dispose() {
+        batch.dispose();
     }
 }

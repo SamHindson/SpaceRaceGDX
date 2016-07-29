@@ -23,7 +23,6 @@ public class Scores extends Overlay {
     public Scores() {
         titleFont = FontManager.getFont("fipps-72");
         peopleFont = FontManager.getFont("mohave-40-bold");
-        BitmapFont scoreFont = FontManager.getFont("fipps-36");
     }
 
     public void update() {

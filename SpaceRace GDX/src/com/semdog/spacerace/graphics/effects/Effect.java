@@ -6,8 +6,6 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * An abstract class which all in-game effects are instances of.
  * This provides a handy way of keeping track of all the effects in the universe.
- *
- * @author Sam
  */
 
 public abstract class Effect implements Disposable {

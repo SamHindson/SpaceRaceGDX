@@ -200,7 +200,7 @@ public abstract class Mass implements Disposable {
      * A method that does some useful stuff regarding the mass, like checking
      * whether it's on the planet surface and whether it's got its stuff loaded
      */
-    public void checkState() {
+    void checkState() {
         onSurface(environment);
     }
 

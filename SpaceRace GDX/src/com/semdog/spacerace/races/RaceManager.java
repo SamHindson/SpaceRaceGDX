@@ -17,7 +17,6 @@ import java.util.NoSuchElementException;
 public class RaceManager {
     static HashMap<String, Float> bestTimes;
     private static Array<Race> races;
-    private static String currentRaceSchematics;
     private static Race currentRace;
     private static Times times;
 
@@ -62,7 +61,6 @@ public class RaceManager {
     }
 
     public static void setCurrentRace(Race race) {
-        currentRaceSchematics = race.getContent();
         currentRace = race;
     }
 

@@ -124,7 +124,7 @@ public class Wormhole extends Listener {
     }
 
     public void requestVirtualMass(int requesterID, float mass, float x, float y) {
-        MassRequest request = new MassRequest(requesterID, mass, x, y);
+        MassRequest request = new MassRequest(requesterID, x, y, mass);
         client.sendTCP(request);
     }
 }

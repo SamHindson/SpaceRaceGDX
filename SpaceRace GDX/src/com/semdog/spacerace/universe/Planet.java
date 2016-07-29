@@ -23,9 +23,8 @@ public class Planet implements Disposable, Trackable {
 
     private Color color;
 
-    private int dustBalls;
-    private float[] ballX, ballY, ballR;
-    private Color[] dustColors;
+    private int specks;
+    private float[] speckX, speckY, speckR, speckM, speckW;
 
     public Planet(String id, float x, float y, float radius) {
         position = new Vector2(x, y);
@@ -37,23 +36,30 @@ public class Planet implements Disposable, Trackable {
 
         color = Colors.getRandomPlanetColor();
 
-        if (radius == 0.1f)
+        if (radius == 0.1f) {
+            specks = 0;
             return;
+        }
 
-        dustBalls = 100;
-        ballX = new float[dustBalls];
-        ballY = new float[dustBalls];
-        ballR = new float[dustBalls];
-        dustColors = new Color[dustBalls];
+        specks = 200;
+        speckX = new float[specks];
+        speckY = new float[specks];
+        speckR = new float[specks];
+        speckW = new float[specks];
+        speckM = new float[specks];
 
-        for (int j = 0; j < dustBalls; j++) {
-            do {
-                ballX[j] = MathUtils.random(-radius, radius);
-                ballY[j] = MathUtils.random(-radius, radius);
-                ballR[j] = MathUtils.random(10, 100);
-            } while (Vector2.dst(0, 0, ballX[j], ballY[j]) + ballR[j] > radius);
+        float maxSize = 0.5f * (radius - 50);
 
-            dustColors[j] = new Color(color.r + MathUtils.random(0.05f), color.g + MathUtils.random(0.05f), color.b + MathUtils.random(0.05f), 1.f);
+        for (int j = 0; j < specks; j++) {
+            float size = MathUtils.random(1, maxSize);
+            float angle = MathUtils.random(MathUtils.PI2);
+            float distance = MathUtils.random(radius - size * (float) Math.sqrt(2));
+
+            speckX[j] = position.x + distance * MathUtils.cos(angle);
+            speckY[j] = position.y + distance * MathUtils.sin(angle);
+            speckR[j] = MathUtils.random(MathUtils.PI2);
+            speckM[j] = MathUtils.random(0.5f, 1);
+            speckW[j] = size;
         }
     }
 
@@ -65,12 +71,27 @@ public class Planet implements Disposable, Trackable {
             shapeRenderer.setColor(color);
 
         shapeRenderer.circle(position.x, position.y, radius, 100);
+        shapeRenderer.setColor(new Color(color).mul(0.75f));
+        shapeRenderer.circle(position.x, position.y, radius - 5, 100);
 
-        if (dustBalls != 0 && !goggles)
-            for (int h = 0; h < dustBalls; h++) {
+        // TODO figure out a new planet rendering strategy.
+        //  What do 8-bit planets look like???
+
+        shapeRenderer.set(ShapeType.Filled);
+        for (int i = 0; i < specks; i++) {
+            shapeRenderer.setColor(new Color(color).mul(speckM[i]));
+            shapeRenderer.identity();
+            shapeRenderer.translate(speckX[i], speckY[i], 0);
+            shapeRenderer.rotate(0, 0, 1, speckR[i] * MathUtils.radiansToDegrees);
+            shapeRenderer.rect(0, 0, speckW[i], speckW[i]);
+            shapeRenderer.identity();
+        }
+
+        /*if (specks != 0 && !goggles)
+            for (int h = 0; h < specks; h++) {
                 shapeRenderer.setColor(dustColors[h]);
                 shapeRenderer.circle(position.x + ballX[h], position.y + ballY[h], ballR[h]);
-            }
+            }*/
     }
 
     public float getX() {
@@ -122,10 +143,8 @@ public class Planet implements Disposable, Trackable {
     @Override
     public void dispose() {
         color = null;
-        ballX = ballY = ballR = null;
         position = null;
         id = null;
-        dustColors = null;
     }
 
     @Override

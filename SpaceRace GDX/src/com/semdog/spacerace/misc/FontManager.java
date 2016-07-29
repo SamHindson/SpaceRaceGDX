@@ -14,8 +14,6 @@ import java.util.Map;
  *
  * It also does away with the need for the FreeType Font library, which does not
  * work in HTML.
- *
- * @author Sam
  */
 
 public class FontManager {
@@ -35,6 +33,7 @@ public class FontManager {
         load("fipps-72");
         load("fipps-72-italic");
         load("inconsolata-18");
+        load("inconsolata-24");
         load("inconsolata-28");
         load("inconsolata-32");
         load("inconsolata-32-italic");

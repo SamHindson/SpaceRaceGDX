@@ -3,7 +3,7 @@ repositories {
 }
 
 ext {
-    gdxVersion = "1.6.1"
+    gdxVersion = "1.9.3"
 }
 
 apply plugin: 'java'

@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
  * Orthographic Camera does not have a 'setRotation' method. Nobody seems to
  * know why this is the case, so instead of asking questions I'd rather just do
  * it myself.
- *
- * @author Sam
  */
 
 public class SRCamera extends OrthographicCamera {

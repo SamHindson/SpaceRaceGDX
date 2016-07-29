@@ -2,7 +2,9 @@ package com.semdog.spacerace.net;
 
 /**
  * A multipurpose class that is used whenever a player needs to convey its state to the server.
- * Rather than having many separate classes for each event (move, animation state, killed, etc.) which would have very similar fields anyway, we will rather have it in one class with an identifier and an array for storing that extra data.
+ *
+ * Rather than having many separate classes for each event (move, animation state, killed, etc.) which would have very similar fields anyway, 
+ * we will rather have it in one class with an identifier and an array for storing that extra data.
  */
 
 public class PlayerState {
@@ -16,7 +18,7 @@ public class PlayerState {
     private int category;
     private float[] information;
 
-    //  Default no-parameter constructor for Kryo deserialization.
+    // Default no-parameter constructor for Kryo deserialization.
     public PlayerState() {
     }
 

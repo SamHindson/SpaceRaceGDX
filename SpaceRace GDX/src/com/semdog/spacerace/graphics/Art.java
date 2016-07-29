@@ -13,12 +13,10 @@ import java.util.Map;
 /**
  * A class which handles all of the graphical input of SpaceRace, inspired by
  * Notch's architecture in games such as Prelude of the Chambered and Metagun.
- *
- * @author Sam
  */
 
 public class Art {
-    /*  HashMaps which store the textures and predominant colors of each piece of art found in SpaceRace.*/
+    /* HashMaps which store the textures and predominant colors of each piece of art found in SpaceRace. */
     private static HashMap<String, Texture> artwork;
     private static HashMap<String, Color> accents;
 
@@ -149,12 +147,11 @@ public class Art {
         } else {
             try {
                 Texture texture = new Texture(Gdx.files.internal("assets/graphics/" + name + ".png"));
-                Gdx.app.error("Art",
-                        "WARNING! " + name + " was not loaded initially and as such caused a slowdown. Tell a developer!");
+                Gdx.app.error("Art", "WARNING! " + name + " was not loaded initially and as such caused a slowdown. Tell a developer!");
                 artwork.put(name, texture);
                 return texture;
             } catch (Exception e) {
-                System.err.println("Error loading texture " + name + "! Here's an error one instead.");
+                System.err.println("Problem loading texture " + name + "! Here's an error one instead.");
                 return artwork.get("error");
             }
         }

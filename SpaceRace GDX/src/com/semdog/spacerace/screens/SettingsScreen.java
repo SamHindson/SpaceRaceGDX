@@ -24,7 +24,7 @@ public class SettingsScreen extends RaceScreen {
     private SpriteBatch batch;
     private TitleCard titleCard;
 
-    private CyclableText fullscreen, resolution, master, sfx, music;
+    private CyclableText fullscreen, postprocessing, resolution, master, sfx, music;
     private Button keysButton, doneButton;
 
     public SettingsScreen(RaceGame game) {
@@ -43,15 +43,19 @@ public class SettingsScreen extends RaceScreen {
         }
 
         fullscreen = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f, true, false);
-        resolution = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 40, "1280x720", "1600x900", "1920x1080");
-        master = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 80, volumes);
-        sfx = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 120, volumes);
-        music = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 160, volumes);
+        postprocessing = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 50, true, false);
+        resolution = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 100, "1280x720", "1600x900", "1920x1080");
+        master = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 150, volumes);
+        sfx = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 200, volumes);
+        music = new CyclableText(Gdx.graphics.getWidth() / 2 + 25, Gdx.graphics.getHeight() * 0.7f - 250, volumes);
 
-        music.setOnChangeEvent(() -> SoundManager.setMusicVolume(((Integer) (music.getValue())) / 10.f));
+        postprocessing.setOnChangeEvent(() ->
+                SettingsManager.setPostprocessing((boolean) postprocessing.getValue()));
+
+        music.setOnChangeEvent(() -> SoundManager.setMusicVolume(((Integer) (music.getValue()))));
         music.setWrappable(false);
 
-        master.setOnChangeEvent(() -> SoundManager.setMasterVolume(((Integer) (master.getValue())) / 10.f));
+        master.setOnChangeEvent(() -> SoundManager.setMasterVolume(((Integer) (master.getValue()))));
         master.setWrappable(false);
 
         sfx.setOnChangeEvent(() -> {
@@ -61,12 +65,13 @@ public class SettingsScreen extends RaceScreen {
         sfx.setWrappable(false);
 
         fullscreen.setValue(SettingsManager.isFullscreen());
+        postprocessing.setValue(SettingsManager.isPostprocessing());
         resolution.setValue(SettingsManager.getResolution());
         master.setValue((int) SettingsManager.getMaster());
         sfx.setValue((int) SettingsManager.getSfx());
         music.setValue((int) SettingsManager.getMusic());
 
-        keysButton = new Button("[...]", false, Gdx.graphics.getWidth() / 2 + 50, Gdx.graphics.getHeight() * 0.7f - 290, 50, 20, () -> game.changeScreen("keys"));
+        keysButton = new Button("[...]", false, Gdx.graphics.getWidth() / 2 + 50, Gdx.graphics.getHeight() * 0.7f - 350, 50, 20, () -> game.changeScreen("keys"));
         keysButton.setColors(Color.BLACK, Colors.P_PINK);
 
         doneButton = new Button("Done", false, Gdx.graphics.getWidth() / 2, 50, 140, 50, () -> {
@@ -79,13 +84,21 @@ public class SettingsScreen extends RaceScreen {
 
     private void saveSettings() {
         SettingsManager.setFullscreen((boolean) fullscreen.getValue());
+        SettingsManager.setPostprocessing((boolean) postprocessing.getValue());
         SettingsManager.setMaster((int) master.getValue() * 1.f);
         SettingsManager.setSfx((int) sfx.getValue() * 1.f);
         SettingsManager.setMusic((int) music.getValue() * 1.f);
         SettingsManager.setResolution((String) resolution.getValue());
 
         // Sets the resolution of the game window.
-        Gdx.graphics.setDisplayMode(SettingsManager.getWidth(), SettingsManager.getHeight(), SettingsManager.isFullscreen());
+        Gdx.graphics.setWindowedMode(SettingsManager.getWidth(), SettingsManager.getHeight());
+
+        //  The Notification's buttons need to be repositioned due to the resolution change
+        Notification.resetValues();
+
+        //  If Fullscreen is enabled, make it so
+        if (SettingsManager.isFullscreen())
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
         SettingsManager.writeSettings();
     }
@@ -93,6 +106,7 @@ public class SettingsScreen extends RaceScreen {
     @Override
     public void update(float dt) {
         fullscreen.update(dt);
+        postprocessing.update(dt);
         resolution.update(dt);
         master.update(dt);
         sfx.update(dt);
@@ -111,14 +125,16 @@ public class SettingsScreen extends RaceScreen {
 
         categoryFont.setColor(Colors.UI_WHITE);
 
-        categoryFont.draw(batch, "Fullscreen", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight(), Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "Resolution", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 40, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "Master Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 80, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "SFX Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 120, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "Music Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 160, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "Key Bindings", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 300, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Fullscreen", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Postprocessing", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 50 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Resolution", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 100 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Master Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 150 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "SFX Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 200 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Music Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 250 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Key Bindings", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 350 - 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
 
         fullscreen.draw(batch);
+        postprocessing.draw(batch);
         resolution.draw(batch);
         master.draw(batch);
         sfx.draw(batch);

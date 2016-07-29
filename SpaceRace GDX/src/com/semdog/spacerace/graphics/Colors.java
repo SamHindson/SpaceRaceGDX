@@ -5,8 +5,6 @@ import com.semdog.spacerace.misc.Tools;
 
 /**
  * The colors used in SpaceRace.
- *
- * @author Sam
  */
 
 public class Colors {

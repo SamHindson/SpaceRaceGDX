@@ -22,7 +22,7 @@ import com.semdog.spacerace.weapons.Bullet;
  */
 
 public class Bombarder extends Ship {
-    private int maxAmmo = 512, currentAmmo;
+    private int maxAmmo = 256, currentAmmo;
 
     public Bombarder(float x, float y, String id) {
         super(x, y, 32, 32, 10000, 75, "runt", id);
@@ -32,7 +32,7 @@ public class Bombarder extends Ship {
         particleEffect.setPosition(x, y);
         particleEffect.allowCompletion();
 
-        pCooldown = 0.025f;
+        pCooldown = 0.1f;
 
         currentAmmo = maxAmmo;
 
@@ -99,7 +99,7 @@ public class Bombarder extends Ship {
             velocity.x -= getCurrentPower() * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
             velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
             particleEffect.start();
-            Universe.currentUniverse.loopSound("runt", position.x, position.y, -1f);
+            Universe.currentUniverse.loopSound("runt", position.x, position.y, 1);
             Universe.currentUniverse.setCameraShake(2);
         } else {
             particleEffect.allowCompletion();
@@ -108,6 +108,8 @@ public class Bombarder extends Ship {
 
         pRest += dt;
         sRest += dt;
+
+        pCooldown = 0.1f;
 
         if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
             if (pRest > pCooldown && currentAmmo > 0) {
@@ -142,10 +144,12 @@ public class Bombarder extends Ship {
 
     @Override
     public void firePrimary() {
-        float i = MathUtils.random(-2f, 2f);
-        Universe.currentUniverse.requestBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f), position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x, velocity.y,
-                r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 15, 0));
-        Universe.currentUniverse.playSound("runtgun", position.x, position.y, 0.5f);
+        for (int t = 0; t < MathUtils.random(2, 4); t++) {
+            float i = MathUtils.random(-2f, 2f);
+            Universe.currentUniverse.requestBullet(new Bullet(position.x + width * MathUtils.sin(-r * MathUtils.degreesToRadians + i / 5.f), position.y + width * MathUtils.cos(-r * MathUtils.degreesToRadians + i / 5.f), velocity.x, velocity.y,
+                    r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 15, 0));
+        }
+        Universe.currentUniverse.playSound("runtgun", position.x, position.y, 1);
     }
 
     @Override

@@ -47,10 +47,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     private float totalFuel;
     private float height;
     private float rotationalVelocity;
-    private float boostPower = 300;
     private float beepTime;
-    private int pAmmo;
-    private int sAmmo;
     private boolean boostActive = false;
     private float boostTime = 30;
     private float boostRemaining;
@@ -61,16 +58,8 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     private boolean enterable;
     private boolean flipping;
 
-    Ship(float x, float y, float w, float h, float fuel, float power, String textureName, String id) {
-        this(x, y, w, h, fuel, power, 0, 0, textureName, id);
-        System.out.println("Rudu");
-    }
-
-    private Ship(float x, float y, float w, float h, float fuel, float power, int primaryAmmo, int secondaryAmmo, String textureName, String id) {
+    public Ship(float x, float y, float w, float h, float fuel, float power, String textureName, String id) {
         super(x, y, 0, 0, 5000, w, h, null, id);
-
-        this.pAmmo = primaryAmmo;
-        this.sAmmo = secondaryAmmo;
 
         totalFuel = currentFuel = fuel;
 
@@ -246,7 +235,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
 
     float getCurrentPower() {
         if (boostActive)
-            return power + boostPower;
+            return power + 300;
         else
             return power;
     }
@@ -352,8 +341,8 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
 
     @Override
     protected void hitPlayer(Player player) {
+        player.doDamage(new Vector2(getVelocity()).sub(player.getVelocity().x, player.getVelocity().y).len(), DamageCause.SHIP);
         player.addSpeed(velocity);
-        player.doDamage(getVelocity().len(), DamageCause.SHIP);
     }
 
     public abstract void firePrimary();

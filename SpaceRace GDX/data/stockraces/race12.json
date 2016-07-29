@@ -1,0 +1,36 @@
+{
+  "name": "Test Race Please Ignore",
+  "author": "Sam",
+  "description": "I'm warning you. Ignore me now!",
+  "briefing": "Every time you smile a game developer loses his wings. \nYou monster",
+  "timelimit": 6000,
+  "suddendeath": true,
+  "lockedcamera": true,
+  "planet": [
+    {
+      "id": "home",
+      "radius": 250,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "runt": [
+    {
+      "x": 100,
+      "y": 250,
+      "id": "Sgt. Killgore"
+    }
+  ],
+  "playerstuff": [
+    {
+      "x": 0,
+      "y": 300
+    }
+  ],
+  "playercriteria": [
+    {
+      "boolean-isPlayerAlive": true,
+      "float-getPlayerToastCount": 1
+    }
+  ],
+}

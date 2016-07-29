@@ -35,6 +35,7 @@ public class SettingsManager {
     private static float sfx = 100;
     private static float music = 100;
     private static boolean fullscreen = false;
+    private static boolean postprocessing = true;
     private static String resolution = "1280x720";
     private static int width, height;
 
@@ -72,6 +73,7 @@ public class SettingsManager {
             firstTime = true;
         } else {
             fullscreen = preferences.getBoolean("fullscreen");
+            postprocessing = preferences.getBoolean("postprocessing");
             master = preferences.getFloat("master");
             sfx = preferences.getFloat("sfx");
             music = preferences.getFloat("music");
@@ -127,6 +129,7 @@ public class SettingsManager {
     public static void writeSettings() {
         preferences.putBoolean("firsttime", firstTime);
         preferences.putBoolean("fullscreen", fullscreen);
+        preferences.putBoolean("postprocessing", postprocessing);
         preferences.putString("resolution", resolution);
         preferences.putFloat("master", master);
         preferences.putFloat("sfx", sfx);
@@ -140,6 +143,7 @@ public class SettingsManager {
 
     public static void setMaster(float master) {
         SettingsManager.master = master;
+        SoundManager.setMasterVolume(master);
     }
 
     public static float getMusic() {
@@ -148,6 +152,7 @@ public class SettingsManager {
 
     public static void setMusic(float music) {
         SettingsManager.music = music;
+        SoundManager.setMusicVolume(music);
     }
 
     public static float getSfx() {
@@ -156,6 +161,7 @@ public class SettingsManager {
 
     public static void setSfx(float sfx) {
         SettingsManager.sfx = sfx;
+        SoundManager.setSfxVolume(sfx);
     }
 
     public static String getResolution() {
@@ -176,6 +182,14 @@ public class SettingsManager {
         SettingsManager.fullscreen = fullscreen;
     }
 
+    public static boolean isPostprocessing() {
+        return postprocessing;
+    }
+
+    public static void setPostprocessing(boolean postprocessing) {
+        SettingsManager.postprocessing = postprocessing;
+    }
+
     public static int getWidth() {
         return width;
     }
@@ -186,7 +200,6 @@ public class SettingsManager {
 
     public static void setKeys(String[] titles, int[] keyCodes) {
         for (int a = 0; a < titles.length; a++) {
-            System.out.println(titles[a] + " = " + keyCodes[a]);
             String[] parts = titles[a].toUpperCase().split(" ");
             keys.put(parts[parts.length - 1], keyCodes[a]);
         }
