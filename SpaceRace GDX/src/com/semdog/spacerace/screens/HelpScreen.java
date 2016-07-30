@@ -1,6 +1,7 @@
 package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
@@ -40,7 +41,7 @@ public class HelpScreen extends RaceScreen implements ListViewListener {
         itemChooser.setListener(this);
 
         backButton = new Button("Got it!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 140, 50, this::exit);
-        backButton.setColors(Colors.UI_YELLOW, Colors.UI_BLUE);
+        backButton.setColors(Colors.UI_YELLOW, Color.BLACK);
 
         bugButton = new Button("Report a Bug", false, Gdx.graphics.getWidth() * 0.85f, Gdx.graphics.getHeight() * 0.05f, 200, 50, () -> game.changeScreen("bug"));
         bugButton.setColors(Colors.UI_RED, Colors.UI_WHITE);

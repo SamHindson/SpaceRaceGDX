@@ -46,7 +46,7 @@ public class ThankYouScreen extends RaceScreen {
         titleCard.draw(batch);
         neatoButton.draw(batch);
         font.setColor(Colors.UI_WHITE);
-        String thankYou = "Developed by Sam Hindson\nCopyright Flaming Trousers Studios 2016\n\nMany thanks to my brave beta testers:\nBlake Denham\nNina Simon\nJon Taylor\n\nThank you for playing! :)";
+        String thankYou = "Developed by Sam Hindson\nCopyright Flaming Trousers Studios 2016\n\nMany thanks to my brave beta testers:\nBlake Denham\nNina Simon\nJon Taylor\nPaul Stansell\n\nThank you for playing! :)";
         font.draw(batch, thankYou, Gdx.graphics.getWidth() * 0.3f, Gdx.graphics.getHeight() * 0.6f, Gdx.graphics.getWidth() * 0.4f, 1, true);
         batch.draw(devPlanet, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();

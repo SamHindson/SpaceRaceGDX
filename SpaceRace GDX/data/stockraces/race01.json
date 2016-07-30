@@ -2,7 +2,7 @@
   "name": "Baby's First Steps",
   "author": "Sam",
   "description": "This is the race for you if you have no idea what's going on. It won't teach you everything, but you'll know how to fend for yourself in the wild world of...\n\nSpaceRace.",
-  "briefing": "Welcome to SpaceRace! In this race/tutorial, you'll learn how to walk around planets.\nPress [A] or [D] to walk all around the planet to the bottom, where you'll collect a nice little piece of toast.\nUse your mouse wheel to change your zoom, so you know where to walk.",
+  "briefing": "Welcome to SpaceRace! In this race/tutorial, you'll learn how to walk around planets.\nPress [A] or [D] to walk all around the planet to the bottom, where you'll collect a nice little piece of toast.\nUse your mouse wheel to change your zoom, so you know where to walk.\nAlso, don't drink the fuel!",
   "timelimit": 60,
   "suddendeath": true,
   "lockedcamera": true,

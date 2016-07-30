@@ -2,7 +2,7 @@
 	"name": "Baby's First... Gun?",
 	"author": "Sam",
 	"description": "In this tutorial, you'll learn how to pick up a gun and fire it at some boxes. It's okay to shoot them, they're just robots.",
-	"briefing": "Welcome back! In this race/tutorial, you'll learn how to fire a gun.\nWalk over to any of the hovering guns and press ACTIVATE to pick one up. Then, aim at the box with your mouse and click. Repeat until each box is no more.",
+  "briefing": "Welcome back! In this race/tutorial, you'll learn how to fire a gun.\nWalk over to any of the hovering guns and press ACTIVATE to pick one up. Then, aim at the box with your mouse and click. Repeat until each box is no more.\nYou also have grenades! Press G to gooi",
 	"timelimit": 120,
 	"suddendeath": false,
 	"lockedcamera": true,
