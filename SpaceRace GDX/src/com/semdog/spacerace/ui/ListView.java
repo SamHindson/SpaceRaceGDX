@@ -61,6 +61,25 @@ public class ListView {
         }
     }
 
+    public void setPosition(String title) {
+        int index = 0;
+        for (int u = 0; u < titles.length; u++) {
+            if (titles[u].equals(title)) {
+                index = u;
+                break;
+            }
+        }
+
+        System.out.println(maxItems + " is max");
+        System.out.println(index + " is da index");
+
+        page = index / maxItems;
+
+        recomposeItems();
+
+        System.out.println("Page no " + page);
+    }
+
     public void draw(SpriteBatch batch) {
         batch.setColor(borderColor);
         batch.draw(Art.get("pixel_white"), x, y, width, height);

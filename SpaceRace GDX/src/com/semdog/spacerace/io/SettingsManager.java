@@ -120,6 +120,7 @@ public class SettingsManager {
     /** Method to save custom keys to settings file */
     public static void writeKeys() {
         for (Map.Entry<String, Integer> entry : keys.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
             keyBindings.putInteger(entry.getKey(), entry.getValue());
         }
         keyBindings.flush();

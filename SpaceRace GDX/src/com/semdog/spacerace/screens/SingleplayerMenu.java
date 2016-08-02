@@ -47,6 +47,7 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
 
         if (RaceManager.getCurrentRace() != null) {
             raceViewer.setRace(RaceManager.getCurrentRace());
+            raceChooser.setPosition(RaceManager.getCurrentRace().getName());
         }
     }
 
