@@ -1,14 +1,13 @@
 package com.semdog.spacerace.races;
 
+import java.util.HashMap;
+import java.util.NoSuchElementException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.io.Times;
-
-import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 /**
  * A class which holds all the races loaded in from the races folder.
@@ -16,16 +15,16 @@ import java.util.NoSuchElementException;
 
 public class RaceManager {
     static HashMap<String, Float> bestTimes;
-    private static Array<Race> races;
+    private static Race[] races;
     private static Race currentRace;
     private static Times times;
 
     public static void initialize() {
-        races = new Array<>();
 
         times = new Times();
 
         FileHandle[] raceFiles = Gdx.files.internal("data/stockraces").list();
+        races = new Race[raceFiles.length];
 
         JsonReader jsonReader = new JsonReader();
 
@@ -37,21 +36,23 @@ public class RaceManager {
             String author = data.getString("author");
 
             float timeLimit = (float) data.getDouble("timelimit");
+            
+            int index = Integer.parseInt(fileHandle.nameWithoutExtension().substring(4)) - 1;
 
-            races.add(new Race(name, author, description, briefing, timeLimit, fileHandle.readString()));
+            races[index] = new Race(name, author, description, briefing, timeLimit, fileHandle.readString());
         }
 
         loadBestTimes();
     }
 
     private static void loadBestTimes() {
-        for (int w = 0; w < races.size; w++) {
+        for (int w = 0; w < races.length; w++) {
             try {
-                races.get(w).setBestTime(times.getTime(races.get(w).getID()));
+                races[w].setBestTime(times.getTime(races[w].getID()));
             } catch (NoSuchElementException nsee) {
-                System.out.println("No time found for " + races.get(w).getName());
-                races.get(w).setCompleted(false);
-                races.get(w).setBestTime(races.get(w).getTimeLimit());
+                System.out.println("No time found for " + races[w].getName());
+                races[w].setCompleted(false);
+                races[w].setBestTime(races[w].getTimeLimit());
             }
         }
     }
@@ -65,34 +66,34 @@ public class RaceManager {
     }
 
     public static Race getRace(int index) {
-        return races.get(index);
+        return races[index];
     }
 
     public static String[] getRaceTitles() {
-        String[] titles = new String[races.size];
+        String[] titles = new String[races.length];
 
         for (int e = 0; e < titles.length; e++) {
-            titles[e] = races.get(e).getName();
+            titles[e] = races[e].getName();
         }
 
         return titles;
     }
 
     public static String[] getRaceDescriptions() {
-        String[] descriptions = new String[races.size];
+        String[] descriptions = new String[races.length];
 
         for (int e = 0; e < descriptions.length; e++) {
-            descriptions[e] = races.get(e).getDescription();
+            descriptions[e] = races[e].getDescription();
         }
 
         return descriptions;
     }
 
     public static String[] getRaceTimeLimits() {
-        String[] limits = new String[races.size];
+        String[] limits = new String[races.length];
 
         for (int e = 0; e < limits.length; e++) {
-            limits[e] = races.get(e).getTimeLimit() + "s";
+            limits[e] = races[e].getTimeLimit() + "s";
         }
 
         return limits;
@@ -105,10 +106,10 @@ public class RaceManager {
     }
 
     public static boolean[] getCompleted() {
-        boolean[] completed = new boolean[races.size];
+        boolean[] completed = new boolean[races.length];
 
         for (int e = 0; e < completed.length; e++) {
-            completed[e] = races.get(e).isCompleted();
+            completed[e] = races[e].isCompleted();
         }
 
         return completed;
