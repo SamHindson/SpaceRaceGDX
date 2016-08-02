@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -20,7 +21,16 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.screens.*;
+import com.semdog.spacerace.screens.BugReportScreen;
+import com.semdog.spacerace.screens.HelpScreen;
+import com.semdog.spacerace.screens.KeysScreen;
+import com.semdog.spacerace.screens.MenuScreen;
+import com.semdog.spacerace.screens.MultiplayerMenu;
+import com.semdog.spacerace.screens.PlayScreen;
+import com.semdog.spacerace.screens.RaceScreen;
+import com.semdog.spacerace.screens.SettingsScreen;
+import com.semdog.spacerace.screens.SingleplayerMenu;
+import com.semdog.spacerace.screens.ThankYouScreen;
 import com.semdog.spacerace.ui.HelpSection;
 import com.semdog.spacerace.ui.Notification;
 
@@ -37,6 +47,8 @@ public class RaceGame extends ApplicationAdapter {
 
     private PostProcessor postProcessor;
     private CrtMonitor crtMonitor;
+    
+    private BitmapFont loadingFont;
 
     private float age;
     private float screenChangeJitter = 0;
