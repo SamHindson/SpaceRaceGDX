@@ -391,10 +391,10 @@ public class Player implements Collideable, Disposable, Trackable {
 						// Jump!
 						// Works out which direction is up and shoots the player
 						// in said direction
-						float jx = 5500 * MathUtils.cos(angle);
-						float jy = 5500 * MathUtils.sin(angle);
+						float jx = 100 * MathUtils.cos(angle);
+						float jy = 100 * MathUtils.sin(angle);
 
-						velocity.add(jx * dt, jy * dt);
+						velocity.add(jx, jy);
 
 						onGround = false;
 

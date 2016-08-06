@@ -27,8 +27,7 @@ public class SoundManager {
     private static Array<String> queuedMusic;
 
     /**
-     * Loads the required sounds into the RAM all at once. TODO: if this game
-     * gets any bigger, find a better way to do this.
+     * Loads the required sounds into the RAM all at once. TODO: if this game gets any bigger, find a better way to do this.
      */
     public static void initialize() {
         clips = new HashMap<>();
@@ -103,8 +102,6 @@ public class SoundManager {
      * Plays a sound at a given volume and panning.
      */
     public static void playSound(String name, float volume, float pan) {
-        System.out.println("Masters " + masterVolume);
-        System.out.println("Sex " + sfxVolume);
         if (clips.containsKey(name)) {
             clips.get(name).play(volume * masterVolume * sfxVolume, 1, pan);
         } else {

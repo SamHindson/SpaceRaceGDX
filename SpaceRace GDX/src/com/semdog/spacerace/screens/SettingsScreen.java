@@ -93,8 +93,7 @@ public class SettingsScreen extends RaceScreen {
         // Sets the resolution of the game window.
         Gdx.graphics.setWindowedMode(SettingsManager.getWidth(), SettingsManager.getHeight());
 
-        //  The Notification's buttons need to be repositioned due to the resolution change
-        Notification.resetValues();
+        game.changeResolution();
 
         //  If Fullscreen is enabled, make it so
         if (SettingsManager.isFullscreen())
@@ -126,7 +125,7 @@ public class SettingsScreen extends RaceScreen {
         categoryFont.setColor(Colors.UI_WHITE);
 
         categoryFont.draw(batch, "Fullscreen", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
-        categoryFont.draw(batch, "Postprocessing", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 50 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
+        categoryFont.draw(batch, "Arcadiafication", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 50 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
         categoryFont.draw(batch, "Resolution", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 100 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
         categoryFont.draw(batch, "Master Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 150 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);
         categoryFont.draw(batch, "SFX Volume", 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 200 + 10, Gdx.graphics.getWidth() * 0.5f - 25, 2, false);

@@ -30,8 +30,10 @@ public class HelpAnimation implements Disposable {
     public HelpAnimation(int id) {
         FileHandle[] files = Gdx.files.internal("assets/help/animations/" + id).list();
         frames = new Texture[files.length];
-        for (int u = 0; u < frames.length; u++) {
-            frames[u] = new Texture(files[u]);
+        for (FileHandle fileHandle : files) {
+            if (!fileHandle.extension().equals("jpg")) continue;
+            int frameNo = Integer.parseInt(fileHandle.nameWithoutExtension()) - 1;
+            frames[frameNo] = new Texture(fileHandle);
         }
     }
 
@@ -56,10 +58,16 @@ public class HelpAnimation implements Disposable {
         batch.setColor(Colors.P_BLUE);
         batch.draw(Art.get("pixel_white"), x, y, width, height);
         batch.setColor(Color.WHITE);
-        batch.draw(frames[frame], x + 5, y + 5, width - 10, height - 10);
+
+        /* If someone has added other files to the program it handles the error by redrawing the previous frame. */
+        if (frames[frame] == null) batch.draw(frames[frame - 1], x + 5, y + 5, width - 10, height - 10);
+        else batch.draw(frames[frame], x + 5, y + 5, width - 10, height - 10);
+        /* TODO there must be a better way... */
     }
 
-    /** For once we can actually dispose of the textures, because they are not  pointers to Textures in the Art HashMap. */
+    /**
+     * For once we can actually dispose of the textures, because they are not just pointers to Textures in the Art HashMap.
+     */
     public void dispose() {
         for (Texture texture : frames) {
             texture.dispose();

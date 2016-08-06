@@ -63,7 +63,6 @@ public class Needle extends Ship {
 
     @Override
     protected void explode(DamageCause cause) {
-        rud();
         velocity.set(Vector2.Zero);
         Universe.currentUniverse.stopSound("needle");
         if (pilot != null) {

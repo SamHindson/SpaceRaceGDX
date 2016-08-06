@@ -26,7 +26,7 @@ public class PlayScreen extends RaceScreen {
 
     private boolean multiplayer = false;
     private boolean paused = false;
-    private float timescale = 0.05f;
+    private float timescale = 0;
 
     public PlayScreen(RaceGame game, boolean multiplayer) {
         super(game);
@@ -89,6 +89,8 @@ public class PlayScreen extends RaceScreen {
             universe.dispose();
 
         System.out.println("Making universe with playername " + SettingsManager.getName());
+
+        timescale = 0;
 
         if (multiplayer) {
             universe = new MultiplayerUniverse(this, SettingsManager.getName());

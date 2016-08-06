@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.bitfire.postprocessing.PostProcessor;
 import com.bitfire.postprocessing.effects.Bloom;
@@ -21,16 +23,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.races.RaceManager;
-import com.semdog.spacerace.screens.BugReportScreen;
-import com.semdog.spacerace.screens.HelpScreen;
-import com.semdog.spacerace.screens.KeysScreen;
-import com.semdog.spacerace.screens.MenuScreen;
-import com.semdog.spacerace.screens.MultiplayerMenu;
-import com.semdog.spacerace.screens.PlayScreen;
-import com.semdog.spacerace.screens.RaceScreen;
-import com.semdog.spacerace.screens.SettingsScreen;
-import com.semdog.spacerace.screens.SingleplayerMenu;
-import com.semdog.spacerace.screens.ThankYouScreen;
+import com.semdog.spacerace.screens.*;
 import com.semdog.spacerace.ui.HelpSection;
 import com.semdog.spacerace.ui.Notification;
 
@@ -49,16 +42,23 @@ public class RaceGame extends ApplicationAdapter {
     private CrtMonitor crtMonitor;
     
     private BitmapFont loadingFont;
+    private SpriteBatch loadingBatch;
 
     private float age;
     private float screenChangeJitter = 0;
     private boolean exiting = false;
+    private boolean firstFrame = true;
 
     /**
      * The first method called after main()
      */
     @Override
     public void create() {
+        loadingBatch = new SpriteBatch();
+        loadingFont = new BitmapFont(Gdx.files.internal("assets/fonts/inconsolata-32.fnt"));
+    }
+
+    private void load() {
         /* Initializing the managers */
         FontManager.initialize();
         SoundManager.initialize();
@@ -118,61 +118,72 @@ public class RaceGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        /* We will update the background stars if we are not on the play screen */
-        if (!(screen instanceof PlayScreen))
-            for (BackgroundElement element : backgroundElements) {
-                element.update(Gdx.graphics.getDeltaTime());
-            }
-
-        /* Updating relevant objects */
-        screen.update(Gdx.graphics.getDeltaTime());
-
-        if (exiting) return;
-
-        Notification.update(Gdx.graphics.getDeltaTime());
-        SoundManager.update();
-
-        age += Gdx.graphics.getDeltaTime();
-
-        if (screenChangeJitter > 0.001f) {
-            screenChangeJitter -= Gdx.graphics.getDeltaTime() * 10.f;
+        if (firstFrame) {
+            Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl20.glClearColor(0, 0, 0, 1f);
+            loadingBatch.begin();
+            loadingFont.draw(loadingBatch, "Loading...", 0, Gdx.graphics.getHeight() / 3f, Gdx.graphics.getWidth(), Align.center, false);
+            loadingBatch.end();
+            System.out.println("Showed loading");
+            load();
+            firstFrame = false;
         } else {
-            screenChangeJitter = 0;
-        }
+            /* We will update the background stars if we are not on the play screen */
+            if (!(screen instanceof PlayScreen))
+                for (BackgroundElement element : backgroundElements) {
+                    element.update(Gdx.graphics.getDeltaTime());
+                }
 
-        if (SettingsManager.isPostprocessing()) {
-            crtMonitor.setTime(age);
-            float f = MathUtils.random(screenChangeJitter);
-            crtMonitor.setColorOffset(0.00175f + f);
+            /* Updating relevant objects */
+            screen.update(Gdx.graphics.getDeltaTime());
 
-        /* Captures screen for post processing */
-            postProcessor.capture();
-        }
+            if (exiting) return;
 
-        /* Clears the screen for a render */
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT/* | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0)*/);
-        Gdx.gl20.glClearColor(0, 0, 0, 1f);
+            Notification.update(Gdx.graphics.getDeltaTime());
+            SoundManager.update();
 
-        /* Draws stars if we are not busy playing */
-        if (!(screen instanceof PlayScreen)) {
-            backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            backgroundRenderer.setColor(new Color(0.05f, 0.05f, 0.06f, 1));
-            backgroundRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            for (BackgroundElement element : backgroundElements) {
-                backgroundRenderer.setColor(element.color);
-                backgroundRenderer.circle(element.x, element.y, element.radius);
+            age += Gdx.graphics.getDeltaTime();
+
+            if (screenChangeJitter > 0.001f) {
+                screenChangeJitter -= Gdx.graphics.getDeltaTime() * 10.f;
+            } else {
+                screenChangeJitter = 0;
             }
-            backgroundRenderer.end();
+
+            if (SettingsManager.isPostprocessing()) {
+                crtMonitor.setTime(age);
+                float f = MathUtils.random(screenChangeJitter);
+                crtMonitor.setColorOffset(0.00175f + f);
+
+            /* Captures screen for post processing */
+                postProcessor.capture();
+            }
+
+            /* Clears the screen for a render */
+            Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT/* | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0)*/);
+            Gdx.gl20.glClearColor(0, 0, 0, 1f);
+
+            /* Draws stars if we are not busy playing */
+            if (!(screen instanceof PlayScreen)) {
+                backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                backgroundRenderer.setColor(new Color(0.05f, 0.05f, 0.06f, 1));
+                backgroundRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                for (BackgroundElement element : backgroundElements) {
+                    backgroundRenderer.setColor(element.color);
+                    backgroundRenderer.circle(element.x, element.y, element.radius);
+                }
+                backgroundRenderer.end();
+            }
+
+            /* We draw our current screen */
+            screen.render();
+
+            /* Finally, we draw our notifications */
+            Notification.draw();
+
+            /* Finally (Part 2) we render the post-processed screen if we need to*/
+            if (SettingsManager.isPostprocessing()) postProcessor.render();
         }
-
-        /* We draw our current screen */
-        screen.render();
-
-        /* Finally, we draw our notifications */
-        Notification.draw();
-
-        /* Finally (Part 2) we render the post-processed screen if we need to*/
-        if (SettingsManager.isPostprocessing()) postProcessor.render();
     }
 
     @Override
@@ -239,6 +250,11 @@ public class RaceGame extends ApplicationAdapter {
             SoundManager.playMusic("menu", true);
             SoundManager.stopMusic("oxidiser");
         }
+    }
+
+    public void changeResolution() {
+        //  The Notification's buttons need to be repositioned due to the resolution change
+        Notification.resetValues();
     }
 }
 
