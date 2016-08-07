@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.FontManager;
 
@@ -18,6 +19,7 @@ public class Button {
 
     private boolean hovered, held;
     private boolean notification = false; // Whether the button is one which appears on the notification overlay.
+    private boolean beeps = true;
 
     private String text;
     private Color buttonColor, textColor;
@@ -55,9 +57,16 @@ public class Button {
             hovered = false;
         }
         if (held && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-            clickEvent.execute();
             held = false;
+            clickEvent.execute();
+
+            if (beeps)
+                SoundManager.playSound("boop", 0.05f, 0);
         }
+    }
+
+    public void setBeeps(boolean beeps) {
+        this.beeps = beeps;
     }
 
     public void draw(SpriteBatch batch) {

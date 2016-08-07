@@ -75,6 +75,7 @@ public class SoundManager {
         load("gogglesoff.wav");
 
         load("neet.wav");
+        load("boop.wav");
         load("rcs.wav");
 
         loadMusic("victory.ogg");

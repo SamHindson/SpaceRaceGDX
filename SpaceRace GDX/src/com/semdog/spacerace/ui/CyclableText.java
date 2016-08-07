@@ -38,6 +38,9 @@ public class CyclableText {
         back.setColors(Color.BLACK, Colors.P_PINK);
         forward.setColors(Color.BLACK, Colors.P_PINK);
         currentIndex = 0;
+
+        back.setBeeps(false);
+        forward.setBeeps(false);
     }
 
     public void update(float dt) {

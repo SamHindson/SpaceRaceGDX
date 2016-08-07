@@ -54,18 +54,36 @@ public class RaceGame extends ApplicationAdapter {
      */
     @Override
     public void create() {
+        FontManager.initialize();
+
         loadingBatch = new SpriteBatch();
         loadingFont = new BitmapFont(Gdx.files.internal("assets/fonts/inconsolata-32.fnt"));
+
+        /* Sets up the post processor */
+        ShaderLoader.BasePath = "assets/shaders/";
+        postProcessor = new PostProcessor(false, false, true);
+
+        int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
+        crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
+        crtMonitor.setColorOffset(0.001f);
+        postProcessor.addEffect(crtMonitor);
+
+        Curvature curvature = new Curvature();
+        curvature.setDistortion(0.2f);
+        postProcessor.addEffect(curvature);
+
+        Bloom bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bloom.setBloomIntesity(0.1f);
+        postProcessor.addEffect(bloom);
     }
 
     private void load() {
         /* Initializing the managers */
-        FontManager.initialize();
         SoundManager.initialize();
-        SettingsManager.initialize();
         Art.initialize();
         HelpSection.initialize();
         RaceManager.initialize();
+        SettingsManager.initialize();
 
         /* Setting correct resolution */
         Gdx.graphics.setWindowedMode(SettingsManager.getWidth(), SettingsManager.getHeight());
@@ -98,36 +116,14 @@ public class RaceGame extends ApplicationAdapter {
             SettingsManager.writeSettings();
         }
 
-        /* Sets up the post processor */
-        ShaderLoader.BasePath = "assets/shaders/";
-        postProcessor = new PostProcessor(false, false, true);
-
-        int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
-        crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
-        crtMonitor.setColorOffset(0.001f);
-        postProcessor.addEffect(crtMonitor);
-
-        Curvature curvature = new Curvature();
-        curvature.setDistortion(0.2f);
-        postProcessor.addEffect(curvature);
-
-        Bloom bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        bloom.setBloomIntesity(0.1f);
-        postProcessor.addEffect(bloom);
+        screenChangeJitter = 10;
     }
 
     @Override
     public void render() {
-        if (firstFrame) {
-            Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            Gdx.gl20.glClearColor(0, 0, 0, 1f);
-            loadingBatch.begin();
-            loadingFont.draw(loadingBatch, "Loading...", 0, Gdx.graphics.getHeight() / 3f, Gdx.graphics.getWidth(), Align.center, false);
-            loadingBatch.end();
-            System.out.println("Showed loading");
-            load();
-            firstFrame = false;
-        } else {
+        age += Gdx.graphics.getDeltaTime();
+
+        if (!firstFrame) {
             /* We will update the background stars if we are not on the play screen */
             if (!(screen instanceof PlayScreen))
                 for (BackgroundElement element : backgroundElements) {
@@ -141,8 +137,15 @@ public class RaceGame extends ApplicationAdapter {
 
             Notification.update(Gdx.graphics.getDeltaTime());
             SoundManager.update();
+        }
 
-            age += Gdx.graphics.getDeltaTime();
+            /*if (SettingsManager.isPostprocessing()) {
+                crtMonitor.setTime(age);
+                float f = MathUtils.random(screenChangeJitter);
+                crtMonitor.setColorOffset(0.00175f + f);
+                /* Captures screen for post processing */
+                /*postProcessor.capture();
+            }*/
 
             if (screenChangeJitter > 0.001f) {
                 screenChangeJitter -= Gdx.graphics.getDeltaTime() * 10.f;
@@ -150,19 +153,29 @@ public class RaceGame extends ApplicationAdapter {
                 screenChangeJitter = 0;
             }
 
+            /* Clears the screen for a render */
+        Gdx.gl20.glClearColor(0, 0, 0, 1f);
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
             if (SettingsManager.isPostprocessing()) {
                 crtMonitor.setTime(age);
                 float f = MathUtils.random(screenChangeJitter);
                 crtMonitor.setColorOffset(0.00175f + f);
-
-            /* Captures screen for post processing */
+                /* Captures screen for post processing */
                 postProcessor.capture();
             }
 
-            /* Clears the screen for a render */
-            Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT/* | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0)*/);
-            Gdx.gl20.glClearColor(0, 0, 0, 1f);
+        if (firstFrame) {
+            loadingBatch.begin();
+            FontManager.getFont("inconsolata-36").draw(loadingBatch, "l o a d i n g . . .", 0, Gdx.graphics.getHeight() * 0.5f, Gdx.graphics.getWidth(), Align.center, false);
+            loadingBatch.end();
 
+                /* Only loads a 10th a second in, allowing the loading message to show properly */
+            if (age > 0.1f) {
+                load();
+                firstFrame = false;
+            }
+        } else {
             /* Draws stars if we are not busy playing */
             if (!(screen instanceof PlayScreen)) {
                 backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -173,17 +186,18 @@ public class RaceGame extends ApplicationAdapter {
                     backgroundRenderer.circle(element.x, element.y, element.radius);
                 }
                 backgroundRenderer.end();
-            }
+                }
 
             /* We draw our current screen */
             screen.render();
 
             /* Finally, we draw our notifications */
             Notification.draw();
+        }
 
             /* Finally (Part 2) we render the post-processed screen if we need to*/
             if (SettingsManager.isPostprocessing()) postProcessor.render();
-        }
+
     }
 
     @Override

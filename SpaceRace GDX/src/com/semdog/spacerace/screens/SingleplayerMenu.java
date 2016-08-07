@@ -36,7 +36,7 @@ public class SingleplayerMenu extends RaceScreen implements ListViewListener {
         batch = new SpriteBatch();
 
         raceChooser = new ListView(100, Gdx.graphics.getHeight() * 0.1f, 250, Gdx.graphics.getHeight() * 0.7f, new Color(1.f, 0, 110f / 255f, 1),
-                new Color(178f / 255f, 0, 1, 1), 6);
+                new Color(178f / 255f, 0, 1, 1), 8);
         raceChooser.setTitles(RaceManager.getRaceTitles(), RaceManager.getCompleted());
         raceChooser.setListener(this);
 
