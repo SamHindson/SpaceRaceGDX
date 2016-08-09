@@ -2,26 +2,28 @@ Untitled
 - Delay -
 active: false
 - Duration - 
-lowMin: 3000.0
-lowMax: 3000.0
+lowMin: 750.0
+lowMax: 750.0
 - Count - 
 min: 0
 max: 200
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 100.0
-highMax: 100.0
+highMin: 200.0
+highMax: 200.0
 relative: false
-scalingCount: 1
+scalingCount: 2
 scaling0: 1.0
-timelineCount: 1
+scaling1: 0.0
+timelineCount: 2
 timeline0: 0.0
+timeline1: 0.15753424
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 1500.0
-highMax: 1750.0
+highMax: 1500.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
@@ -62,7 +64,7 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 0.1
+highMin: 1.0
 highMax: 1.0
 relative: false
 scalingCount: 1
@@ -74,12 +76,14 @@ active: true
 lowMin: 0.0
 lowMax: 0.0
 highMin: 10.0
-highMax: 20.0
+highMax: 10.0
 relative: false
-scalingCount: 1
+scalingCount: 2
 scaling0: 1.0
-timelineCount: 1
+scaling1: 0.7346939
+timelineCount: 2
 timeline0: 0.0
+timeline1: 1.0
 - Angle - 
 active: true
 lowMin: 90.0
@@ -114,21 +118,19 @@ lowMax: 0.0
 highMin: 1.0
 highMax: 1.0
 relative: false
-scalingCount: 4
+scalingCount: 3
 scaling0: 0.0
-scaling1: 0.7719298
-scaling2: 0.36842105
-scaling3: 0.0
-timelineCount: 4
+scaling1: 0.21052632
+scaling2: 0.0
+timelineCount: 3
 timeline0: 0.0
-timeline1: 0.20547946
-timeline2: 0.7808219
-timeline3: 1.0
+timeline1: 0.45890412
+timeline2: 1.0
 - Options - 
 attached: false
-continuous: true
+continuous: false
 aligned: false
-additive: true
+additive: false
 behind: false
 premultipliedAlpha: false
 - Image Path -

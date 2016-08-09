@@ -10,8 +10,8 @@
     {
       "id": "gargantua",
       "radius": 0.1,
-      "x": 0,
-      "y": 0
+      "x": -1000,
+      "y": -1000
     }
   ],
   "playerstuff": [

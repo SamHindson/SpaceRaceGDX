@@ -559,6 +559,7 @@ public class Universe implements Disposable {
         collideables.add(ship);
     }
 
+
     public void addEffect(Effect effect) {
         effects.add(effect);
 
@@ -575,11 +576,13 @@ public class Universe implements Disposable {
                     }
                 }
 
-                float distance = Vector2.dst(player.getFX(), player.getFY(), effect.getX(), effect.getY());
-                if (distance < 300) {
-                    float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
-                    playerHurt(player, damage, DamageCause.EXPLOSION);
-                    cameraShake = 5 / (0.01f * distance + 1);
+                if (!player.isPilotingShip()) {
+                    float distance = Vector2.dst(player.getFX(), player.getFY(), effect.getX(), effect.getY());
+                    if (distance < 300) {
+                        float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                        playerHurt(player, damage, DamageCause.EXPLOSION);
+                        cameraShake = 5 / (0.01f * distance + 1);
+                    }
                 }
             }
         }

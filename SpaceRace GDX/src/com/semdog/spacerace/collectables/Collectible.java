@@ -26,7 +26,7 @@ public abstract class Collectible implements Trackable {
 
     public static final byte PLAYER = 0x01;            //	Collision mask for Player
     public static final byte SHIP = 0x10;            //	Collision mask for Ships
-
+    protected boolean respawnable = true;
     private float x;
     private float y;
     private float width;
@@ -42,6 +42,8 @@ public abstract class Collectible implements Trackable {
     private Color color;
     private String textureName;
     private ParticleEffect particleEffect;
+    private boolean active = true;
+    private float cooldown;
 
     Collectible(float h, float a, float width, float height, String textureName, int target) {
         this.h = h;
@@ -95,6 +97,8 @@ public abstract class Collectible implements Trackable {
         sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
         particleEffect.update(dt);
 
+        if (particleEffect.isComplete()) particleEffect.start();
+
         // Loops through all the collideables the universe has given it and
         // checks whether they collide.
         for (int q = 0; q < collideables.size; q++) {
@@ -102,24 +106,35 @@ public abstract class Collectible implements Trackable {
             int cID = collideable.getType();
             int check = cID & target;
 
-            // This simple bitmasking method sees whether the Collideable is of
-            // the right variant (i.e. player, or space ship).
-            // If this is compatible with what the Collectible is meant to
-            // effect (i.e. the check produces a non-zero result) the collision
-            // goes ahead.
+            /*This simple bitmasking method sees whether the Collideable is of
+            the right variant (i.e. player, or space ship).
+            If this is compatible with what the Collectible is meant to
+            effect (i.e. the check produces a non-zero result) the collision
+            goes ahead.*/
             if (check != 0 && collideable.canCollect(this)) {
                 if (collideable.getCollisionBounds().overlaps(bounds)) {
                     get(collideable);
                     collideable.collectCollectible(this);
-                    Universe.currentUniverse.killCollectible(this);
+                    active = false;
+                    cooldown = 0;
                 }
+            }
+        }
+
+        //  If the collectible is allowed to respawn, it does so after 10 seconds
+        if (!active && respawnable) {
+            cooldown += dt;
+
+            if (cooldown > 10) {
+                Universe.currentUniverse.playSound("boop", x, y, 0.75f);
+                active = true;
             }
         }
     }
 
     public void draw(SpriteBatch batch) {
         particleEffect.draw(batch);
-        sprite.draw(batch);
+        if (active) sprite.draw(batch);
     }
 
     //  If the collectible should do something when collected, this is what is to be executed.

@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
@@ -29,17 +27,22 @@ public class Grenade extends Mass implements Trackable {
     private Sprite sprite;
     private ParticleEffect trail;
 
-    public Grenade(float x, float y, float dx, float dy, Planet environment, String id) {
-        super(x, y, dx, dy, 2, 2, 10, environment, id);
+    public Grenade(float x, float y, float dx, float dy) {
+        super(x, y, dx, dy, 2, 2, 10, null, "grenade");
 
         bounds = new Rectangle(x, y, 1, 1);
 
         trail = new ParticleEffect();
         trail.setPosition(x, y);
-        trail.load(Gdx.files.internal("assets/effects/grenadetrail.p"), Gdx.files.internal("assets/effects"));
         sprite = new Sprite(Art.get("grenade"));
         sprite.setSize(2, 2);
         sprite.setOriginCenter();
+    }
+
+    @Override
+    protected void load() {
+        super.load();
+        trail.load(Gdx.files.internal("assets/effects/grenadetrail.p"), Gdx.files.internal("assets/effects"));
     }
 
     @Override
@@ -84,8 +87,12 @@ public class Grenade extends Mass implements Trackable {
 
     @Override
     protected void handlePlanetCollision(float speed, boolean e) {
+        //  TODO hax
         if (!exploded) {
-            if (bouncing) {
+            exploded = true;
+            Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+            die(DamageCause.EXPLOSION);
+            /*if (bouncing) {
                 float surfaceAngle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
                 float velocityAngle = MathUtils.atan2(velocity.y, velocity.x);
                 float impactAngle = -(MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
@@ -101,7 +108,7 @@ public class Grenade extends Mass implements Trackable {
             } else {
                 position.set(environment.getX() + environment.getRadius() * MathUtils.cos(angle), environment.getY() + environment.getRadius() * MathUtils.sin(angle));
                 System.out.println("Stoppd.");
-            }
+            }*/
         }
     }
 
@@ -124,13 +131,11 @@ public class Grenade extends Mass implements Trackable {
         return !exploded;
     }
 
-    @Override
-    protected float getWidth() {
+    public float getWidth() {
         return 1;
     }
 
-    @Override
-    protected float getHeight() {
+    public float getHeight() {
         return 1;
     }
 

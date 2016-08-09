@@ -4,6 +4,7 @@ import com.semdog.spacerace.net.UniverseState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class whose object exists on the server side, which keeps track of all the major entities that exist in the multiplayer universe.
@@ -12,6 +13,9 @@ import java.util.HashMap;
 public class VirtualUniverse {
     public static VirtualUniverse currentUniverse;
 
+    private HashMap<Integer, VirtualMass> masses;
+    private HashMap<Integer, MassState> massStates;
+
     private HashMap<Integer, VirtualPlayer> players;
     private ArrayList<VirtualPlanet> planets;
 
@@ -19,13 +23,19 @@ public class VirtualUniverse {
         currentUniverse = this;
         players = new HashMap<>();
         planets = new ArrayList<>();
+
+        masses = new HashMap<>();
+        massStates = new HashMap<>();
     }
 
     /**
      * This will handle mass physics, which will run on the server side of things.
      */
     public void update(float dt) {
-
+        for (Map.Entry<Integer, VirtualMass> massEntry : masses.entrySet()) {
+            massEntry.getValue().update(dt, planets);
+            massStates.get(massEntry.getKey()).set(massEntry.getValue().x, massEntry.getValue().y);
+        }
     }
 
     /**
@@ -83,5 +93,26 @@ public class VirtualUniverse {
 
     public ArrayList<VirtualPlanet> getPlanets() {
         return planets;
+    }
+
+    public void addMass(MassSpawnRequest massSpawnRequest) {
+        VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h);
+        System.out.println("Adding a mass of id " + massSpawnRequest.id + " to me list");
+        mass.id = massSpawnRequest.id;
+        mass.type = massSpawnRequest.type;
+        massStates.put(massSpawnRequest.id, new MassState());
+        masses.put(massSpawnRequest.id, mass);
+    }
+
+    public void addVelocity(int i, float x, float y) {
+
+    }
+
+    public MassMap getMassStates() {
+        return new MassMap(massStates);
+    }
+
+    public void killMass(int id) {
+        masses.remove(id);
     }
 }

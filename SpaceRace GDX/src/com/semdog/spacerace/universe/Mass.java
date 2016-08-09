@@ -36,6 +36,8 @@ public abstract class Mass implements Disposable {
     protected float age;
     protected float ouchTime;
     protected String id;
+    protected int controllerID;
+    protected boolean loaded = false;
     Rectangle bounds;
     private float mass;
     private boolean orbiting = false;
@@ -56,9 +58,8 @@ public abstract class Mass implements Disposable {
 
         Universe.currentUniverse.requestMass(this);
 
-        if (width == 0 || height == 0) {
-            Gdx.app.error("Mass", "Warning! Mass created with a zero width or height. What the hell mate?");
-        }
+        if (width == 0 || height == 0)
+            Gdx.app.error("Mass", "Warning! Mass created with a zero width or height. Probably a bug!");
 
         bounds = new Rectangle(x, y, width, height);
     }
@@ -89,6 +90,14 @@ public abstract class Mass implements Disposable {
         return color;
     }
 
+    public int getControllerID() {
+        return controllerID;
+    }
+
+    public void setControllerID(int controllerID) {
+        this.controllerID = controllerID;
+    }
+
     public float getMass() {
         return mass;
     }
@@ -105,6 +114,10 @@ public abstract class Mass implements Disposable {
     public boolean isOnGround() {
         return environment != null && Vector2.dst(position.x, position.y, environment.getX(),
                 environment.getY()) <= environment.getRadius() + 5;
+    }
+
+    protected void load() {
+        loaded = true;
     }
 
     public void doDamage(float amount, DamageCause reason) {
@@ -128,6 +141,8 @@ public abstract class Mass implements Disposable {
     }
 
     public void update(float dt, Array<Planet> gravitySources) {
+        if (!loaded) load();
+
         if (physicsEnabled) {
             if (environment != null) {
                 angle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
@@ -188,6 +203,15 @@ public abstract class Mass implements Disposable {
         float vx = velocity.x;
         float vy = velocity.y;
         this.velocity.add(vx * p / mass, vy * p / mass);
+    }
+
+    private void setVelocity(float x, float y) {
+        if (physicsEnabled) {
+            velocity.add(x, y);
+        } else {
+            // Dude...
+            ((MultiplayerUniverse) Universe.currentUniverse).requestVelocityChange(this, x, y);
+        }
     }
 
     protected void setEnvironment(Planet planet) {
@@ -273,11 +297,11 @@ public abstract class Mass implements Disposable {
         alive = false;
     }
 
-    protected float getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    protected float getHeight() {
+    public float getHeight() {
         return height;
     }
 

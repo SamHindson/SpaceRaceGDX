@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
 public abstract class Effect implements Disposable {
     float x;
     float y;
+    float age;
     private boolean loaded = false;
 
     /**
@@ -28,6 +29,7 @@ public abstract class Effect implements Disposable {
      */
     public void update(float dt) {
         if (!loaded) load();
+        age += dt;
     }
 
     /**

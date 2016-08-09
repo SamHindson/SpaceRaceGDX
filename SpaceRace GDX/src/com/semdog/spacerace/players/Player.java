@@ -19,6 +19,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.OrbitalHelper;
 import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.net.entities.MassSpawnRequest;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.universe.*;
 import com.semdog.spacerace.vehicles.Ship;
@@ -416,7 +417,7 @@ public class Player implements Collideable, Disposable, Trackable {
 
 				bounds.setPosition(position.x - 10, position.y - 10);
 
-				// AIMING
+				//  Aiming
 				float ax1 = Gdx.input.getX();
 				float ay1 = Gdx.input.getY();
 
@@ -443,7 +444,10 @@ public class Player implements Collideable, Disposable, Trackable {
 					float gdx = 200 * MathUtils.cos(a) + velocity.x;
 					float gdy = 200 * MathUtils.sin(a) + velocity.y;
 
-					new Grenade(gx, gy, gdx, gdy, environment, "grenade");
+					if (Universe.currentUniverse instanceof MultiplayerUniverse)
+						((MultiplayerUniverse) Universe.currentUniverse).requestMass(new MassSpawnRequest(MassSpawnRequest.GRENADE, gx, gy, gdx, gdy));
+					else
+						new Grenade(gx, gy, gdx, gdy);
 
 					grenadeCount--;
 				}

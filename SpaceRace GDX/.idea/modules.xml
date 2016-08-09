@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SpaceRace GDX.iml" filepath="$PROJECT_DIR$/SpaceRace GDX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpaceRace GDX.iml" filepath="$PROJECT_DIR$/.idea/modules/SpaceRace GDX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpaceRace_GDX_main.iml" filepath="$PROJECT_DIR$/.idea/modules/SpaceRace_GDX_main.iml" group="SpaceRace GDX" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SpaceRace_GDX_test.iml" filepath="$PROJECT_DIR$/.idea/modules/SpaceRace_GDX_test.iml" group="SpaceRace GDX" />
     </modules>
   </component>
 </project>

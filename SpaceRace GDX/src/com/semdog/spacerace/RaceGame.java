@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -22,6 +23,7 @@ import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.screens.*;
 import com.semdog.spacerace.ui.HelpSection;
@@ -40,9 +42,11 @@ public class RaceGame extends ApplicationAdapter {
 
     private PostProcessor postProcessor;
     private CrtMonitor crtMonitor;
-    
+    private Bloom bloom;
+
     private BitmapFont loadingFont;
     private SpriteBatch loadingBatch;
+    private Texture trousers, pixel;
 
     private float age;
     private float screenChangeJitter = 0;
@@ -59,6 +63,9 @@ public class RaceGame extends ApplicationAdapter {
         loadingBatch = new SpriteBatch();
         loadingFont = new BitmapFont(Gdx.files.internal("assets/fonts/inconsolata-32.fnt"));
 
+        trousers = new Texture(Gdx.files.internal("assets/graphics/trousers.png"));
+        pixel = new Texture(Gdx.files.internal("assets/graphics/pixel.png"));
+
         /* Sets up the post processor */
         ShaderLoader.BasePath = "assets/shaders/";
         postProcessor = new PostProcessor(false, false, true);
@@ -72,7 +79,7 @@ public class RaceGame extends ApplicationAdapter {
         curvature.setDistortion(0.2f);
         postProcessor.addEffect(curvature);
 
-        Bloom bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bloom.setBloomIntesity(0.1f);
         postProcessor.addEffect(bloom);
     }
@@ -119,8 +126,7 @@ public class RaceGame extends ApplicationAdapter {
         screenChangeJitter = 10;
     }
 
-    @Override
-    public void render() {
+    private void update(float dt) {
         age += Gdx.graphics.getDeltaTime();
 
         if (!firstFrame) {
@@ -133,49 +139,62 @@ public class RaceGame extends ApplicationAdapter {
             /* Updating relevant objects */
             screen.update(Gdx.graphics.getDeltaTime());
 
-            if (exiting) return;
-
             Notification.update(Gdx.graphics.getDeltaTime());
             SoundManager.update();
-        }
-
-            /*if (SettingsManager.isPostprocessing()) {
-                crtMonitor.setTime(age);
-                float f = MathUtils.random(screenChangeJitter);
-                crtMonitor.setColorOffset(0.00175f + f);
-                /* Captures screen for post processing */
-                /*postProcessor.capture();
-            }*/
-
             if (screenChangeJitter > 0.001f) {
-                screenChangeJitter -= Gdx.graphics.getDeltaTime() * 10.f;
+                screenChangeJitter -= Gdx.graphics.getDeltaTime() * 5.f;
+                bloom.setBloomIntesity(10);
             } else {
                 screenChangeJitter = 0;
+                bloom.setBloomIntesity(0.1f);
             }
+        }
+    }
 
-            /* Clears the screen for a render */
+    @Override
+    public void render() {
+        update(Gdx.graphics.getDeltaTime());
+
+        if (exiting) return;
+
+        /* Clears the screen for a render */
         Gdx.gl20.glClearColor(0, 0, 0, 1f);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            if (SettingsManager.isPostprocessing()) {
-                crtMonitor.setTime(age);
-                float f = MathUtils.random(screenChangeJitter);
-                crtMonitor.setColorOffset(0.00175f + f);
-                /* Captures screen for post processing */
-                postProcessor.capture();
-            }
+        postProcessor.setEnabled(SettingsManager.isPostprocessing());
+
+        if (postProcessor.isEnabled()) {
+            crtMonitor.setTime(age);
+            float f = MathUtils.random(screenChangeJitter);
+            crtMonitor.setColorOffset(0.00175f + f);
+            // Captures screen for post processing
+            postProcessor.capture();
+        }
 
         if (firstFrame) {
             loadingBatch.begin();
-            FontManager.getFont("inconsolata-36").draw(loadingBatch, "l o a d i n g . . .", 0, Gdx.graphics.getHeight() * 0.5f, Gdx.graphics.getWidth(), Align.center, false);
+            loadingBatch.draw(trousers, Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() * 0.5f, 100, 100);
+
+            float height = 50;
+            for (int f = 0; f < height; f++) {
+                loadingBatch.setColor(new Color(1, -0.025f * f + 0.5f, 1 / (f + 1), ((height - f) / height)));
+                for (int g = 0; g < 25; g++) {
+                    if (MathUtils.randomBoolean(((height - f) / height)))
+                        loadingBatch.draw(pixel, Gdx.graphics.getWidth() / 2 - 24 + g * 2, Gdx.graphics.getHeight() * 0.5f + 100 + f * 2, 2, 2);
+                }
+            }
+            loadingBatch.setColor(Color.WHITE);
+
+            FontManager.getFont("inconsolata-36").draw(loadingBatch, "loading...", 0, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth(), Align.center, false);
             loadingBatch.end();
 
-                /* Only loads a 10th a second in, allowing the loading message to show properly */
-            if (age > 0.1f) {
+                /* Only loads a second in, allowing the loading message to show properly */
+            if (age > 1) {
                 load();
                 firstFrame = false;
             }
         } else {
+
             /* Draws stars if we are not busy playing */
             if (!(screen instanceof PlayScreen)) {
                 backgroundRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -186,7 +205,7 @@ public class RaceGame extends ApplicationAdapter {
                     backgroundRenderer.circle(element.x, element.y, element.radius);
                 }
                 backgroundRenderer.end();
-                }
+            }
 
             /* We draw our current screen */
             screen.render();
@@ -195,22 +214,24 @@ public class RaceGame extends ApplicationAdapter {
             Notification.draw();
         }
 
-            /* Finally (Part 2) we render the post-processed screen if we need to*/
-            if (SettingsManager.isPostprocessing()) postProcessor.render();
+        // Finally (Part 2) we render the post-processed screen if we need to
+        if (postProcessor.isEnabled()) {
+            postProcessor.render();
+        }
 
     }
 
     @Override
     public void dispose() {
-        super.dispose();
-        Gdx.app.exit();
+        if (exiting) return;
 
+        super.dispose();
         screen.dispose();
         backgroundRenderer.dispose();
         postProcessor.dispose();
         Notification.dispose();
         exiting = true;
-        System.exit(5);
+        Gdx.app.exit();
     }
 
     /**
@@ -264,6 +285,12 @@ public class RaceGame extends ApplicationAdapter {
             SoundManager.playMusic("menu", true);
             SoundManager.stopMusic("oxidiser");
         }
+
+        float d = (float) Tools.decide(0.f, MathUtils.PI / 2f, MathUtils.PI, MathUtils.PI * 1.5f);
+        System.out.println("Direction is now " + d);
+        for (BackgroundElement element : backgroundElements) {
+            element.d = d;
+        }
     }
 
     public void changeResolution() {
@@ -280,17 +307,30 @@ class BackgroundElement {
     float y;
     float radius;
     Color color;
-
-    private float dy;
+    float v;
+    float d;
 
     BackgroundElement() {
+        x = MathUtils.random(Gdx.graphics.getWidth());
         y = MathUtils.random(Gdx.graphics.getHeight());
-        reset();
+
+        if (MathUtils.randomBoolean(0.001f)) {
+            color = new Color(Colors.getRandomPlanetColor()).mul(0.7f);
+            radius = MathUtils.random(5, 20);
+        } else {
+            float e = MathUtils.random() * 0.7f;
+            color = new Color(e, e, e, 1);
+            radius = MathUtils.random(0.5f, 1.1f);
+        }
+        v = MathUtils.random(10) + 15;
     }
 
     private void reset() {
-        x = MathUtils.random(Gdx.graphics.getWidth());
-        dy = MathUtils.random(50);
+        v = MathUtils.random(10) + 15;
+        if (d == 0) x = -radius;
+        if (d == MathUtils.PI * 1.5f) y = Gdx.graphics.getHeight() + radius;
+        if (d == MathUtils.PI) x = Gdx.graphics.getWidth() + radius;
+        if (d == MathUtils.PI * 0.5f) y = -radius;
 
         if (MathUtils.randomBoolean(0.001f)) {
             color = new Color(Colors.getRandomPlanetColor()).mul(0.7f);
@@ -303,11 +343,12 @@ class BackgroundElement {
     }
 
     void update(float dt) {
-        y += dy * dt;
+        x += v * MathUtils.cos(d) * dt;
+        y += v * MathUtils.sin(d) * dt;
 
-        if (y > Gdx.graphics.getHeight() + radius) {
-            reset();
-            y = -radius;
-        }
+        if (d == 0 && x > Gdx.graphics.getWidth() + radius) reset();
+        if (d == MathUtils.PI * 1.5f && y < -radius) reset();
+        if (d == MathUtils.PI && x < -radius) reset();
+        if (d == MathUtils.PI * 0.5f && y > Gdx.graphics.getHeight() + radius) reset();
     }
 }

@@ -5,10 +5,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.semdog.spacerace.net.entities.BulletRequest;
-import com.semdog.spacerace.net.entities.VirtualPlanet;
-import com.semdog.spacerace.net.entities.VirtualPlayer;
-import com.semdog.spacerace.net.entities.VirtualUniverse;
+import com.semdog.spacerace.net.entities.*;
 import com.semdog.spacerace.net.scoring.ScoreSheet;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.players.Team;
@@ -17,6 +14,7 @@ import com.semdog.spacerace.universe.MultiplayerUniverse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Wormhole extends Listener {
     private Client client;
@@ -28,8 +26,7 @@ public class Wormhole extends Listener {
 
         client = new Client();
 
-        System.out.println("Connecting...");
-
+        //  Here we tell the Kryo server what kind of information we'll be using it to send
         Kryo kryo = client.getKryo();
         kryo.register(VirtualUniverse.class);
         kryo.register(VirtualPlayer.class);
@@ -52,6 +49,12 @@ public class Wormhole extends Listener {
         kryo.register(Team.class);
         kryo.register(ScoreSheet.class);
         kryo.register(HashMap.class);
+        kryo.register(MassSpawnRequest.class);
+        kryo.register(VelocityChange.class);
+        kryo.register(MassSpawnRequest.class);
+        kryo.register(MassKillRequest.class);
+        kryo.register(MassMap.class);
+        kryo.register(MassState.class);
 
         client.start();
         client.connect(5000, MultiplayerMenu.serverAddress, 13377, 24488);
@@ -99,10 +102,17 @@ public class Wormhole extends Listener {
             universe.addBullet(request.getOwnerID(), request.getX(), request.getY(), request.getDx(), request.getDy(), request.getDamage());
         } else if (object instanceof PlayerDisconnect) {
             universe.removePuppet(((PlayerDisconnect) object).getId());
-        } else if (object instanceof MassRequest) {
-            universe.createMass(((MassRequest) object));
+        } else if (object instanceof MassSpawnRequest) {
+            universe.createMass(((MassSpawnRequest) object));
+        } else if (object instanceof MassKillRequest) {
+            universe.killMass((((MassKillRequest) object)).getId());
         } else if (object instanceof ScoreSheet) {
             universe.setScores((ScoreSheet) object);
+        } else if (object instanceof MassMap) {
+            MassMap massMap = (MassMap) object;
+            for (Map.Entry<Integer, MassState> entry : massMap.getMassStates().entrySet()) {
+                universe.setMassPosition(entry.getKey(), entry.getValue().getX(), entry.getValue().getY());
+            }
         }
     }
 
@@ -123,8 +133,19 @@ public class Wormhole extends Listener {
         client.sendTCP(new BulletRequest(ownerID, x, y, dx, dy, damage));
     }
 
-    public void requestVirtualMass(int requesterID, float mass, float x, float y) {
-        MassRequest request = new MassRequest(requesterID, x, y, mass);
-        client.sendTCP(request);
+    public void requestVirtualMass(MassSpawnRequest massSpawnRequest) {
+        client.sendTCP(massSpawnRequest);
+    }
+
+    public void addMassVelocity(int massID, float x, float y) {
+        client.sendTCP(new VelocityChange(x, y));
+    }
+
+    public void close() {
+        client.close();
+    }
+
+    public void killMass(int id) {
+        client.sendTCP(new MassKillRequest(id));
     }
 }

@@ -5,10 +5,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.semdog.spacerace.net.entities.BulletRequest;
-import com.semdog.spacerace.net.entities.VirtualPlanet;
-import com.semdog.spacerace.net.entities.VirtualPlayer;
-import com.semdog.spacerace.net.entities.VirtualUniverse;
+import com.semdog.spacerace.net.entities.*;
 import com.semdog.spacerace.net.scoring.ScoreSheet;
 import com.semdog.spacerace.players.Team;
 
@@ -19,10 +16,13 @@ import java.util.HashMap;
  * The server code exists here.
  */
 
-public class SpaceRaceServer extends Listener {
+public class SpaceRaceServer extends Listener implements Runnable {
 
     private VirtualUniverse universe;
     private Server server;
+
+    private Thread physicsThread;
+    private boolean active = true;
 
     private SpaceRaceServer() throws IOException {
         //  Create a standard universe with five planets
@@ -31,7 +31,7 @@ public class SpaceRaceServer extends Listener {
         universe.addPlanet("Dagobah", 1200, 0, 200);
         universe.addPlanet("Xen", 1200, 1200, 200);
         universe.addPlanet("Hillbrow", 0, 1200, 200);
-        universe.addPlanet("Toilet", 600, 600, 165);
+        universe.addPlanet("Toilet", 600, 600, 50);
 
         //  Creates a new Kryo server
         server = new Server();
@@ -62,9 +62,18 @@ public class SpaceRaceServer extends Listener {
         kryo.register(Team.class);
         kryo.register(ScoreSheet.class);
         kryo.register(HashMap.class);
+        kryo.register(MassSpawnRequest.class);
+        kryo.register(VelocityChange.class);
+        kryo.register(MassSpawnRequest.class);
+        kryo.register(MassKillRequest.class);
+        kryo.register(MassMap.class);
+        kryo.register(MassState.class);
 
         server.addListener(this);
         server.start();
+
+        physicsThread = new Thread(this);
+        physicsThread.start();
     }
 
     public static void main(String[] args) {
@@ -76,8 +85,8 @@ public class SpaceRaceServer extends Listener {
         }
     }
 
-    @Override
     /** This is called whenever the server receives something from a client */
+    @Override
     public void received(Connection connection, Object object) {
         if (object instanceof NewPlayer) {
             //  A new player has joined the game.
@@ -114,15 +123,45 @@ public class SpaceRaceServer extends Listener {
         } else if (object instanceof BulletRequest) {
             //  Tell all clients to spawn a bullet
             server.sendToAllTCP(object);
+        } else if (object instanceof VelocityChange) {
+            //VelocityChange velocityChange = (VelocityChange)object;
+            //universe.addVelocity(velocityChange.hashCode(), velocityChange.x, velocityChange.y);
+        } else if (object instanceof MassSpawnRequest) {
+            universe.addMass((MassSpawnRequest) object);
+            server.sendToAllTCP(object);
+        } else if (object instanceof MassKillRequest) {
+            universe.killMass(((MassKillRequest) object).getId());
+            server.sendToAllTCP(object);
         }
 
-        // TODO work out multiplayer physics
+        // TODO work out multiplayer physics!!!
     }
 
-    @Override
     /** Removes the player from the universe players list */
+    @Override
     public void disconnected(Connection connection) {
         server.sendToAllExceptTCP(connection.getID(), new PlayerDisconnect(connection.getID()));
         universe.removePlayer(connection.getID());
+    }
+
+    @Override
+    public void run() {
+        float broadcastRate = 1 / 60f;
+        float frameTime = 0;
+        while (active) {
+            universe.update(0.016f);
+            frameTime += 0.016f;
+
+            if (frameTime > broadcastRate) {
+                frameTime = 0;
+                server.sendToAllTCP(universe.getMassStates());
+            }
+
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

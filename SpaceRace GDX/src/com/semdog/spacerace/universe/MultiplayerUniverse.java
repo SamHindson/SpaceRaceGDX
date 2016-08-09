@@ -13,24 +13,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Effect;
+import com.semdog.spacerace.graphics.effects.Explosion;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.misc.SRCamera;
 import com.semdog.spacerace.misc.Tools;
-import com.semdog.spacerace.net.MassRequest;
 import com.semdog.spacerace.net.MultiplayerPlayer;
 import com.semdog.spacerace.net.PlayerState;
 import com.semdog.spacerace.net.Wormhole;
+import com.semdog.spacerace.net.entities.MassSpawnRequest;
 import com.semdog.spacerace.net.entities.Puppet;
 import com.semdog.spacerace.net.entities.VirtualPlanet;
 import com.semdog.spacerace.net.entities.VirtualPlayer;
 import com.semdog.spacerace.net.scoring.MetaPlayer;
 import com.semdog.spacerace.net.scoring.ScoreSheet;
+import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.HUD;
 import com.semdog.spacerace.players.Team;
 import com.semdog.spacerace.screens.PlayScreen;
@@ -269,13 +272,19 @@ public class MultiplayerUniverse extends Universe {
             cameraShake = 0;
         }
 
+        if (injuryAlpha > 0) {
+            injuryAlpha *= 0.5f;
+
+            if (injuryAlpha < 0.05f)
+                injuryAlpha = 0;
+        }
+
         for (Effect effect : effects) {
             effect.update(dt);
         }
 
         player.update(dt, playerEnabled, planets, lockedRotation);
         ((MultiplayerPlayer) player).checkCollisions(bullets);
-
 
         for (Map.Entry<Integer, Puppet> puppet : puppets.entrySet()) {
             if (!puppet.getValue().isLoaded())
@@ -292,9 +301,18 @@ public class MultiplayerUniverse extends Universe {
                 bullets.get(i).updatePhysics(dt);
             }
         }
+
+        for (Map.Entry<Integer, Mass> entry : masses.entrySet()) {
+            entry.getValue().update(dt, planets);
+            if (!entry.getValue().alive) {
+                wormhole.killMass(entry.getKey());
+                break;
+            }
+        }
     }
 
     public void setMassPosition(int id, float x, float y) {
+        if (!masses.containsKey(id)) return;
         masses.get(id).setPosition(x, y);
     }
 
@@ -317,6 +335,12 @@ public class MultiplayerUniverse extends Universe {
     }
 
     @Override
+    public void dispose() {
+        super.dispose();
+        wormhole.close();
+    }
+
+    @Override
     public void render() {
         universeShapeRenderer.setAutoShapeType(true);
         universeShapeRenderer.begin();
@@ -329,6 +353,10 @@ public class MultiplayerUniverse extends Universe {
 
         if (!gogglesActive)
             stars.draw(universeBatch);
+
+        for (Map.Entry<Integer, Mass> entry : masses.entrySet()) {
+            entry.getValue().render(universeBatch);
+        }
 
         player.draw(universeBatch);
 
@@ -450,17 +478,50 @@ public class MultiplayerUniverse extends Universe {
         puppets.remove(id);
     }
 
-    @Override
-    public void requestMass(Mass what) {
-        System.out.println("Requesting mass...");
+    public void requestMass(MassSpawnRequest what) {
+        wormhole.requestVirtualMass(what);
     }
 
-    public void createMass(MassRequest request) {
-
+    public void createMass(MassSpawnRequest request) {
+        switch (request.getType()) {
+            case MassSpawnRequest.GRENADE:
+                Grenade newGrenade = new Grenade(request.getX(), request.getY(), request.getDX(), request.getDY());
+                newGrenade.setControllerID(request.getId());
+                System.out.println("Created with ID " + request.getId());
+                masses.put(request.getId(), newGrenade);
+        }
     }
 
     public void setTeams(int pinks, int blues) {
 
+    }
+
+    public void addEffect(Effect effect) {
+        effects.add(effect);
+
+        System.out.println("Added a " + effect);
+
+        if (effect instanceof Explosion) {
+            if (cameraShake < 5) {
+                /*for (int i = 0; i < masses.size(); i++) {
+                    Mass mass = masses.get(i);
+                    float distance = Vector2.dst(mass.getX(), mass.getY(), effect.getX(), effect.getY());
+                    if (distance < 300) {
+                        float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+
+                        if (mass.isAlive())
+                            mass.doDamage(damage, DamageCause.EXPLOSION);
+                    }
+                }*/
+
+                float distance = Vector2.dst(player.getFX(), player.getFY(), effect.getX(), effect.getY());
+                if (distance < 300) {
+                    float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
+                    playerHurt(player, damage, DamageCause.EXPLOSION);
+                    cameraShake = 5 / (0.01f * distance + 1);
+                }
+            }
+        }
     }
 
     public void setScores(ScoreSheet sheet) {
@@ -469,5 +530,13 @@ public class MultiplayerUniverse extends Universe {
             if (pinks.containsKey(p)) pinks.get(p).setScore(entry.getValue().getScore());
             else if (blues.containsKey(p)) blues.get(p).setScore(entry.getValue().getScore());
         }
+    }
+
+    public void requestVelocityChange(Mass mass, float x, float y) {
+        wormhole.addMassVelocity(mass.hashCode(), x, y);
+    }
+
+    public void killMass(int id) {
+        masses.remove(id);
     }
 }

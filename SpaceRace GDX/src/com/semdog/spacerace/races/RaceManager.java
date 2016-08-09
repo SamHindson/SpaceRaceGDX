@@ -1,13 +1,13 @@
 package com.semdog.spacerace.races;
 
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.semdog.spacerace.io.Times;
+
+import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 /**
  * A class which holds all the races loaded in from the races folder.

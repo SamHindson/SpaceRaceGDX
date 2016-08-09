@@ -40,12 +40,9 @@ public class Explosion extends Effect {
         effect.setPosition(x, y);
     }
 
-    /**
-     * Explosions expire when their particle effect is done emitting.
-     */
     @Override
     public boolean isAlive() {
-        return !effect.isComplete();
+        return age < 5;
     }
 
     @Override
