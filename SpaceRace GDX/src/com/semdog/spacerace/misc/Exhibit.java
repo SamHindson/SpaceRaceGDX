@@ -6,8 +6,7 @@ import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 
 /**
- * A UI element which can display textures all in a line, much like a museum
- * exhibit.
+ * A UI element which can display textures all in a line, much like a museum exhibit.
  * Used extensively in the Help Section.
  *
  * @author Sam
@@ -19,7 +18,9 @@ public class Exhibit {
      */
     private String[] textures;
 
-    /** Dimensions */
+    /**
+     * Dimensions
+     */
     private float width, height;
     private float padding;
     private float itemWidth;

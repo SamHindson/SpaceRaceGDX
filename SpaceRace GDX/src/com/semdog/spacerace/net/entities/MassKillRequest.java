@@ -1,11 +1,15 @@
 package com.semdog.spacerace.net.entities;
 
 /**
- * Created by sam on 2016/08/09.
+ * A class which is sent to the server to request the destruction of a mass.
+ *
+ * @author Sam
  */
-public class MassKillRequest {
-    int id;
 
+public class MassKillRequest {
+    private int id;
+
+    //  Default no-parameter constructor for Kryo deserialization.
     MassKillRequest() {
     }
 

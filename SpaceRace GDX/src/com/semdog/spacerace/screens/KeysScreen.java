@@ -14,24 +14,20 @@ import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.TitleCard;
 
 /**
- * This screen is where the user will be able to change their preferred key
- * bindings.
+ * This screen is where the user will be able to change their preferred key bindings.
+ *
+ * @author Sam
  */
 
 public class KeysScreen extends RaceScreen implements InputProcessor {
     private SpriteBatch batch;
-
     private TitleCard titleCard;
     private BitmapFont subtitleFont, categoryFont;
     private Button doneButton;
-
     private String[] primaries = {"Move/Rotate Left", "Move/Rotate Right", "Jump", "Toggle Sprint", "RCS_Up", "RCS_Down", "RCS_Left", "RCS_Right"};
-
     private String[] secondaries = {"Activate", "Throw Grenade", "Goggles", "Camera Lock", "Engines", "Pause"};
-
     private int[] primaryKeyCodes, secondaryKeyCodes;
     private Button[] primaryChangers, secondaryChangers;
-
     private boolean listening, listeningPrimary;
     private int listeningIndex;
 
@@ -105,11 +101,9 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
         Gdx.input.setInputProcessor(this);
     }
 
-    @Override
-    public void exit() {
-        game.changeScreen("settings");
-    }
-
+    /**
+     * Begins listening for a keystroke, whose value will be recorded as 'i'
+     */
     private void listen(int i) {
         listening = true;
         listeningIndex = i;
@@ -172,6 +166,9 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
         batch.end();
     }
 
+    /**
+     * When a key is pressed, record that keystroke
+     */
     @Override
     public boolean keyDown(int keycode) {
         if (listening && listeningPrimary) {
@@ -185,6 +182,11 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
             listening = false;
         }
         return false;
+    }
+
+    @Override
+    public void exit() {
+        game.changeScreen("settings");
     }
 
     @Override

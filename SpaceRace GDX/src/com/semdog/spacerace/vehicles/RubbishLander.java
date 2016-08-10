@@ -12,13 +12,14 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * The worst ship in the game.
  * Nobody uses it if they can avoid it
+ *
+ * @author Sam
  */
 
 public class RubbishLander extends Ship {
 
     public RubbishLander(float x, float y, String id) {
         super(x, y, 32, 32, 3000, 200, "rubbish4", id);
-
         particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("assets/effects/smallflame.p"), Gdx.files.internal("assets/effects"));
         particleEffect.setPosition(x, y);
@@ -68,12 +69,7 @@ public class RubbishLander extends Ship {
 
     @Override
     public void firePrimary() {
-        System.out.println("No weapons mate");
-    }
-
-    @Override
-    public void fireSecondary() {
-        System.out.println("Weren't you listening");
+        //  System.out.println("No weapons mate");
     }
 
     @Override

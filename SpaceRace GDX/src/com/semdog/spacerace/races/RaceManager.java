@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 
 /**
  * A class which holds all the races loaded in from the races folder.
+ *
+ * @author Sam
  */
 
 public class RaceManager {
@@ -19,13 +21,14 @@ public class RaceManager {
     private static Race currentRace;
     private static Times times;
 
+    /**
+     * Loads up the races
+     */
     public static void initialize() {
-
         times = new Times();
 
         FileHandle[] raceFiles = Gdx.files.internal("data/stockraces").list();
         races = new Race[raceFiles.length];
-
         JsonReader jsonReader = new JsonReader();
 
         for (FileHandle fileHandle : raceFiles) {
@@ -34,17 +37,17 @@ public class RaceManager {
             String description = data.getString("description");
             String briefing = data.getString("briefing");
             String author = data.getString("author");
-
             float timeLimit = (float) data.getDouble("timelimit");
-            
             int index = Integer.parseInt(fileHandle.nameWithoutExtension().substring(4)) - 1;
-
             races[index] = new Race(name, author, description, briefing, timeLimit, fileHandle.readString());
         }
 
         loadBestTimes();
     }
 
+    /**
+     * Loads up the best times for each race
+     */
     private static void loadBestTimes() {
         for (int w = 0; w < races.length; w++) {
             try {
@@ -99,6 +102,9 @@ public class RaceManager {
         return limits;
     }
 
+    /**
+     * If a record has been broken, let the Times manager know
+     */
     public static void setNewBestTime(float newBestTime) {
         currentRace.setBestTime(newBestTime);
         times.setTime(currentRace.getID(), newBestTime);

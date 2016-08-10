@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * An interface which allows the flight computer to track and draw certain
  * objects.
+ *
+ * @author Sam
  */
 
 public interface Trackable {

@@ -41,7 +41,9 @@ import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.RaceEndScreen;
 import com.semdog.spacerace.ui.Scores;
 import com.semdog.spacerace.weapons.Bullet;
+import com.semdog.spacerace.weapons.Carbine;
 import com.semdog.spacerace.weapons.SMG;
+import com.semdog.spacerace.weapons.Shotgun;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,6 +52,8 @@ import java.util.Map;
 /**
  * An extended universe that communicates with a server for updates on positions
  * of masses, bullets and other players for use in Multiplayer.
+ *
+ * @author Sam
  */
 
 public class MultiplayerUniverse extends Universe {
@@ -136,11 +140,15 @@ public class MultiplayerUniverse extends Universe {
             container.exit();
         }
 
-        player = new MultiplayerPlayer(playerName, wormhole, 0, 350, null);
+        spawnX = 0;
+        spawnY = 350;
+
+        player = new MultiplayerPlayer(playerName, wormhole, spawnX, spawnY, null);
         ((MultiplayerPlayer) player).setTeam(decideTeam());
         MetaPlayer metaPlayer = new MetaPlayer();
         metaPlayer.setTeam(player.getTeam());
         metaPlayer.setName(player.getName());
+
 
         if (metaPlayer.getTeam() == Team.PINK) {
             pinks.put(wormhole.getID(), metaPlayer);
@@ -153,7 +161,9 @@ public class MultiplayerUniverse extends Universe {
         wormhole.registerPlayer(player);
         hud = new HUD(player);
         player.setHud(hud);
-        player.setWeapon(new SMG());
+        if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
+        else if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new Shotgun());
+        else player.setWeapon(new Carbine());
 
         trackables.add(player);
 
@@ -253,17 +263,6 @@ public class MultiplayerUniverse extends Universe {
 
         stars.setPosition(player.getFX() - stars.getWidth() / 2, player.getFY() - stars.getHeight() / 2);
 
-        // boolean f = true;
-        /*
-         * if (!player.isPilotingShip()) { for (int k = 0; k < ships.size; k++)
-		 * { Ship ship = ships.get(k);
-		 *
-		 * if (Vector2.dst(player.getX(), player.getY(), ship.getX(),
-		 * ship.getY()) < 75) { player.setBoarding(true, ship); f = false;
-		 * break; } }
-		 *
-		 * if (f) player.setBoarding(false, null); }
-		 */
         if (cameraShake > 0) {
             if (cameraShake > 5)
                 cameraShake = 5;
@@ -292,6 +291,18 @@ public class MultiplayerUniverse extends Universe {
 
             puppet.getValue().update(dt);
         }
+    }
+
+    @Override
+    public void respawnPlayer() {
+        spawnX = (int) Tools.decide(0, 1200);
+        spawnY = (int) Tools.decide(350, 850);
+
+        super.respawnPlayer();
+
+        if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
+        else if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new Shotgun());
+        else player.setWeapon(new Carbine());
     }
 
     @Override
@@ -530,10 +541,6 @@ public class MultiplayerUniverse extends Universe {
             if (pinks.containsKey(p)) pinks.get(p).setScore(entry.getValue().getScore());
             else if (blues.containsKey(p)) blues.get(p).setScore(entry.getValue().getScore());
         }
-    }
-
-    public void requestVelocityChange(Mass mass, float x, float y) {
-        wormhole.addMassVelocity(mass.hashCode(), x, y);
     }
 
     public void killMass(int id) {

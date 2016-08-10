@@ -2,6 +2,13 @@ package com.semdog.spacerace.net.entities;
 
 import com.semdog.spacerace.players.Team;
 
+/**
+ * A class utilized by the server to keep track of players.
+ * It stores their position, team, name. environment, and name.
+ *
+ * @author Sam
+ */
+
 public class VirtualPlayer {
     private String name;
     private int id;

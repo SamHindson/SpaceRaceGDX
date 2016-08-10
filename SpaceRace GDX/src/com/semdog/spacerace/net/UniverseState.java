@@ -9,6 +9,8 @@ import java.util.Map;
 
 /**
  * A class which packages information about the universe's current state.
+ *
+ * @author Sam
  */
 
 public class UniverseState {

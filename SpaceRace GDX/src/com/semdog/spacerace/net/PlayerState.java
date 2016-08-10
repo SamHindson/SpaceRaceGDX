@@ -3,8 +3,11 @@ package com.semdog.spacerace.net;
 /**
  * A multipurpose class that is used whenever a player needs to convey its state to the server.
  *
- * Rather than having many separate classes for each event (move, animation state, killed, etc.) which would have very similar fields anyway, 
- * we will rather have it in one class with an identifier and an array for storing that extra data.
+ * Rather than having many separate classes for each event (move, animation state, killed, etc.) which would have
+ * very similar fields anyway, we will rather have it in one class with an identifier and an array for storing that
+ * extra data.
+ *
+ * @author Sam
  */
 
 public class PlayerState {
@@ -34,10 +37,6 @@ public class PlayerState {
 
     public int getCategory() {
         return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
     }
 
     public float[] getInformation() {

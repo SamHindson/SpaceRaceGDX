@@ -8,17 +8,19 @@ import com.semdog.spacerace.universe.Universe;
 import java.util.ArrayList;
 
 /**
- * Created by Sam on 2016/08/08.
+ * A class which resides on the server holding information about a mass.
+ * Acts like a real mass (i.e. it moves, is pulled by gravity, etc.)
+ *
+ * @author Sam
  */
-public class VirtualMass {
-    int id, type;
-    float x, y, dx, dy, w, h;
-    float angle;
-    boolean gravityEnabled;
-    boolean onGround;
 
-    Rectangle bounds;
-    VirtualPlanet environment;
+public class VirtualMass {
+    private int id, type;
+    private float x, y, dx, dy, w, h;
+    private float angle;
+
+    private Rectangle bounds;
+    private VirtualPlanet environment;
 
     public VirtualMass(float x, float y, float dx, float dy, float w, float h) {
         this.x = x;
@@ -38,7 +40,7 @@ public class VirtualMass {
             if (inRange(planet)) {
                 foundPlanet = true;
 
-                onGround = Vector2.dst(x, y, planet.getX(), planet.getY()) < planet.getRadius();
+                boolean onGround = Vector2.dst(x, y, planet.getX(), planet.getY()) < planet.getRadius();
 
                 if (!onGround) {
                     if (planet != environment) {
@@ -77,5 +79,21 @@ public class VirtualMass {
 
     public void setEnvironment(VirtualPlanet environment) {
         this.environment = environment;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

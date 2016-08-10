@@ -11,6 +11,8 @@ import com.semdog.spacerace.graphics.Art;
  * A class which allows to be able to draw over the current screen for any
  * reason. Not as powerful as the Notification class, but infinitely more
  * extendible.
+ *
+ * @author Sam
  */
 
 public abstract class Overlay {

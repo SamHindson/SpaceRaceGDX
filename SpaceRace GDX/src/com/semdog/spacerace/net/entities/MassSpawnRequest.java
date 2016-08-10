@@ -1,10 +1,12 @@
 package com.semdog.spacerace.net.entities;
 
 /**
- * Created by Sam on 2016/08/08.
- * <p>
- * TODO deal with custom sizes
+ * A class which is sent to the server to request the spawning of a mass.
+ * Currently only supports Grenades
+ *
+ * @author Sam
  */
+
 public class MassSpawnRequest {
     public static final int GRENADE = 0;
     int id;
@@ -12,6 +14,7 @@ public class MassSpawnRequest {
     float x, y, dx, dy;
     float w, h;
 
+    //  Default no-parameter constructor for Kryo deserialization.
     MassSpawnRequest() {
     }
 

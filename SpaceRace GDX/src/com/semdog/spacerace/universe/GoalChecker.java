@@ -8,12 +8,13 @@ import java.util.Map.Entry;
 /**
  * A class used in the singleplayer campaign to check if players have fulfilled
  * the criteria for the current race.
+ *
+ * @author Sam
  */
 
 public class GoalChecker {
-    // These hashmaps store the method names and the respective values which
-    // these methods should return in order for a player to be considered
-    // successful
+    /* These hashmaps store the method names and the respective values which these methods should return in order for
+    a player to be considered successful */
     private HashMap<String, Boolean> booleans;
     private HashMap<String, Float> floats;
     private HashMap<String, String> strings;

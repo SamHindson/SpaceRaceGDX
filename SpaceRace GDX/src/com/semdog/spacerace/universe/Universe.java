@@ -40,6 +40,8 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * The container for everything that is ingame.
+ *
+ * @author Sam
  */
 
 public class Universe implements Disposable {
@@ -214,6 +216,9 @@ public class Universe implements Disposable {
         return isLoading;
     }
 
+    /**
+     * Does everything that needs to be done each frame
+     */
     public void tick(float dt) {
         age += dt;
 
@@ -224,15 +229,16 @@ public class Universe implements Disposable {
         }
 
         if (activated) {
+            //  Zoom reset
             if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
                 desiredZoom = 1;
             }
 
             float deltaZoom = (desiredZoom - camera.zoom) * dt * 5;
-
             zoom += deltaZoom;
             camera.zoom += deltaZoom;
 
+            //  Checks whether the player has his/her goggles on
             if (!gogglesActive && Gdx.input.isKeyPressed(SettingsManager.getKey("GOGGLES"))) {
                 gogglesActive = true;
                 playUISound("goggleson");
@@ -241,6 +247,7 @@ public class Universe implements Disposable {
                 playUISound("gogglesoff");
             }
 
+            //  Checks if the player has unhinged their camera
             if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("LOCK"))) {
                 lockedRotation = !lockedRotation;
                 hud.makeToast("Camera " + (lockedRotation ? "locked" : "unlocked"), 0.5f, Colors.UI_BLUE);
@@ -295,12 +302,13 @@ public class Universe implements Disposable {
                     RaceManager.getCurrentRace().setCompleted(true);
 
                     if (best) RaceManager.setNewBestTime(time);
-                    
+
                     String timeString = timeLeft < 10 ? String.format("%.2f", timeLeft) : (int) timeLeft + "";
                     String text = "Race completed with " + timeString + "s left!" + (best ? "\nNew Record!" : "");
                     raceEnd.setColor(best ? Colors.UI_GREEN : Colors.UI_WHITE);
                     raceEnd.setText("Victory!", text);
                     SoundManager.stopMusic("oxidiser");
+                    SoundManager.stopMusic("alephnull");
                     SoundManager.playMusic("victory", false);
 
                     won = true;
@@ -310,6 +318,7 @@ public class Universe implements Disposable {
                 }
             }
 
+            //  When the player is hurt, the screen flashes a little. This handles how this flash fades away.
             if (injuryAlpha > 0) {
                 injuryAlpha *= 0.5f;
 
@@ -368,6 +377,7 @@ public class Universe implements Disposable {
         cameraX += (desiredCX - cameraX) / 15.f;
         cameraY += (desiredCY - cameraY) / 15.f;
 
+        //  Sets camera position, taking into account any shakiness
         camera.position.set(cameraX + MathUtils.random() * cameraShake, cameraY + MathUtils.random() * cameraShake, 0);
         camera.update();
 
@@ -442,9 +452,12 @@ public class Universe implements Disposable {
     }
 
     public boolean isPlayerOrbiting() {
-        return player.getPerigee() > planets.get(0).getRadius();
+        return player.getPerigee() > player.getEnvironment().getRadius();
     }
 
+    /**
+     * Draws everything
+     */
     public void render() {
         universeShapeRenderer.setAutoShapeType(true);
         universeShapeRenderer.begin();
@@ -454,7 +467,6 @@ public class Universe implements Disposable {
         universeShapeRenderer.end();
 
         universeBatch.begin();
-
         if (!gogglesActive)
             stars.draw(universeBatch);
 
@@ -473,12 +485,12 @@ public class Universe implements Disposable {
         }
 
         universeBatch.end();
+
         universeShapeRenderer.begin(gogglesActive ? ShapeType.Line : ShapeType.Filled);
         Gdx.gl20.glLineWidth(gogglesActive ? 2 : 1);
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).draw(universeShapeRenderer);
         }
-
         if (gogglesActive) {
             for (int i = 0; i < masses.size; i++)
                 masses.get(i).debugRender(universeShapeRenderer);
@@ -515,6 +527,9 @@ public class Universe implements Disposable {
         hudBatch.end();
     }
 
+    /**
+     * A method called at the end of each frame to make sure the entities are sure of whether they still exist or not.
+     */
     public void finalizeState() {
         for (int i = 0; i < effects.size; i++) {
             if (!effects.get(i).isAlive()) {
@@ -603,6 +618,7 @@ public class Universe implements Disposable {
         shownEnd = true;
         hud.hideAll();
         SoundManager.stopMusic("oxidiser");
+        SoundManager.stopMusic("alephnull");
         SoundManager.playMusic("failure2", false);
         raceEnd.setText("Failure!", died ? cause.getDetails() : LifeAndDeath.getRandomFailure());
         raceEnd.setShowing(true);
@@ -697,6 +713,9 @@ public class Universe implements Disposable {
         trackables.add(collectible);
     }
 
+    /**
+     * Gets rid of everything.
+     */
     @Override
     public void dispose() {
         Gdx.app.log("Universe", "Disposing of all sorts of stuff");
@@ -739,6 +758,9 @@ public class Universe implements Disposable {
         this.activated = activated;
     }
 
+    /**
+     * A custom input manager, because for some reason the built-in one does not have the capacity to detect scrolling. (?)
+     */
     class InputManager implements InputProcessor {
 
         @Override
@@ -748,7 +770,6 @@ public class Universe implements Disposable {
 
         @Override
         public boolean keyUp(int keycode) {
-
             return false;
         }
 

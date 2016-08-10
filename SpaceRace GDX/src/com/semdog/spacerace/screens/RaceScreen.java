@@ -9,6 +9,8 @@ import com.semdog.spacerace.misc.FontManager;
 
 /**
  * An abstract class which all screens inherit from.
+ *
+ * @author Sam
  */
 
 public abstract class RaceScreen extends ScreenAdapter {
@@ -46,10 +48,6 @@ public abstract class RaceScreen extends ScreenAdapter {
 
     void drawTitle(SpriteBatch batch) {
         titleFont.draw(batch, title, Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() * 0.9f, Gdx.graphics.getWidth() * 0.6f, 1, true);
-    }
-
-    public boolean isMarkedForDestruction() {
-        return markedForDestruction;
     }
 
     public void setMarkedForDestruction(boolean markedForDestruction) {

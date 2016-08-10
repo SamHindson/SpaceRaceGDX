@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
@@ -25,8 +27,6 @@ public class Needle extends Ship {
         particleEffect.load(Gdx.files.internal("assets/effects/needle.p"), Gdx.files.internal("assets/effects"));
         particleEffect.setPosition(x, y);
         particleEffect.allowCompletion();
-
-        pCooldown = 0.025f;
 
         setMaxHealth(1500);
     }
@@ -54,6 +54,7 @@ public class Needle extends Ship {
             velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);
             particleEffect.start();
             Universe.currentUniverse.loopSound("needle", position.x, position.y, -1f);
+            //  The Needle causes a crazy camera shake
             Universe.currentUniverse.setCameraShake(10);
         } else {
             particleEffect.allowCompletion();
@@ -65,6 +66,7 @@ public class Needle extends Ship {
     protected void explode(DamageCause cause) {
         velocity.set(Vector2.Zero);
         Universe.currentUniverse.stopSound("needle");
+        Universe.currentUniverse.addEffect(new DustPuff(position.x, position.y, Colors.P_WHITE));
         if (pilot != null) {
             pilot.exitShip();
         }
@@ -72,11 +74,6 @@ public class Needle extends Ship {
 
     @Override
     public void firePrimary() {
-
-    }
-
-    @Override
-    public void fireSecondary() {
 
     }
 

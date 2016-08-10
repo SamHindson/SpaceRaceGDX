@@ -11,6 +11,8 @@ import com.semdog.spacerace.players.Player;
 
 /**
  * A mass which is exploded by the player for fun and profit.
+ *
+ * @author Sam
  */
 
 public class Box extends Mass {

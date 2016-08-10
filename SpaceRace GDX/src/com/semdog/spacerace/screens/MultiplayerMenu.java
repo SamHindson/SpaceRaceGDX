@@ -11,6 +11,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.TextInput;
 import com.semdog.spacerace.ui.TitleCard;
 
@@ -18,6 +19,8 @@ import java.net.InetAddress;
 
 /**
  * The menu which allows users to join multiplayer games.
+ *
+ * @author Sam
  */
 
 public class MultiplayerMenu extends RaceScreen {
@@ -55,8 +58,8 @@ public class MultiplayerMenu extends RaceScreen {
 
         new Thread(() -> {
             Client client = new Client();
+            //  Attempts to discover IP address with port 24488 open.
             InetAddress address = client.discoverHost(24488, 5000);
-
             Gdx.app.postRunnable(() -> {
                 if (address == null) text = "Could not find any servers!";
                 else {
@@ -68,8 +71,17 @@ public class MultiplayerMenu extends RaceScreen {
         }).start();
     }
 
+    /**
+     * Attempts to join the discovered game
+     */
     private void joinGame() {
-        if (nameInput.getText() == null) return;
+        if (nameInput.getText() == null || nameInput.getText().length() == 0) {
+            Notification.show("Enter a proper name, please.", "K", Colors.P_ORANGE, () -> {
+                        Notification.showing = false;
+                    }
+            );
+            return;
+        }
         SettingsManager.setName(nameInput.getText());
         game.changeScreen("multiplay");
     }

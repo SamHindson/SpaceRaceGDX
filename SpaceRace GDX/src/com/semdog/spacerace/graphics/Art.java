@@ -24,7 +24,7 @@ public class Art {
         artwork = new HashMap<>();
         accents = new HashMap<>();
 
-        // Create an error texture
+        // Create a default error texture
         Pixmap errorPix = new Pixmap(50, 50, Format.RGBA8888);
         errorPix.setColor(Color.PINK);
         errorPix.fill();
@@ -43,8 +43,7 @@ public class Art {
     }
 
     /**
-     * Creates a texture of a certain color that is 1x1 in size. Practically
-     * only ever used for the white pixel.
+     * Creates a texture of a certain color that is 1x1 in size. Practically only ever used for the white pixel.
      */
     private static Texture createPixel(Color color) {
         Pixmap pix = new Pixmap(1, 1, Format.RGB565);
@@ -54,9 +53,8 @@ public class Art {
     }
 
     /**
-     * Calculates the saturation value of a color using R, G and B values.
-     * Credit goes to StackOverflow user Mohsen
-     * (http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion)
+     * Calculates the saturation value of a color using R, G and B values. Credit goes to StackOverflow user Mohsen
+     * ( http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion )
      */
     private static double getSaturation(float r, float g, float b) {
         double max = Math.max(r, g);
@@ -76,8 +74,8 @@ public class Art {
     }
 
     /**
-     * Creates a silhouette of a given pixmap. Used mainly when a mass has
-     * damage done to it and it needs that classic flashing look.
+     * Creates a silhouette of a given pixmap. Used mainly when a mass has damage done to it and it needs that classic
+     * flashing look.
      */
     private static Texture createSilhouette(Pixmap oldPixmap) {
         Pixmap newPixmap = new Pixmap(oldPixmap.getWidth(), oldPixmap.getHeight(), Format.RGBA8888);
@@ -96,8 +94,9 @@ public class Art {
     }
 
     /**
-     * Loads a texture from a FileHandle, and puts that, its silhouette and its
-     * predominant color in the respective hashmaps.
+     * Loads a texture from a FileHandle, and puts that, its silhouette and its predominant color in the
+     * respective hashmaps.
+     * TODO there's probably a better way to do this. Figure it out someday.
      */
     private static void load(FileHandle file) {
         Texture texture = new Texture(file);
@@ -134,7 +133,6 @@ public class Art {
 
         Color highlight = new Color(pixmap.getPixel(mx, my));
         pixmap.dispose();
-
         accents.put(name, highlight);
     }
 
@@ -151,15 +149,14 @@ public class Art {
                 artwork.put(name, texture);
                 return texture;
             } catch (Exception e) {
-                System.err.println("Problem loading texture " + name + "! Here's an error one instead.");
+                Gdx.app.error("Art", "WARNING! " + name + " does not exist. Tell a developer!");
                 return artwork.get("error");
             }
         }
     }
 
     /**
-     * Returns a texture's accent color from the accents HashMap by using the
-     * texture's ID.
+     * Returns a texture's accent color from the accents HashMap by using the texture's ID.
      */
     public static Color getAccent(String textureName) {
         return accents.get(textureName);

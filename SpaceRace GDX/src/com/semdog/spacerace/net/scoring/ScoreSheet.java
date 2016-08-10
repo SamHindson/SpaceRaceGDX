@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 /**
  * A class created to wrap the VirtualUniverse's players array.
+ *
+ * @author Sam
  */
 
 public class ScoreSheet {

@@ -20,6 +20,8 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * A class which allows objects to express properties of masses found in the real world (i.e. velocity, mass, inertia, collisions)
+ *
+ * @author Sam
  */
 
 public abstract class Mass implements Disposable {
@@ -56,7 +58,8 @@ public abstract class Mass implements Disposable {
 
         shouldCollide = true;
 
-        Universe.currentUniverse.requestMass(this);
+        if (!(Universe.currentUniverse instanceof MultiplayerUniverse))
+            Universe.currentUniverse.requestMass(this);
 
         if (width == 0 || height == 0)
             Gdx.app.error("Mass", "Warning! Mass created with a zero width or height. Probably a bug!");
@@ -209,8 +212,7 @@ public abstract class Mass implements Disposable {
         if (physicsEnabled) {
             velocity.add(x, y);
         } else {
-            // Dude...
-            ((MultiplayerUniverse) Universe.currentUniverse).requestVelocityChange(this, x, y);
+            // Handle this another day
         }
     }
 

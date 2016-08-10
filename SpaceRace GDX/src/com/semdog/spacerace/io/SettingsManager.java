@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * The class that handles the input/output of the game's settings
  * These settings are found in two files:
- *      {userfolder}\.prefs\
+ * {userfolder}\.prefs\
  */
 
 public class SettingsManager {
@@ -59,7 +59,8 @@ public class SettingsManager {
         preferences = Gdx.app.getPreferences("srsettings");
         keyBindings = Gdx.app.getPreferences("srskeys");
 
-        // If our preferences does not contain something as basic as the 'fullscreen' parameter, we can assume that it does not actually exist. So we make it here
+        /*  If our preferences does not contain something as basic as the 'fullscreen' parameter, we can assume that it
+            does not actually exist. So we make it here */
         if (!preferences.contains("fullscreen")) {
             Gdx.app.error("SettingsManager", "No preferences found. Writing now...");
             setFullscreen(false);
@@ -117,7 +118,9 @@ public class SettingsManager {
         SoundManager.setSfxVolume(preferences.getFloat("sfx"));
     }
 
-    /** Method to save custom keys to settings file */
+    /**
+     * Method to save custom keys to settings file
+     */
     public static void writeKeys() {
         for (Map.Entry<String, Integer> entry : keys.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
@@ -126,7 +129,9 @@ public class SettingsManager {
         keyBindings.flush();
     }
 
-    /** Method to save preferences to settings file */
+    /**
+     * Method to save preferences to settings file
+     */
     public static void writeSettings() {
         preferences.putBoolean("firsttime", firstTime);
         preferences.putBoolean("fullscreen", fullscreen);
@@ -138,12 +143,15 @@ public class SettingsManager {
         preferences.flush();
     }
 
+    //  Misc getters and setters.
+
     public static float getMaster() {
         return master;
     }
 
     public static void setMaster(float master) {
         SettingsManager.master = master;
+        //  The SoundManager must be notified of this change as well.
         SoundManager.setMasterVolume(master);
     }
 
@@ -153,6 +161,7 @@ public class SettingsManager {
 
     public static void setMusic(float music) {
         SettingsManager.music = music;
+        //  The SoundManager must be notified of this change as well.
         SoundManager.setMusicVolume(music);
     }
 
@@ -162,6 +171,7 @@ public class SettingsManager {
 
     public static void setSfx(float sfx) {
         SettingsManager.sfx = sfx;
+        //  The SoundManager must be notified of this change as well.
         SoundManager.setSfxVolume(sfx);
     }
 

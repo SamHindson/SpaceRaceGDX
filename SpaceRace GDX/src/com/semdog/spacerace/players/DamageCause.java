@@ -4,6 +4,8 @@ package com.semdog.spacerace.players;
  * An enum that details how entities (like players and masses) can be damaged in
  * SpaceRace, with custom death messages displayed on the HUD if the player is
  * involved.
+ *
+ * @author Sam
  */
 
 public enum DamageCause {

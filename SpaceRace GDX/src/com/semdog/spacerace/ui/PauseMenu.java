@@ -8,8 +8,9 @@ import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.screens.PlayScreen;
 
 /**
- * An overlay which allows users to Restart or Exit a race currently being
- * played.
+ * An overlay which allows users to Restart or Exit a race currently being played.
+ *
+ * @author Sam
  */
 
 public class PauseMenu extends Overlay {

@@ -50,7 +50,6 @@ public class Wormhole extends Listener {
         kryo.register(ScoreSheet.class);
         kryo.register(HashMap.class);
         kryo.register(MassSpawnRequest.class);
-        kryo.register(VelocityChange.class);
         kryo.register(MassSpawnRequest.class);
         kryo.register(MassKillRequest.class);
         kryo.register(MassMap.class);
@@ -135,10 +134,6 @@ public class Wormhole extends Listener {
 
     public void requestVirtualMass(MassSpawnRequest massSpawnRequest) {
         client.sendTCP(massSpawnRequest);
-    }
-
-    public void addMassVelocity(int massID, float x, float y) {
-        client.sendTCP(new VelocityChange(x, y));
     }
 
     public void close() {

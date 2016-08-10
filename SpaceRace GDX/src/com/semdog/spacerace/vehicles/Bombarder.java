@@ -19,6 +19,8 @@ import com.semdog.spacerace.weapons.Bullet;
 
 /**
  * A vehicle with a big gun on top of it.
+ *
+ * @author Sam
  */
 
 public class Bombarder extends Ship {
@@ -32,6 +34,7 @@ public class Bombarder extends Ship {
         particleEffect.setPosition(x, y);
         particleEffect.allowCompletion();
 
+        //  Guns should have a 0.1s delay on their firing
         pCooldown = 0.1f;
 
         currentAmmo = maxAmmo;
@@ -150,11 +153,6 @@ public class Bombarder extends Ship {
                     r * MathUtils.degreesToRadians + MathUtils.PI / 2.f, 15, 0));
         }
         Universe.currentUniverse.playSound("runtgun", position.x, position.y, 1);
-    }
-
-    @Override
-    public void fireSecondary() {
-
     }
 
     @Override

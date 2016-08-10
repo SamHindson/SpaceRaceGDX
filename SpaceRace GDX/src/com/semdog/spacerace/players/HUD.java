@@ -13,6 +13,8 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * The Heads Up Display seen by players. Shows them all sorts of useful
  * information, like their health and ammo situations.
+ *
+ * @author Sam
  */
 
 public class HUD {

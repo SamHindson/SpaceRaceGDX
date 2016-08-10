@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.io.SettingsManager;
+import com.semdog.spacerace.misc.Tools;
 import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.ui.Briefing;
 import com.semdog.spacerace.ui.PauseMenu;
@@ -15,6 +16,8 @@ import com.semdog.spacerace.universe.UniverseLoader;
 
 /**
  * The screen in which users play the actual game.
+ *
+ * @author Sam
  */
 
 public class PlayScreen extends RaceScreen {
@@ -88,8 +91,6 @@ public class PlayScreen extends RaceScreen {
         if (universe != null)
             universe.dispose();
 
-        System.out.println("Making universe with playername " + SettingsManager.getName());
-
         timescale = 0;
 
         if (multiplayer) {
@@ -98,7 +99,7 @@ public class PlayScreen extends RaceScreen {
             universe = new Universe(this);
             new UniverseLoader().load(universe);
             universe.setActivated(false);
-            SoundManager.playMusic("oxidiser", true);
+            SoundManager.playMusic(Tools.decide("oxidiser", "alephnull") + "", true);
         }
 
         briefing.setShowing(true);

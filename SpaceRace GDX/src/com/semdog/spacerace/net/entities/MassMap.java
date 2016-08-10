@@ -3,11 +3,15 @@ package com.semdog.spacerace.net.entities;
 import java.util.HashMap;
 
 /**
- * Created by Sam on 2016/08/08.
+ * A class which holds the information about masses on a server.
+ *
+ * @author Sam
  */
-public class MassMap {
-    HashMap<Integer, MassState> massStates;
 
+public class MassMap {
+    private HashMap<Integer, MassState> massStates;
+
+    //  Default no-parameter constructor for Kryo deserialization.
     MassMap() {
     }
 

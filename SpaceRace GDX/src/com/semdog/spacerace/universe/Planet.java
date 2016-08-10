@@ -11,6 +11,8 @@ import com.semdog.spacerace.graphics.Colors;
 /**
  * An object which players can walk around, much like a normal planet, albeit
  * much smaller.
+ *
+ * @author Sam
  */
 
 public class Planet implements Disposable, Trackable {

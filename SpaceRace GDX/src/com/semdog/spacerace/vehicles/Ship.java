@@ -30,8 +30,6 @@ import com.semdog.spacerace.universe.*;
 
 public abstract class Ship extends Mass implements Collideable, Trackable {
 
-    protected boolean pAutomatic, sAutomatic;
-    protected float sCooldown;
     Player pilot;
     float currentFuel;
     float r;
@@ -259,6 +257,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
         particleEffect.draw(batch);
         sprite.draw(batch);
 
+        //  If it has just been hurt, make it look so
         if (ouchTime > 0) {
             silhouette.setAlpha(MathUtils.random(0.5f, 1));
             silhouette.draw(batch);
@@ -325,10 +324,9 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     }
 
     /**
-     * This code is executed when the ship undergoes a RUD (Rapid Unscheduled
-     * Disassembly)
+     * This code is executed when the ship undergoes a RUD (Rapid Unscheduled Disassembly)
      */
-    void rud() {
+    private void rud() {
         for (int k = 0; k < 30; k++) {
             new DebrisPiece(position.x, position.y, velocity.x, velocity.y, environment, this);
         }
@@ -346,8 +344,6 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     }
 
     public abstract void firePrimary();
-
-    public abstract void fireSecondary();
 
     public void flip() {
         flipping = true;
@@ -384,7 +380,6 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
         super.handleMassCollision(mass);
 
         if (mass instanceof Grenade) {
-            System.out.println("Collided with grenade!");
             ((Grenade) mass).explode();
         }
     }

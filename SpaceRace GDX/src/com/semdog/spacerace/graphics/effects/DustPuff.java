@@ -52,6 +52,9 @@ public class DustPuff extends Effect {
         return !effect.isComplete();
     }
 
+    /**
+     * Gets rid of the effect.
+     */
     @Override
     public void dispose() {
         effect.dispose();

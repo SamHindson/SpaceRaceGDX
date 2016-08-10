@@ -13,6 +13,8 @@ import com.semdog.spacerace.ui.TitleCard;
 /**
  * A little screen that can be accessed by finding the secret button on the Main Menu where I (the developer) can
  * thank players for playing SpaceRace.
+ *
+ * @author Sam
  */
 
 public class ThankYouScreen extends RaceScreen {

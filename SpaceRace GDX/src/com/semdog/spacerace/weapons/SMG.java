@@ -5,6 +5,8 @@ import com.semdog.spacerace.graphics.Colors;
 
 /**
  * A submachine gun.
+ *
+ * @author Sam
  */
 
 public class SMG extends Weapon {

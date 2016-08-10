@@ -18,15 +18,15 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * The masses that spawn and fly all over the place when vehicles explode.
  * They create their own texture based on the texture of the ship which exploded to create it, which is pretty neat
+ *
+ * @author Sam
  */
 
 public class DebrisPiece extends Mass {
 
     private Sprite sprite;
     private float rotationalSpeed;
-
     private float age, life;
-
     private int bounces;
 
     DebrisPiece(float x, float y, float dx, float dy, Planet environment, Ship ship) {
@@ -88,7 +88,7 @@ public class DebrisPiece extends Mass {
             super.handleMassCollision(mass);
     }
 
-    /***
+    /**
      * Debris pieces are to bounce twice before exploding into a puff of colored
      * smoke. This function works out if it is strong enough to bounce and, if
      * so, how it bounces.
@@ -112,6 +112,10 @@ public class DebrisPiece extends Mass {
         }
     }
 
+    /**
+     * Debris is one of the worst things to get hit by in SpaceRace.
+     * It deals quite a bit of damage to naked players.
+     */
     @Override
     protected void hitPlayer(Player player) {
         Universe.currentUniverse.playerHurt(player, getVelocity().len() / 50.f, DamageCause.DEBRIS);

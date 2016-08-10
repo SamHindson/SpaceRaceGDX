@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 /**
  * A class to hold all of the player's necessary HUD information
+ *
+ * @author Sam
  */
 
 public class VitalSigns {

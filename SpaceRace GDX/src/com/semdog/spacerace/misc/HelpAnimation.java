@@ -10,9 +10,8 @@ import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 
 /**
- * A small class set to hold animation frames of an animation found in the Help
- * Section.
- *
+ * A small class set to hold animation frames of an animation found in the Help Section.
+ * <p>
  * Not exceptionally efficient. TODO: Phase out in later releases
  *
  * @author Sam
@@ -37,7 +36,9 @@ public class HelpAnimation implements Disposable {
         }
     }
 
-    /** Updates the animation */
+    /**
+     * Updates the animation
+     */
     public void update(float dt) {
         frameTime += dt;
 
@@ -53,7 +54,9 @@ public class HelpAnimation implements Disposable {
         }
     }
 
-    /** Draws the frame that is to be displayed at the moment */
+    /**
+     * Draws the frame that is to be displayed at the moment
+     */
     public void draw(SpriteBatch batch, float x, float y, float width, float height) {
         batch.setColor(Colors.P_BLUE);
         batch.draw(Art.get("pixel_white"), x, y, width, height);

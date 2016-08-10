@@ -12,7 +12,9 @@ import com.semdog.spacerace.ui.TitleCard;
 
 /**
  * The first screen seen by users in SpaceRace.
- * Allows access to all of the other screens.
+ * Allows access to most of the other screens.
+ *
+ * @author Sam
  */
 
 public class MenuScreen extends RaceScreen {

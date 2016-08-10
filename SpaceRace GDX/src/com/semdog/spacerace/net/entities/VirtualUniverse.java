@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class whose object exists on the server side, which keeps track of all the major entities that exist in the multiplayer universe.
+ * A class whose object exists on the server side, which keeps track of all the major entities that exist in
+ * the multiplayer universe.
+ *
+ * @author Sam
  */
 
 public class VirtualUniverse {
@@ -34,7 +37,7 @@ public class VirtualUniverse {
     public void update(float dt) {
         for (Map.Entry<Integer, VirtualMass> massEntry : masses.entrySet()) {
             massEntry.getValue().update(dt, planets);
-            massStates.get(massEntry.getKey()).set(massEntry.getValue().x, massEntry.getValue().y);
+            massStates.get(massEntry.getKey()).set(massEntry.getValue().getX(), massEntry.getValue().getY());
         }
     }
 
@@ -49,22 +52,30 @@ public class VirtualUniverse {
             players.get(killer).addPoint();
     }
 
-    /** Adds a planet to the universe */
+    /**
+     * Adds a planet to the universe
+     */
     public void addPlanet(String id, float x, float y, float radius) {
         planets.add(new VirtualPlanet(id, x, y, radius));
     }
 
-    /** Adds a player to the universe */
+    /**
+     * Adds a player to the universe
+     */
     public void addPlayer(int id, VirtualPlayer player) {
         players.put(id, player);
     }
 
-    /** Sets a specific player's position */
+    /**
+     * Sets a specific player's position
+     */
     public void setPlayerPosition(int id, float x, float y) {
         players.get(id).setPosition(x, y);
     }
 
-    /** Gets rid of a particular player */
+    /**
+     * Gets rid of a particular player
+     */
     public void removePlayer(int id) {
         players.remove(id);
     }
@@ -87,32 +98,37 @@ public class VirtualUniverse {
         players.get(id).setAlive(v > 0);
     }
 
+    /**
+     * Creates a mass from a MassSpawnRequest template
+     */
+    public void addMass(MassSpawnRequest massSpawnRequest) {
+        VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h);
+        System.out.println("Adding a mass of id " + massSpawnRequest.id + " to me list");
+        mass.setId(massSpawnRequest.id);
+        mass.setType(massSpawnRequest.type);
+        massStates.put(massSpawnRequest.id, new MassState());
+        masses.put(massSpawnRequest.id, mass);
+    }
+
+    /**
+     * Returns a nicely-packaged set of data detailing positions of all in-game masses.
+     */
+    public MassMap getMassStates() {
+        return new MassMap(massStates);
+    }
+
+    /**
+     * Gets rid of a mass
+     */
+    public void killMass(int id) {
+        masses.remove(id);
+    }
+
     public HashMap<Integer, VirtualPlayer> getPlayers() {
         return players;
     }
 
     public ArrayList<VirtualPlanet> getPlanets() {
         return planets;
-    }
-
-    public void addMass(MassSpawnRequest massSpawnRequest) {
-        VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h);
-        System.out.println("Adding a mass of id " + massSpawnRequest.id + " to me list");
-        mass.id = massSpawnRequest.id;
-        mass.type = massSpawnRequest.type;
-        massStates.put(massSpawnRequest.id, new MassState());
-        masses.put(massSpawnRequest.id, mass);
-    }
-
-    public void addVelocity(int i, float x, float y) {
-
-    }
-
-    public MassMap getMassStates() {
-        return new MassMap(massStates);
-    }
-
-    public void killMass(int id) {
-        masses.remove(id);
     }
 }

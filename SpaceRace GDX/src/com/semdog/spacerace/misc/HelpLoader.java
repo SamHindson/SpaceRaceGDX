@@ -17,7 +17,7 @@ public class HelpLoader {
         items = new Array<>();
 
         // Creates a massive string from the help.srh file and splits it using the plus sign as a delimiter.
-        // TODO: Can be optimized
+        // TODO: Can be optimized!
         String allHelp = Gdx.files.internal("assets/help/help.srh").readString();
         String[] split = allHelp.split("[+]");
 

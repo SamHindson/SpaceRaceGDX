@@ -3,6 +3,8 @@ package com.semdog.spacerace.races;
 /**
  * A class that is populated with information about a loaded race, just so everything doesn't have to use JSON Parsing
  * whenever a piece of data is needed.
+ *
+ * @author Sam
  */
 
 public class Race {

@@ -6,6 +6,8 @@ import com.semdog.spacerace.graphics.Colors;
 /**
  * A weapon which functions much like a standard shotgun: it fires multiple
  * shells at once and is terrible at long ranges.
+ *
+ * @author Sam
  */
 
 public class Shotgun extends Weapon {

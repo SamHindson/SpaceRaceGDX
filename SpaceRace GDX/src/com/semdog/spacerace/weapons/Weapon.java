@@ -13,6 +13,8 @@ import com.semdog.spacerace.universe.Universe;
 
 /**
  * An abstract class which encompasses the nature of weapons in SpaceRace.
+ *
+ * @author Sam
  */
 
 public abstract class Weapon implements Vitality {

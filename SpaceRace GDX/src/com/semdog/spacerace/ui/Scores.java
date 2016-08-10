@@ -13,6 +13,8 @@ import java.util.Map;
 
 /**
  * An overlay to show the multiplayer scores
+ *
+ * @author Sam
  */
 
 public class Scores extends Overlay {

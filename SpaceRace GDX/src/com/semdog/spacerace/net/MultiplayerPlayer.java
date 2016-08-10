@@ -12,8 +12,12 @@ import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.weapons.Bullet;
 
 /**
- * A class which extends the functionality of the standard Player by communicating with a Wormhole whenever its state changes (i.e. starts walking, stops walking, jumps, etc.)
- * The Wormhole then processes this and notifies all other connected players to move the Puppet linked to this particular player. 
+ * A class which extends the functionality of the standard Player by communicating with a Wormhole whenever its state
+ * changes (i.e. starts walking, stops walking, jumps, etc.)
+ * The Wormhole then processes this and notifies all other connected players to move the Puppet linked to this
+ * particular player.
+ *
+ * @author Sam
  */
 
 public class MultiplayerPlayer extends Player {
@@ -44,21 +48,27 @@ public class MultiplayerPlayer extends Player {
         wormhole.sendPlayerState(PlayerState.ANIMSTATE, lefting ? -1 : righting ? 1 : 0);
     }
 
+    /**
+     * Needed to tell the wormhole the rotation of the puppet
+     */
     @Override
-    /** Needed to tell the wormhole the rotation of the puppet */
     public void setEnvironment(Planet planet) {
         super.setEnvironment(planet);
         wormhole.sendPlayerState(PlayerState.ENVSTATE, planet.getX(), planet.getY());
     }
 
+    /**
+     * Lets the wormhole know that the player is now alive
+     */
     @Override
-    /** Lets the wormhole know that the player is now alive */
     public void spawn(float x, float y, Array<Planet> planets) {
         super.spawn(x, y, planets);
         wormhole.sendPlayerState(PlayerState.LIFE, 1);
     }
 
-    /** A multiplayer player must be able to be hit by bullets, so we check that here. */
+    /**
+     * A multiplayer player must be able to be hit by bullets, so we check that here.
+     */
     public void checkCollisions(Array<Bullet> bullets) {
         if (!alive) return;
         for (Bullet bullet : bullets) {
@@ -80,8 +90,10 @@ public class MultiplayerPlayer extends Player {
         }
     }
 
+    /**
+     * Lets the wormhole know that the player is now dead
+     */
     @Override
-    /** Lets the wormhole know that the player is now dead */
     public void die(DamageCause damageCause) {
         super.die(damageCause);
         wormhole.sendPlayerState(PlayerState.LIFE, -1);

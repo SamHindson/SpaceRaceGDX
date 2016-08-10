@@ -2,6 +2,8 @@ package com.semdog.spacerace.net.entities;
 
 /**
  * A class which is sent to the server to request the creation of a bullet.
+ *
+ * @author Sam
  */
 
 public class BulletRequest {

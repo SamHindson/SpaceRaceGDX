@@ -19,6 +19,7 @@ public class Explosion extends Effect {
 
         effect = new ParticleEffect();
 
+        //  Plays a random explosion sound
         Universe.currentUniverse.playSound("explosion" + Tools.decide("1", "2", "3"), x, y, 0.2f);
     }
 
@@ -40,11 +41,17 @@ public class Explosion extends Effect {
         effect.setPosition(x, y);
     }
 
+    /**
+     * Explosions fade into darkness after 5 seconds
+     */
     @Override
     public boolean isAlive() {
         return age < 5;
     }
 
+    /**
+     * Gets rid of the effect.
+     */
     @Override
     public void dispose() {
         effect.dispose();

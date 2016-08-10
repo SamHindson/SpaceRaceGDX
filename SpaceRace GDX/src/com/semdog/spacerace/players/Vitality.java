@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * An interface which all things vital-sign related must implement.
  * Things which implement this will appear on the HUD as the little colored bars
+ *
+ * @author Sam
  */
 
 public interface Vitality {

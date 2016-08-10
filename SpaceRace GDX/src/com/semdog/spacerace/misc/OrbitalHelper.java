@@ -16,16 +16,16 @@ public class OrbitalHelper {
      * This method is the reason the OrbitalHelper class exists - to help
      * determine the various quantities involved in orbits without each class
      * needing the code.
-     * <p>
+     *
      * It takes in some orbital states and returns a whole bunch of information
      * packaged into a float array.
-     * <p>
+     *
      * Blatantly stolen from last year's ULTRANAUT because redoing all of this
      * math is not an effective way of going about things.
-     * <p>
+     *
      * For better understanding the math used here refer to the following
-     * resources
-     * <p>
+     * resources:
+     *
      * http://wiki.kerbalspaceprogram.com/wiki/Tutorial:_Basic_Orbiting_%28Math%29
      * http://hyperphysics.phy-astr.gsu.edu/hbase/math/ellipse.html
      * http://sydney.edu.au/engineering/aeromech/AERO4701/Course_Documents/AERO4701_week2.pdf

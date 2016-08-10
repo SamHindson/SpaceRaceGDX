@@ -5,6 +5,8 @@ import com.semdog.spacerace.players.Team;
 /**
  * A class used on the client side to keep track of the points of the other players.
  * The methods here are all self-explanatory.
+ *
+ * @author Sam
  */
 
 public class MetaPlayer {

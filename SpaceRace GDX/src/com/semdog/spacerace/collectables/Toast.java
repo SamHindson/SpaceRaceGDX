@@ -15,7 +15,7 @@ import com.semdog.spacerace.vehicles.Ship;
 public class Toast extends Collectible {
     public Toast(float x, float y) {
         super(x, y, 20, 20, "toast", 0x11);
-        //  Toasts never say die
+        //  Toasts never say die! (They don't respawn)
         respawnable = false;
     }
 

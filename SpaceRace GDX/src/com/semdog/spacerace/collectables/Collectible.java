@@ -67,8 +67,6 @@ public abstract class Collectible implements Trackable {
     /**
      * Sets the planet on which the collectible resides and allows it to bob up
      * and down very slightly.
-     *
-     * @param planet The planet on which the collectible resides.
      */
     public void setEnvironment(Planet planet) {
         environment = planet;
@@ -86,6 +84,9 @@ public abstract class Collectible implements Trackable {
         sprite.setPosition(x, y);
     }
 
+    /**
+     * Lets the collectible do whatever it wants to do each frame
+     */
     public void update(float dt, Array<Collideable> collideables) {
         if (environment != null) {
             float bob = MathUtils.sin(Universe.currentUniverse.getAge()) * 3;
@@ -99,18 +100,17 @@ public abstract class Collectible implements Trackable {
 
         if (particleEffect.isComplete()) particleEffect.start();
 
-        // Loops through all the collideables the universe has given it and
-        // checks whether they collide.
+        /* Loops through all the collideables (i.e. players, ships) the universe
+        has given it and checks whether they collide.*/
         for (int q = 0; q < collideables.size; q++) {
-            Collideable collideable = collideables.get(q);
-            int cID = collideable.getType();
-            int check = cID & target;
-
             /*This simple bitmasking method sees whether the Collideable is of
             the right variant (i.e. player, or space ship).
             If this is compatible with what the Collectible is meant to
             effect (i.e. the check produces a non-zero result) the collision
             goes ahead.*/
+            Collideable collideable = collideables.get(q);
+            int cID = collideable.getType();
+            int check = cID & target;
             if (check != 0 && collideable.canCollect(this)) {
                 if (collideable.getCollisionBounds().overlaps(bounds)) {
                     get(collideable);

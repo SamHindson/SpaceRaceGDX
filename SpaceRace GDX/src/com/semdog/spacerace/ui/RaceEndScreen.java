@@ -11,8 +11,10 @@ import com.semdog.spacerace.universe.Universe;
 /**
  * An overlay which shows when a race has ended either successfully or
  * otherwise.
- * <p>
+ *
  * Only shows after a delay so as to line the motions up with the music.
+ *
+ * @author Sam
  */
 
 public class RaceEndScreen extends Overlay {

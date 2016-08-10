@@ -82,7 +82,9 @@ public class SoundManager {
         loadMusic("failure.ogg");
         loadMusic("failure2.ogg");
         loadMusic("oxidiser.ogg");
+        loadMusic("alephnull.ogg");
         loadMusic("menu.ogg");
+        loadMusic("spacerace.ogg");
     }
 
     /**
@@ -136,9 +138,9 @@ public class SoundManager {
                 music.get(name).setVolume(masterVolume * musicVolume);
                 music.get(name).play();
 
-                // If the manager fails to play a song, it can be solved by
-                // requesting it be played again next frame. So we add it to the
-                // queue of songs waiting to be born.
+                /*  If the manager fails to play a song, it can be solved by
+                    requesting it be played again next frame. So we add it to the
+                    queue of songs waiting to be born.*/
             } catch (GdxRuntimeException e) {
                 if (queuedMusic.contains(name + "-" + loop, true))
                     return;

@@ -39,11 +39,9 @@ public class RaceGame extends ApplicationAdapter {
     private ShapeRenderer backgroundRenderer;
     private Array<BackgroundElement> backgroundElements;
     private RaceScreen screen;
-
     private PostProcessor postProcessor;
     private CrtMonitor crtMonitor;
     private Bloom bloom;
-
     private BitmapFont loadingFont;
     private SpriteBatch loadingBatch;
     private Texture trousers, pixel;
@@ -185,7 +183,7 @@ public class RaceGame extends ApplicationAdapter {
             }
             loadingBatch.setColor(Color.WHITE);
 
-            FontManager.getFont("inconsolata-36").draw(loadingBatch, "loading...", 0, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth(), Align.center, false);
+            FontManager.getFont("inconsolata-36").draw(loadingBatch, "l o a d i n g . . .", 0, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth(), Align.center, false);
             loadingBatch.end();
 
                 /* Only loads a second in, allowing the loading message to show properly */
@@ -226,10 +224,12 @@ public class RaceGame extends ApplicationAdapter {
         if (exiting) return;
 
         super.dispose();
+        Gdx.app.log("RaceGame", "Disposing of things...");
         screen.dispose();
         backgroundRenderer.dispose();
         postProcessor.dispose();
         Notification.dispose();
+        Gdx.app.log("RaceGame", "Done!");
         exiting = true;
         Gdx.app.exit();
     }
@@ -282,15 +282,13 @@ public class RaceGame extends ApplicationAdapter {
 
         /* Stops/starts any music that needs to do so */
         if (!name.equals("play") && !SoundManager.isMusicPlaying("menu")) {
-            SoundManager.playMusic("menu", true);
+            SoundManager.playMusic(Tools.decide("menu", "spacerace") + "", false);
             SoundManager.stopMusic("oxidiser");
+            SoundManager.stopMusic("alephnull");
         }
 
-        float d = (float) Tools.decide(0.f, MathUtils.PI / 2f, MathUtils.PI, MathUtils.PI * 1.5f);
-        System.out.println("Direction is now " + d);
-        for (BackgroundElement element : backgroundElements) {
-            element.d = d;
-        }
+        BackgroundElement.d += 90;
+        BackgroundElement.d %= 360;
     }
 
     public void changeResolution() {
@@ -303,12 +301,12 @@ public class RaceGame extends ApplicationAdapter {
  * A class to define the little stars and planets you see in the menu background
  */
 class BackgroundElement {
+    static float d;
     float x;
     float y;
     float radius;
     Color color;
     float v;
-    float d;
 
     BackgroundElement() {
         x = MathUtils.random(Gdx.graphics.getWidth());
@@ -328,9 +326,9 @@ class BackgroundElement {
     private void reset() {
         v = MathUtils.random(10) + 15;
         if (d == 0) x = -radius;
-        if (d == MathUtils.PI * 1.5f) y = Gdx.graphics.getHeight() + radius;
-        if (d == MathUtils.PI) x = Gdx.graphics.getWidth() + radius;
-        if (d == MathUtils.PI * 0.5f) y = -radius;
+        if (d == 90) y = -radius;
+        if (d == 180) x = Gdx.graphics.getWidth() + radius;
+        if (d == 270) y = Gdx.graphics.getHeight() - radius;
 
         if (MathUtils.randomBoolean(0.001f)) {
             color = new Color(Colors.getRandomPlanetColor()).mul(0.7f);
@@ -343,12 +341,12 @@ class BackgroundElement {
     }
 
     void update(float dt) {
-        x += v * MathUtils.cos(d) * dt;
-        y += v * MathUtils.sin(d) * dt;
+        x += v * MathUtils.cosDeg(d) * dt;
+        y += v * MathUtils.sinDeg(d) * dt;
 
         if (d == 0 && x > Gdx.graphics.getWidth() + radius) reset();
-        if (d == MathUtils.PI * 1.5f && y < -radius) reset();
-        if (d == MathUtils.PI && x < -radius) reset();
-        if (d == MathUtils.PI * 0.5f && y > Gdx.graphics.getHeight() + radius) reset();
+        if (d == 90 && y > Gdx.graphics.getHeight() + radius) reset();
+        if (d == 180 && x < -radius) reset();
+        if (d == 270 && y < -radius) reset();
     }
 }

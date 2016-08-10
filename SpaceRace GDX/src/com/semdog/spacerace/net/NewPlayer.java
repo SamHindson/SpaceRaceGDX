@@ -5,9 +5,11 @@ import com.semdog.spacerace.net.entities.VirtualPlayer;
 /**
  * A class sent to the server when a new player has joined.
  * Stores all the necessary information for that joining player.
+ *
+ * @author Sam
  */
 
-class NewPlayer {
+public class NewPlayer {
     private VirtualPlayer player;
     private int id;
 

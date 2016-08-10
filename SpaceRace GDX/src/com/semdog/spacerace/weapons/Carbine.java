@@ -5,6 +5,8 @@ import com.semdog.spacerace.graphics.Colors;
 
 /**
  * A weapon which fires single bullets which have decent damage points.
+ *
+ * @author Sam
  */
 
 public class Carbine extends Weapon {

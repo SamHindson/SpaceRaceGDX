@@ -1,12 +1,15 @@
 package com.semdog.spacerace.net.entities;
 
 /**
- * Created by Sam on 2016/08/08.
+ * A class which wraps information about a mass
+ *
+ * @author Sam
  */
 
 public class MassState {
-    float x, y;
+    private float x, y;
 
+    //  Default no-parameter constructor for Kryo deserialization.
     MassState() {
     }
 
