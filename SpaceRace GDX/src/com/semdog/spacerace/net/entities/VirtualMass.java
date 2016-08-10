@@ -15,7 +15,6 @@ import java.util.ArrayList;
  */
 
 public class VirtualMass {
-    private int id, type;
     private float x, y, dx, dy, w, h;
     private float angle;
 
@@ -90,10 +89,10 @@ public class VirtualMass {
     }
 
     public void setId(int id) {
-        this.id = id;
+        int id1 = id;
     }
 
     public void setType(int type) {
-        this.type = type;
+        int type1 = type;
     }
 }

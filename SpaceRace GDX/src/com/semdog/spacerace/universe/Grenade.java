@@ -89,7 +89,6 @@ public class Grenade extends Mass implements Trackable {
 
     @Override
     protected void handlePlanetCollision(float speed, boolean e) {
-        //  TODO hax
         if (!exploded) {
             exploded = true;
             Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));

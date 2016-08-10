@@ -197,8 +197,6 @@ public class SoundManager {
                 music.get(name).stop();
                 music.get(name).setLooping(false);
                 music.get(name).dispose();
-            } else {
-                Gdx.app.error("SoundManager", name + " wasn't playing in the first place.");
             }
         } else {
             Gdx.app.error("SoundManager", name + " hasn't been composed yet.");

@@ -76,8 +76,8 @@ public class Planet implements Disposable, Trackable {
         shapeRenderer.setColor(new Color(color).mul(0.75f));
         shapeRenderer.circle(position.x, position.y, radius - 5, 100);
 
-        // TODO figure out a new planet rendering strategy.
-        //  What do 8-bit planets look like???
+        //  TODO figure out a new planet rendering strategy.
+        //  In my defense, what do 8-bit planets look like??? They can't be round ???
 
         shapeRenderer.set(ShapeType.Filled);
         for (int i = 0; i < specks; i++) {
@@ -88,12 +88,6 @@ public class Planet implements Disposable, Trackable {
             shapeRenderer.rect(0, 0, speckW[i], speckW[i]);
             shapeRenderer.identity();
         }
-
-        /*if (specks != 0 && !goggles)
-            for (int h = 0; h < specks; h++) {
-                shapeRenderer.setColor(dustColors[h]);
-                shapeRenderer.circle(position.x + ballX[h], position.y + ballY[h], ballR[h]);
-            }*/
     }
 
     public float getX() {

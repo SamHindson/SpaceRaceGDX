@@ -21,6 +21,8 @@ public interface Trackable {
      */
     String getGizmoLabel();
 
-    /** Where the entity is */
+    /**
+     * Where the entity is
+     */
     Vector2 getPosition();
 }

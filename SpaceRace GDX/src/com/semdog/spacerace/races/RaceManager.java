@@ -49,13 +49,13 @@ public class RaceManager {
      * Loads up the best times for each race
      */
     private static void loadBestTimes() {
-        for (int w = 0; w < races.length; w++) {
+        for (Race race : races) {
             try {
-                races[w].setBestTime(times.getTime(races[w].getID()));
+                race.setBestTime(times.getTime(race.getID()));
             } catch (NoSuchElementException nsee) {
-                System.out.println("No time found for " + races[w].getName());
-                races[w].setCompleted(false);
-                races[w].setBestTime(races[w].getTimeLimit());
+                System.out.println("No time found for " + race.getName());
+                race.setCompleted(false);
+                race.setBestTime(race.getTimeLimit());
             }
         }
     }

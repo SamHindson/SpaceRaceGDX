@@ -25,8 +25,6 @@ public class SpaceRaceServer extends Listener implements Runnable {
     private VirtualUniverse universe;
     private Server server;
 
-    private boolean active = true;
-
     private SpaceRaceServer() throws IOException {
         //  Create a standard universe with five planets
         universe = new VirtualUniverse();
@@ -87,7 +85,9 @@ public class SpaceRaceServer extends Listener implements Runnable {
         }
     }
 
-    /** This is called whenever the server receives something from a client */
+    /**
+     * This is called whenever the server receives something from a client
+     */
     @Override
     public void received(Connection connection, Object object) {
         if (object instanceof NewPlayer) {
@@ -136,7 +136,9 @@ public class SpaceRaceServer extends Listener implements Runnable {
         // TODO work out multiplayer physics!!!
     }
 
-    /** Removes the player from the universe players list */
+    /**
+     * Removes the player from the universe players list
+     */
     @Override
     public void disconnected(Connection connection) {
         server.sendToAllExceptTCP(connection.getID(), new PlayerDisconnect(connection.getID()));
@@ -147,6 +149,7 @@ public class SpaceRaceServer extends Listener implements Runnable {
     public void run() {
         float broadcastRate = 1 / 60f;
         float frameTime = 0;
+        boolean active = true;
         while (active) {
             universe.update(0.016f);
             frameTime += 0.016f;

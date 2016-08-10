@@ -109,7 +109,7 @@ public class Notification {
      * In the case of a resolution change, the Notification's SpriteBatch needs
      * to be readjusted for the new dimensions. Other screens don't have this
      * problem because the SpriteBatches are remade when the screen changes.
-     *
+     * <p>
      * This SpriteBatch is static, and thus needs a kick in the trousers for it
      * to recognize the changed resolution.
      */

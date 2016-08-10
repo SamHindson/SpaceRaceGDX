@@ -22,8 +22,8 @@ import com.semdog.spacerace.players.Vitality;
 import com.semdog.spacerace.universe.*;
 
 /***
- * The ship class, which all of the in-game vehicles derive from. TODO optimize
- * the ship classes, because they function in mostly the same way.
+ * The ship class, which all of the in-game vehicles derive from.
+ * TODO optimize the ship classes, because they function in mostly the same way.
  *
  * @author Sam
  */
@@ -49,9 +49,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     private boolean boostActive = false;
     private float boostTime = 30;
     private float boostRemaining;
-    private Vitality vFuel;
     private Vitality vBoost;
-    private Vitality vHealth;
     private boolean initialized;
     private boolean enterable;
     private boolean flipping;
@@ -76,7 +74,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
         this.id = id;
 
         vitalSigns = new VitalSigns();
-        vFuel = new Vitality() {
+        Vitality vFuel = new Vitality() {
             @Override
             public Type getValueType() {
                 return Type.CONTINUOUS;
@@ -108,7 +106,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
             }
         };
 
-        vHealth = new Vitality() {
+        Vitality vHealth = new Vitality() {
             @Override
             public Type getValueType() {
                 return Type.CONTINUOUS;

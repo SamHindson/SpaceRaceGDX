@@ -43,7 +43,7 @@ public abstract class Mass implements Disposable {
     Rectangle bounds;
     private float mass;
     private boolean orbiting = false;
-    private boolean gravityEnabled = true, physicsEnabled = true;
+    private boolean physicsEnabled = true;
 
     protected Mass(float x, float y, float dx, float dy, float mass, float width, float height, Planet environment,
                    String id) {
@@ -161,6 +161,7 @@ public abstract class Mass implements Disposable {
 
             age += dt;
 
+            boolean gravityEnabled = true;
             if (gravityEnabled) {
                 boolean foundPlanet = false;
                 for (int i = 0; i < gravitySources.size; i++) {

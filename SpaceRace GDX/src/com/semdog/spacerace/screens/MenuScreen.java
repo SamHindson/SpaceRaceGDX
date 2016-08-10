@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
-import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.ui.Button;
 import com.semdog.spacerace.ui.Notification;
@@ -59,9 +58,6 @@ public class MenuScreen extends RaceScreen {
         button3.setColors(Colors.P_PURPLE, Colors.UI_WHITE);
         button4.setColors(Colors.P_GRAY, Colors.UI_WHITE);
         button5.setColors(Colors.P_BLUE, Colors.UI_WHITE);
-
-        if (!SoundManager.isMusicPlaying("menu"))
-            SoundManager.playMusic("menu", true);
     }
 
     @Override

@@ -574,10 +574,13 @@ public class Universe implements Disposable {
         collideables.add(ship);
     }
 
-
+    /**
+     * Creates an Effect (e.g. an explosion)
+     */
     public void addEffect(Effect effect) {
         effects.add(effect);
 
+        /* If it was an explosion, we must damage nearby things and rock the player's world */
         if (effect instanceof Explosion) {
             if (cameraShake < 5) {
                 for (int i = 0; i < masses.size; i++) {
@@ -603,6 +606,9 @@ public class Universe implements Disposable {
         }
     }
 
+    /**
+     * Handles when a player is killed
+     */
     public void playerKilled(Player player, DamageCause cause) {
         hud.setDead(cause, !suddenDeath);
         hud.displayMessage();
@@ -612,6 +618,9 @@ public class Universe implements Disposable {
         }
     }
 
+    /**
+     * Ends the current race.
+     */
     private void terminateRace(boolean died, DamageCause cause) {
         terminated = true;
         playerEnabled = false;
@@ -664,6 +673,9 @@ public class Universe implements Disposable {
         SoundManager.stopSound(name);
     }
 
+    /**
+     * Plays a sound and sets its volume and pan so as to emulate what it would sound like if it was emitted at (x; y)
+     */
     public void playSound(String name, float x, float y, float volume) {
         float d = Vector2.dst(x, y, player.getX(), player.getY());
 
@@ -677,6 +689,9 @@ public class Universe implements Disposable {
         }
     }
 
+    /**
+     * Hurts the player, which does damage as well as making the screen flash
+     */
     public void playerHurt(Player player, float amount, DamageCause cause) {
         injuryAlpha = amount / 200.f;
         player.doDamage(amount, cause);
@@ -700,11 +715,6 @@ public class Universe implements Disposable {
         timeLeft = timeLimit;
         this.timeLimit = timeLimit;
         hud.displayMessage();
-    }
-
-    public void killCollectible(Collectible collectible) {
-        collectibles.removeValue(collectible, true);
-        trackables.removeValue(collectible, true);
     }
 
     public void addCollectable(Collectible collectible, int planet) {

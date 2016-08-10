@@ -1,4 +1,3 @@
-
 package com.bitfire.postprocessing;
 
 import com.badlogic.gdx.Gdx;

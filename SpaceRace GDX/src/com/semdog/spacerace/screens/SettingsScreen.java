@@ -73,7 +73,10 @@ public class SettingsScreen extends RaceScreen {
         sfx.setValue((int) SettingsManager.getSfx());
         music.setValue((int) SettingsManager.getMusic());
 
-        keysButton = new Button("[...]", false, Gdx.graphics.getWidth() / 2 + 50, Gdx.graphics.getHeight() * 0.7f - 350, 50, 20, () -> game.changeScreen("keys"));
+        keysButton = new Button("[...]", false, Gdx.graphics.getWidth() / 2 + 50, Gdx.graphics.getHeight() * 0.7f - 350, 50, 20, () -> {
+            saveSettings();
+            game.changeScreen("keys");
+        });
         keysButton.setColors(Color.BLACK, Colors.P_PINK);
 
         doneButton = new Button("Done", false, Gdx.graphics.getWidth() / 2, 50, 140, 50, () -> {

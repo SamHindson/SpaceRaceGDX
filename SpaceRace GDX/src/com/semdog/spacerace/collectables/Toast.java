@@ -21,11 +21,13 @@ public class Toast extends Collectible {
 
     @Override
     public void get(Collideable collideable) {
-        Universe.currentUniverse.playUISound("toastget");
-
-        if (collideable instanceof Player)
-            ((Player) collideable).addToast();
-        else
-            ((Ship) collideable).addToast();
+        if (active) {
+            active = true;
+            Universe.currentUniverse.playUISound("toastget");
+            if (collideable instanceof Player)
+                ((Player) collideable).addToast();
+            else
+                ((Ship) collideable).addToast();
+        }
     }
 }

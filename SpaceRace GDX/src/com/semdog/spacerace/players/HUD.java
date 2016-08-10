@@ -187,7 +187,9 @@ public class HUD {
         showingToast = true;
     }
 
-    /** Shows a small notification in the bottom left of the screen */
+    /**
+     * Shows a small notification in the bottom left of the screen
+     */
     public void showNotification(String text) {
         showingNotification = true;
         notificationEntering = true;

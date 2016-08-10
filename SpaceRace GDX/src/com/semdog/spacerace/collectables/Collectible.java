@@ -27,6 +27,7 @@ public abstract class Collectible implements Trackable {
     public static final byte PLAYER = 0x01;            //	Collision mask for Player
     public static final byte SHIP = 0x10;            //	Collision mask for Ships
     protected boolean respawnable = true;
+    protected boolean active = true;
     private float x;
     private float y;
     private float width;
@@ -42,7 +43,6 @@ public abstract class Collectible implements Trackable {
     private Color color;
     private String textureName;
     private ParticleEffect particleEffect;
-    private boolean active = true;
     private float cooldown;
 
     Collectible(float h, float a, float width, float height, String textureName, int target) {
@@ -103,11 +103,11 @@ public abstract class Collectible implements Trackable {
         /* Loops through all the collideables (i.e. players, ships) the universe
         has given it and checks whether they collide.*/
         for (int q = 0; q < collideables.size; q++) {
-            /*This simple bitmasking method sees whether the Collideable is of
+            /* This simple bitmasking method sees whether the Collideable is of
             the right variant (i.e. player, or space ship).
             If this is compatible with what the Collectible is meant to
             effect (i.e. the check produces a non-zero result) the collision
-            goes ahead.*/
+            goes ahead. */
             Collideable collideable = collideables.get(q);
             int cID = collideable.getType();
             int check = cID & target;

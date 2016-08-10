@@ -32,6 +32,8 @@ import com.semdog.spacerace.ui.Notification;
 /**
  * The main class that handles all the screens, notifications and loading of
  * resources.
+ *
+ * @author sam
  */
 
 public class RaceGame extends ApplicationAdapter {
@@ -42,24 +44,22 @@ public class RaceGame extends ApplicationAdapter {
     private PostProcessor postProcessor;
     private CrtMonitor crtMonitor;
     private Bloom bloom;
-    private BitmapFont loadingFont;
     private SpriteBatch loadingBatch;
     private Texture trousers, pixel;
-
     private float age;
     private float screenChangeJitter = 0;
     private boolean exiting = false;
     private boolean firstFrame = true;
 
     /**
-     * The first method called after main()
+     * The first method called after main() which loads up the things needed to show the loading screen.
      */
     @Override
     public void create() {
         FontManager.initialize();
 
         loadingBatch = new SpriteBatch();
-        loadingFont = new BitmapFont(Gdx.files.internal("assets/fonts/inconsolata-32.fnt"));
+        BitmapFont loadingFont = new BitmapFont(Gdx.files.internal("assets/fonts/inconsolata-32.fnt"));
 
         trousers = new Texture(Gdx.files.internal("assets/graphics/trousers.png"));
         pixel = new Texture(Gdx.files.internal("assets/graphics/pixel.png"));
@@ -68,20 +68,27 @@ public class RaceGame extends ApplicationAdapter {
         ShaderLoader.BasePath = "assets/shaders/";
         postProcessor = new PostProcessor(false, false, true);
 
+        /* Creates the CRTScreen effect */
         int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
         crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
         crtMonitor.setColorOffset(0.001f);
         postProcessor.addEffect(crtMonitor);
 
+        /* Creates the screen bulge effect */
         Curvature curvature = new Curvature();
         curvature.setDistortion(0.2f);
         postProcessor.addEffect(curvature);
 
+        /* Creates the screen curvature effect */
         bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bloom.setBloomIntesity(0.1f);
         postProcessor.addEffect(bloom);
     }
 
+    /**
+     * The actual resource-loading.
+     * TODO: Find a way to make this asynchronous!
+     */
     private void load() {
         /* Initializing the managers */
         SoundManager.initialize();
@@ -122,6 +129,9 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         screenChangeJitter = 10;
+
+        //  Plays the initial epic music
+        SoundManager.playMusic("" + Tools.decide("spacerace", "menu"), false);
     }
 
     private void update(float dt) {
@@ -222,7 +232,6 @@ public class RaceGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         if (exiting) return;
-
         super.dispose();
         Gdx.app.log("RaceGame", "Disposing of things...");
         screen.dispose();
@@ -281,12 +290,15 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         /* Stops/starts any music that needs to do so */
-        if (!name.equals("play") && !SoundManager.isMusicPlaying("menu")) {
-            SoundManager.playMusic(Tools.decide("menu", "spacerace") + "", false);
+        if (!name.equals("play")) {
             SoundManager.stopMusic("oxidiser");
             SoundManager.stopMusic("alephnull");
+
+            if (!SoundManager.isMusicPlaying("menu") && !SoundManager.isMusicPlaying("spacerace"))
+                SoundManager.playMusic(Tools.decide("menu", "spacerace") + "", false);
         }
 
+        //  Changes the direction of the motions of the background images
         BackgroundElement.d += 90;
         BackgroundElement.d %= 360;
     }
