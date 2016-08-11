@@ -413,7 +413,6 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
 
     @Override
     public void collectCollectible(Collectible collectible) {
-        System.out.println("Cool");
     }
 
     @Override

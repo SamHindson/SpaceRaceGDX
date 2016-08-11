@@ -93,23 +93,6 @@ public class Grenade extends Mass implements Trackable {
             exploded = true;
             Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
             die(DamageCause.EXPLOSION);
-            /*if (bouncing) {
-                float surfaceAngle = MathUtils.atan2(position.y - environment.getY(), position.x - environment.getX());
-                float velocityAngle = MathUtils.atan2(velocity.y, velocity.x);
-                float impactAngle = -(MathUtils.PI / 2.f + surfaceAngle) - velocityAngle;
-                velocity.x *= MathUtils.cos(impactAngle);
-                velocity.y *= MathUtils.sin(impactAngle);
-                position.x += velocity.x * 0.016f;
-                position.y += velocity.y * 0.016f;
-
-                if (velocity.len() < 10f || distance(environment) <= environment.getRadius()) {
-                    bouncing = false;
-                    velocity.set(Vector2.Zero);
-                }
-            } else {
-                position.set(environment.getX() + environment.getRadius() * MathUtils.cos(angle), environment.getY() + environment.getRadius() * MathUtils.sin(angle));
-                System.out.println("Stoppd.");
-            }*/
         }
     }
 

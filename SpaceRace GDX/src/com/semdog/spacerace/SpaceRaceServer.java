@@ -64,7 +64,6 @@ public class SpaceRaceServer extends Listener implements Runnable {
         kryo.register(ScoreSheet.class);
         kryo.register(HashMap.class);
         kryo.register(MassSpawnRequest.class);
-        kryo.register(MassSpawnRequest.class);
         kryo.register(MassKillRequest.class);
         kryo.register(MassMap.class);
         kryo.register(MassState.class);

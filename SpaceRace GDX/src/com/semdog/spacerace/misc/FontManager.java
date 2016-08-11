@@ -32,6 +32,7 @@ public class FontManager {
         load("fipps-36-italic");
         load("fipps-72");
         load("fipps-72-italic");
+        load("inconsolata-16");
         load("inconsolata-18");
         load("inconsolata-24");
         load("inconsolata-28");

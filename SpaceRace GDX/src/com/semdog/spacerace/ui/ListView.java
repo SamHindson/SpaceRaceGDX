@@ -72,14 +72,9 @@ public class ListView {
             }
         }
 
-        System.out.println(maxItems + " is max");
-        System.out.println(index + " is da index");
-
         page = index / maxItems;
 
         recomposeItems();
-
-        System.out.println("Page no " + page);
     }
 
     public void draw(SpriteBatch batch) {

@@ -103,7 +103,6 @@ public class VirtualUniverse {
      */
     public void addMass(MassSpawnRequest massSpawnRequest) {
         VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h);
-        System.out.println("Adding a mass of id " + massSpawnRequest.id + " to me list");
         mass.setId(massSpawnRequest.id);
         mass.setType(massSpawnRequest.type);
         massStates.put(massSpawnRequest.id, new MassState());

@@ -152,10 +152,8 @@ public class MultiplayerUniverse extends Universe {
 
         if (metaPlayer.getTeam() == Team.PINK) {
             pinks.put(wormhole.getID(), metaPlayer);
-            System.out.println("We've got a pink over here");
         } else {
             blues.put(wormhole.getID(), metaPlayer);
-            System.out.println("Adding the player to the bllues");
         }
 
         wormhole.registerPlayer(player);
@@ -170,13 +168,7 @@ public class MultiplayerUniverse extends Universe {
         hud.showStats();
     }
 
-    public static void reset() {
-        container.bigBang(true);
-    }
-
     private Team decideTeam() {
-        System.out.println("Number of pinks: " + pinks.size());
-        System.out.println("Number of blues: " + pinks.size());
         return pinks.size() > blues.size() ? Team.BLUE : pinks.size() < blues.size() ? Team.PINK : (Team) Tools.decide(Team.PINK, Team.BLUE);
     }
 
@@ -423,8 +415,6 @@ public class MultiplayerUniverse extends Universe {
         puppets.put(id, puppet);
         trackables.add(puppet);
 
-        System.out.println("Created a " + puppet.getTeam() + " puppet.");
-
         MetaPlayer metaPlayer = new MetaPlayer();
         metaPlayer.setName(player.getName());
         metaPlayer.setTeam(puppet.getTeam());
@@ -442,24 +432,18 @@ public class MultiplayerUniverse extends Universe {
     public void setPuppetPosition(int id, float x, float y) {
         if (puppets.containsKey(id)) {
             puppets.get(id).setPosition(x, y);
-        } else {
-            System.out.println("That person doesn;t exit");
         }
     }
 
     public void setPlayerAnimState(int id, float direction) {
         if (puppets.containsKey(id)) {
             puppets.get(id).setAnimState(direction);
-        } else {
-            System.out.println("That person doesn;t exit");
         }
     }
 
     public void setEnvironmentPosition(int id, float f, float g) {
         if (puppets.containsKey(id)) {
             puppets.get(id).setEnvironmentPosition(f, g);
-        } else {
-            System.out.println("That person doesn;t exit");
         }
     }
 
@@ -498,19 +482,12 @@ public class MultiplayerUniverse extends Universe {
             case MassSpawnRequest.GRENADE:
                 Grenade newGrenade = new Grenade(request.getX(), request.getY(), request.getDX(), request.getDY());
                 newGrenade.setControllerID(request.getId());
-                System.out.println("Created with ID " + request.getId());
                 masses.put(request.getId(), newGrenade);
         }
     }
 
-    public void setTeams(int pinks, int blues) {
-
-    }
-
     public void addEffect(Effect effect) {
         effects.add(effect);
-
-        System.out.println("Added a " + effect);
 
         if (effect instanceof Explosion) {
             if (cameraShake < 5) {

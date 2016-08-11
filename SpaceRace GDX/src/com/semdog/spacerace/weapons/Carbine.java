@@ -11,7 +11,7 @@ import com.semdog.spacerace.graphics.Colors;
 
 public class Carbine extends Weapon {
     public Carbine() {
-        super("Carbine", 32, false, 0.05f, 27, "carbine", 0.05f);
+        super("carbine", 32, false, 0.05f, 27, "carbine", 0.05f);
     }
 
     @Override

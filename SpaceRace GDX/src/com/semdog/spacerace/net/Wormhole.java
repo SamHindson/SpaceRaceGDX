@@ -116,8 +116,6 @@ public class Wormhole extends Listener {
     }
 
     public void registerPlayer(Player player) {
-        System.out.println(player);
-        System.out.println(player.getTeam());
         VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY(), player.getEnvironmentX(), player.getEnvironmentY());
         NewPlayer request = new NewPlayer(player2);
         request.setId(clientID);

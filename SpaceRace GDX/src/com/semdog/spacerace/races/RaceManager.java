@@ -50,10 +50,11 @@ public class RaceManager {
      */
     private static void loadBestTimes() {
         for (Race race : races) {
+            //  Try to load the time.
             try {
                 race.setBestTime(times.getTime(race.getID()));
             } catch (NoSuchElementException nsee) {
-                System.out.println("No time found for " + race.getName());
+                //  If it doesn't exist, we say the race has not yet been completed
                 race.setCompleted(false);
                 race.setBestTime(race.getTimeLimit());
             }
@@ -80,26 +81,6 @@ public class RaceManager {
         }
 
         return titles;
-    }
-
-    public static String[] getRaceDescriptions() {
-        String[] descriptions = new String[races.length];
-
-        for (int e = 0; e < descriptions.length; e++) {
-            descriptions[e] = races[e].getDescription();
-        }
-
-        return descriptions;
-    }
-
-    public static String[] getRaceTimeLimits() {
-        String[] limits = new String[races.length];
-
-        for (int e = 0; e < limits.length; e++) {
-            limits[e] = races[e].getTimeLimit() + "s";
-        }
-
-        return limits;
     }
 
     /**
