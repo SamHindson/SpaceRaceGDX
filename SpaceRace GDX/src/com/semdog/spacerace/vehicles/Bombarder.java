@@ -2,7 +2,6 @@ package com.semdog.spacerace.vehicles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.semdog.spacerace.graphics.Colors;
+import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.players.VitalSigns.Type;
 import com.semdog.spacerace.players.Vitality;
@@ -90,14 +90,14 @@ public class Bombarder extends Ship {
 
     @Override
     public void updateControls(float dt) {
-        if (Gdx.input.isKeyPressed(Keys.A)) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("LEFT"))) {
             r += dt * 150;
         }
-        if (Gdx.input.isKeyPressed(Keys.D)) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("RIGHT"))) {
             r -= dt * 150;
         }
 
-        if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 1) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("ENGINES")) && currentFuel > 1) {
             currentFuel -= power * dt;
             velocity.x -= getCurrentPower() * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
             velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);

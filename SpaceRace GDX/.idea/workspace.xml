@@ -9,112 +9,59 @@
     <bookmark url="file://$PROJECT_DIR$/src/com/semdog/spacerace/GameLoader.java" line="17" mnemonic="7" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="854c81b6-6321-4cce-95d2-873f31cb3e9c" name="Default" comment="Fixed weapon textures">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/music/oxidiser.ogg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/music/spacerace.ogg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/music/alephnull.ogg" afterPath="$PROJECT_DIR$/assets/music/alephnull.ogg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/music/spockrock.ogg" afterPath="$PROJECT_DIR$/assets/music/spockrock.ogg" />
+    <list default="true" id="854c81b6-6321-4cce-95d2-873f31cb3e9c" name="Default" comment="Fixed some pretty bad bugs. Eek">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/GameLoader.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/RaceGame.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/graphics/Art.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/graphics/Colors.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/graphics/effects/DustPuff.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/graphics/effects/Effect.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/graphics/effects/Explosion.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/misc/OrbitalHelper.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/misc/Tools.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/HUD.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/Player.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/Team.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/VitalSigns$Type.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/VitalSigns.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/Vitality.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/races/Race.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/screens/MenuScreen.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/screens/PlayScreen.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/screens/RaceScreen.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/screens/SettingsScreen.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/ui/Button.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/ui/TitleCard.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Grenade.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Mass.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Planet.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe$InputManager.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/UniverseLoader.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/vehicles/DebrisPiece.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/vehicles/Ship.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/Bullet.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/Carbine.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/SMG.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/Weapon.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/times.srt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/dustpuff.p" afterPath="$PROJECT_DIR$/assets/effects/dustpuff.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/explosion.p" afterPath="$PROJECT_DIR$/assets/effects/explosion.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/explosion2.p" afterPath="$PROJECT_DIR$/assets/effects/explosion2.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/explosion3.p" afterPath="$PROJECT_DIR$/assets/effects/explosion3.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/grenadetrail.p" afterPath="$PROJECT_DIR$/assets/effects/grenadetrail.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/jetpack.p" afterPath="$PROJECT_DIR$/assets/effects/jetpack.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/landerflame.p" afterPath="$PROJECT_DIR$/assets/effects/landerflame.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/needle.p" afterPath="$PROJECT_DIR$/assets/effects/needle.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/rocketflame.p" afterPath="$PROJECT_DIR$/assets/effects/rocketflame.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/runtflame.p" afterPath="$PROJECT_DIR$/assets/effects/runtflame.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/smallflame.p" afterPath="$PROJECT_DIR$/assets/effects/smallflame.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/effects/weaponpickup.p" afterPath="$PROJECT_DIR$/assets/effects/weaponpickup.p" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/graphics/runboy.atlas" afterPath="$PROJECT_DIR$/assets/graphics/runboy.atlas" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/help/help.srh" afterPath="$PROJECT_DIR$/assets/help/help.srh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/bias.fragment" afterPath="$PROJECT_DIR$/assets/shaders/bias.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/blur.fragment" afterPath="$PROJECT_DIR$/assets/shaders/blur.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/blur.vertex" afterPath="$PROJECT_DIR$/assets/shaders/blur.vertex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/camerablur.fragment" afterPath="$PROJECT_DIR$/assets/shaders/camerablur.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/combine.fragment" afterPath="$PROJECT_DIR$/assets/shaders/combine.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/convolve-1d.fragment" afterPath="$PROJECT_DIR$/assets/shaders/convolve-1d.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/copy.fragment" afterPath="$PROJECT_DIR$/assets/shaders/copy.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/crt-screen.fragment" afterPath="$PROJECT_DIR$/assets/shaders/crt-screen.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/fxaa.fragment" afterPath="$PROJECT_DIR$/assets/shaders/fxaa.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/lensflare.fragment" afterPath="$PROJECT_DIR$/assets/shaders/lensflare.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/lensflare2.fragment" afterPath="$PROJECT_DIR$/assets/shaders/lensflare2.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/motionblur.fragment" afterPath="$PROJECT_DIR$/assets/shaders/motionblur.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/nfaa.fragment" afterPath="$PROJECT_DIR$/assets/shaders/nfaa.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/radial-blur.fragment" afterPath="$PROJECT_DIR$/assets/shaders/radial-blur.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/radial-blur.vertex" afterPath="$PROJECT_DIR$/assets/shaders/radial-blur.vertex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/radial-distortion.fragment" afterPath="$PROJECT_DIR$/assets/shaders/radial-distortion.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/screenspace.vertex" afterPath="$PROJECT_DIR$/assets/shaders/screenspace.vertex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/threshold.fragment" afterPath="$PROJECT_DIR$/assets/shaders/threshold.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/vignetting.fragment" afterPath="$PROJECT_DIR$/assets/shaders/vignetting.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/zoom.fragment" afterPath="$PROJECT_DIR$/assets/shaders/zoom.fragment" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/shaders/zoom.vertex" afterPath="$PROJECT_DIR$/assets/shaders/zoom.vertex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/RaceGame.gwt.xml" afterPath="$PROJECT_DIR$/src/RaceGame.gwt.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PipelineState.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PipelineState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessor.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessorEffect.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessorEffect.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessorListener.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/PostProcessorListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/Bloom.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/Bloom.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/CrtMonitor.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/CrtMonitor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/Curvature.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/effects/Curvature.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Blur.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Blur.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Combine.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Combine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Convolve1D.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Convolve1D.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Convolve2D.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Convolve2D.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/CrtScreen.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/CrtScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Filter.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Filter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/MultipassFilter.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/MultipassFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/RadialDistortion.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/RadialDistortion.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Threshold.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/filters/Threshold.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/utils/FullscreenQuad.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/utils/FullscreenQuad.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/postprocessing/utils/PingPongBuffer.java" afterPath="$PROJECT_DIR$/src/com/bitfire/postprocessing/utils/PingPongBuffer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/utils/Hash.java" afterPath="$PROJECT_DIR$/src/com/bitfire/utils/Hash.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/utils/ItemsManager.java" afterPath="$PROJECT_DIR$/src/com/bitfire/utils/ItemsManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/bitfire/utils/ShaderLoader.java" afterPath="$PROJECT_DIR$/src/com/bitfire/utils/ShaderLoader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race01.json" afterPath="$PROJECT_DIR$/data/stockraces/race01.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race02.json" afterPath="$PROJECT_DIR$/data/stockraces/race02.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race03.json" afterPath="$PROJECT_DIR$/data/stockraces/race03.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race04.json" afterPath="$PROJECT_DIR$/data/stockraces/race04.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race05.json" afterPath="$PROJECT_DIR$/data/stockraces/race05.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race06.json" afterPath="$PROJECT_DIR$/data/stockraces/race06.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race07.json" afterPath="$PROJECT_DIR$/data/stockraces/race07.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race08.json" afterPath="$PROJECT_DIR$/data/stockraces/race08.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race09.json" afterPath="$PROJECT_DIR$/data/stockraces/race09.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race10.json" afterPath="$PROJECT_DIR$/data/stockraces/race10.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/stockraces/race11.json" afterPath="$PROJECT_DIR$/data/stockraces/race11.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/GameLoader.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/GameLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Ammo.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Ammo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Collectible.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Collectible.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Fuel.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Fuel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Toast.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Toast.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/WeaponPickup.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/WeaponPickup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/io/SettingsManager.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/io/SettingsManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/io/Times.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/io/Times.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/Exhibit.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/Exhibit.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpAnimation.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpAnimation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpItem.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpItem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpLoader.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/SRCamera.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/misc/SRCamera.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/BulletRequest.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/BulletRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassKillRequest.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassKillRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassMap.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassSpawnRequest.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassSpawnRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassState.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualMass.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualMass.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlanet.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlanet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlayer.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlayer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualUniverse.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualUniverse.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/scoring/ScoreSheet.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/scoring/ScoreSheet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/players/DamageCause.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/players/DamageCause.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/players/HUD.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/players/HUD.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/players/Team.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/players/Team.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/races/Race.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/races/Race.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/races/RaceManager.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/races/RaceManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/BugReportScreen.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/BugReportScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/HelpScreen.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/HelpScreen.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/MultiplayerMenu.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/MultiplayerMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/ThankYouScreen.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/ThankYouScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Briefing.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Briefing.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/CyclableText.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/CyclableText.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/HelpSection.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/HelpSection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Notification.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Notification.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Scores.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Scores.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/TextInput.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/TextInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Box.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Box.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Bombarder.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Bombarder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/RubbishLander.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/RubbishLander.java" />
     </list>
     <ignored path="SpaceRace GDX.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -157,99 +104,75 @@
       <file leaf-file-name="SettingsManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/io/SettingsManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1904">
-              <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+            <state relative-caret-position="1808">
+              <caret line="217" column="22" selection-start-line="217" selection-start-column="22" selection-end-line="217" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Wormhole.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/Wormhole.java">
+      <file leaf-file-name="RaceGame.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1632">
-              <caret line="118" column="0" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
+            <state relative-caret-position="379">
+              <caret line="130" column="32" selection-start-line="130" selection-start-column="32" selection-end-line="130" selection-end-column="32" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VirtualUniverse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualUniverse.java">
+      <file leaf-file-name="BugReportScreen.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/screens/BugReportScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1552">
-              <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
+            <state relative-caret-position="300">
+              <caret line="77" column="33" selection-start-line="77" selection-start-column="33" selection-end-line="77" selection-end-column="33" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RaceManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/races/RaceManager.java">
+      <file leaf-file-name="KeysScreen.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1280">
-              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+            <state relative-caret-position="304">
+              <caret line="150" column="54" selection-start-line="150" selection-start-column="54" selection-end-line="150" selection-end-column="54" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ListView.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/ui/ListView.java">
+      <file leaf-file-name="RubbishLander.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/RubbishLander.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="160">
+              <caret line="38" column="65" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="65" />
+              <folding>
+                <marker date="1473348233254" expanded="false" signature="47:387" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MultiplayerUniverse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/universe/MultiplayerUniverse.java">
+      <file leaf-file-name="Bombarder.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Bombarder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6192">
-              <caret line="434" column="9" selection-start-line="434" selection-start-column="9" selection-end-line="434" selection-end-column="9" />
-              <folding />
+            <state relative-caret-position="304">
+              <caret line="99" column="66" selection-start-line="99" selection-start-column="66" selection-end-line="99" selection-end-column="66" />
+              <folding>
+                <marker date="1473348233322" expanded="false" signature="47:760" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Ship.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Ship.java">
+      <file leaf-file-name="Needle.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5248">
-              <caret line="415" column="0" selection-start-line="415" selection-start-column="0" selection-end-line="415" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Grenade.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/universe/Grenade.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="37" column="32" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Box.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/universe/Box.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SoundManager.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/audio/SoundManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
-              <folding />
+            <state relative-caret-position="64">
+              <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
+              <folding>
+                <marker date="1473348233290" expanded="false" signature="47:525" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -271,6 +194,11 @@
       </list>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
   </component>
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
@@ -622,10 +550,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/universe/UniverseLoader.java" />
-        <option value="$PROJECT_DIR$/data/testlevel.json" />
-        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/graphics/Art.java" />
-        <option value="$PROJECT_DIR$/src/Testing.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Weapon.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Bullet.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/SmallBombarder.java" />
@@ -634,7 +558,6 @@
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/players/Vitality.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/players/VitalSigns.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/ThankYouScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/misc/HelpAnimation.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/PlayScreen.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/SingleplayerMenu.java" />
@@ -652,7 +575,6 @@
         <option value="$PROJECT_DIR$/data/stockraces/race06.json" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Toast.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/MenuScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/audio/SoundManager.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/SettingsScreen.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Universe.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/collectables/Collectible.java" />
@@ -673,6 +595,12 @@
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/universe/MultiplayerUniverse.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Ship.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Grenade.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Briefing.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/audio/SoundManager.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/RubbishLander.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Bombarder.java" />
+        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java" />
       </list>
     </option>
   </component>
@@ -684,8 +612,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2050" />
-    <option name="y" value="53" />
+    <option name="x" value="93" />
+    <option name="y" value="58" />
     <option name="width" value="1660" />
     <option name="height" value="960" />
   </component>
@@ -766,6 +694,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -908,11 +837,42 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="audio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1380,18 +1340,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2050" y="53" width="1660" height="960" extended-state="0" />
-    <editor active="true" />
+    <frame x="93" y="58" width="1660" height="960" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850242" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3827839" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3823178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33948338" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2939068" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24367088" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29271206" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24253285" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1400,7 +1360,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3206751" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32019114" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1451,7 +1411,9 @@
     <MESSAGE value="Commented + cleaned up. Fixed music bugs too" />
     <MESSAGE value="Cleaned up debig logs" />
     <MESSAGE value="Fixed weapon textures" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed weapon textures" />
+    <MESSAGE value="Welcome to the new world" />
+    <MESSAGE value="Fixed some pretty bad bugs. Eek" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed some pretty bad bugs. Eek" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1467,56 +1429,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/ui/CyclableText.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="704">
-          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/ui/Button.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-144">
-          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualMass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassSpawnRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/net/SpaceRaceServer.java" />
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/sun/nio/ch/EPollArrayWrapper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2916">
-          <caret line="229" column="23" selection-start-line="229" selection-start-column="23" selection-end-line="229" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/graphics/effects/DustPuff.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/graphics/effects/Effect.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="656">
@@ -1723,25 +1635,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="193" column="47" selection-start-line="193" selection-start-column="47" selection-end-line="193" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/universe/Universe.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="16">
           <caret line="718" column="0" selection-start-line="718" selection-start-column="0" selection-end-line="718" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/io/SettingsManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1904">
-          <caret line="125" column="0" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1823,11 +1720,101 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/ui/Briefing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="39" column="5" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
+          <folding>
+            <element signature="e#714#715#0" expanded="false" />
+            <element signature="e#761#762#0" expanded="false" />
+            <element signature="e#2392#2393#0" expanded="false" />
+            <element signature="e#2421#2422#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/audio/SoundManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
+        <state relative-caret-position="368">
+          <caret line="87" column="5" selection-start-line="87" selection-start-column="5" selection-end-line="87" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/com/semdog/spacerace/RaceGame.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#6487#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="379">
+          <caret line="130" column="32" selection-start-line="130" selection-start-column="32" selection-end-line="130" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/screens/BugReportScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="77" column="33" selection-start-line="77" selection-start-column="33" selection-end-line="77" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="150" column="54" selection-start-line="150" selection-start-column="54" selection-end-line="150" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/io/SettingsManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1808">
+          <caret line="217" column="22" selection-start-line="217" selection-start-column="22" selection-end-line="217" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/RubbishLander.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="38" column="65" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="65" />
+          <folding>
+            <marker date="1473348233254" expanded="false" signature="47:387" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Bombarder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="99" column="66" selection-start-line="99" selection-start-column="66" selection-end-line="99" selection-end-column="66" />
+          <folding>
+            <marker date="1473348233322" expanded="false" signature="47:760" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/dude.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/vehicles/Needle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
+          <folding>
+            <marker date="1473348233290" expanded="false" signature="47:525" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

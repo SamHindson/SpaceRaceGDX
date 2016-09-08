@@ -1,7 +1,7 @@
 {
   "name": "Murph!",
   "author": "Sam",
-  "description" : "That colorful backpack you've been wearing isn't just for show. Sure, it looks pretty sweet, but it also serves a much greater purpose...\nDo you like the idea of a jetpack?",
+  "description": "That colorful backpack you've been wearing isn't just for show. Sure, it looks pretty sweet, but it also serves a much greater purpose...\nDo you like the idea of a jetpack?",
   "briefing": "Using your arrowkeys, make your way over to that space ship floating off into the distance and climb in.",
   "timelimit": 30,
   "suddendeath": true,
@@ -22,11 +22,11 @@
   ],
   "runt": [
     {
-        "x": 350,
-        "y": 0,
-        "id": "Tiangong"
+      "x": 350,
+      "y": 0,
+      "id": "Tiangong"
     }
-    ],
+  ],
   "playercriteria": [
     {
       "boolean-isPlayerPilotingShip": true

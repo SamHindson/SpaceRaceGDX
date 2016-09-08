@@ -1,7 +1,7 @@
 {
   "name": "Orbits",
   "author": "Sam",
-  "description" : "Ballistic trajectories are all well and good, but that's not how Thomas Cromwell visited the Blue Aliens of Aequmaezl'ek. He used orbits, which is what you will learn in this tutorial.",
+  "description": "Ballistic trajectories are all well and good, but that's not how Thomas Cromwell visited the Blue Aliens of Aequmaezl'ek. He used orbits, which is what you will learn in this tutorial.",
   "briefing": "Turn the ship slightly during the launch, so as to obtain a nice rainbow-like trajectory. Then, at the top of the rainbow, burn in the Prograde direction until you win the race. (Remember to check your flight computer often!)",
   "timelimit": 300,
   "suddendeath": true,
@@ -22,9 +22,9 @@
   ],
   "rubbish": [
     {
-        "x": 150,
-        "y": 420,
-        "id": "Sputnik"
+      "x": 150,
+      "y": 420,
+      "id": "Sputnik"
     }
   ],
   "playercriteria": [

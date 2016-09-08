@@ -1,10 +1,10 @@
 package com.semdog.spacerace.vehicles;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.universe.Planet;
 import com.semdog.spacerace.universe.Universe;
@@ -36,14 +36,14 @@ public class RubbishLander extends Ship {
 
     @Override
     public void updateControls(float dt) {
-        if (Gdx.input.isKeyPressed(Keys.A)) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("LEFT"))) {
             r += dt * 60f;
         }
-        if (Gdx.input.isKeyPressed(Keys.D)) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("RIGHT"))) {
             r -= dt * 60f;
         }
 
-        if (Gdx.input.isKeyPressed(Keys.W) && currentFuel > 0) {
+        if (Gdx.input.isKeyPressed(SettingsManager.getKey("ENGINES")) && currentFuel > 0) {
             currentFuel -= power * dt;
             velocity.x -= getCurrentPower() * dt * MathUtils.sin(r * MathUtils.degreesToRadians);
             velocity.y += getCurrentPower() * dt * MathUtils.cos(r * MathUtils.degreesToRadians);

@@ -65,7 +65,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
             String keyName = Input.Keys.toString(SettingsManager.getKey(key));
 
             primaryKeys[a] = keyName;
-            primaryChangers[a] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.3f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * a - 10, 100, 40, () -> {
+            primaryChangers[a] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.3f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 40 * a - 10, 100, 40, () -> {
                 // When the button is pressed, the InputProcessor will await the  next keystroke with baited breath.
                 // When it receives this signal, that keystroke is recorded.
                 listen(i);
@@ -88,7 +88,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
             String keyName = Input.Keys.toString(SettingsManager.getKey(key));
 
             secondaryKeys[b] = keyName;
-            secondaryChangers[b] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.6f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * b - 10, 100, 40, () -> {
+            secondaryChangers[b] = new Button(keyName, false, Gdx.graphics.getWidth() * 0.6f + 65, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 40 * b - 10, 100, 40, () -> {
                 listen(i);
                 listeningPrimary = false;
             });
@@ -145,12 +145,12 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
 
         for (int x = 0; x < primaries.length; x++) {
             categoryFont.setColor(Colors.UI_WHITE);
-            categoryFont.draw(batch, primaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x, Gdx.graphics.getWidth() * 0.3f, 2, false);
+            categoryFont.draw(batch, primaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 40 * x, Gdx.graphics.getWidth() * 0.3f, 2, false);
         }
 
         for (int x = 0; x < secondaries.length; x++) {
             categoryFont.setColor(Colors.UI_WHITE);
-            categoryFont.draw(batch, secondaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 35 * x, Gdx.graphics.getWidth() * 0.6f, 2, false);
+            categoryFont.draw(batch, secondaries[x].replaceAll("_", " "), 0, Gdx.graphics.getHeight() * 0.7f + categoryFont.getCapHeight() - 40 * x, Gdx.graphics.getWidth() * 0.6f, 2, false);
         }
 
         for (Button button : primaryChangers) {
