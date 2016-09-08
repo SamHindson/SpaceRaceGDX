@@ -258,10 +258,12 @@ public class RaceGame extends ApplicationAdapter {
             case "play":
                 screen = new PlayScreen(this, false);
                 SoundManager.stopMusic("menu");
+                SoundManager.stopMusic("spacerace");
                 break;
             case "multiplay":
                 screen = new PlayScreen(this, true);
                 SoundManager.stopMusic("menu");
+                SoundManager.stopMusic("spacerace");
                 break;
             case "menu":
                 screen = new MenuScreen(this);
