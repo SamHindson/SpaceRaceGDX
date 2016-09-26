@@ -18,7 +18,6 @@ public class LifeAndDeath {
         FileHandle condolencesFile = Gdx.files.internal("assets/text/condolences.sr");
         String full = condolencesFile.readString();
         condolences = full.split("\n");
-
         FileHandle failuresFile = Gdx.files.internal("assets/text/failures.sr");
         full = failuresFile.readString();
         failures = full.split("\n");

@@ -1,5 +1,6 @@
 package com.semdog.spacerace.net.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.semdog.spacerace.net.UniverseState;
 
 import java.util.ArrayList;
@@ -55,8 +56,8 @@ public class VirtualUniverse {
     /**
      * Adds a planet to the universe
      */
-    public void addPlanet(String id, float x, float y, float radius) {
-        planets.add(new VirtualPlanet(id, x, y, radius));
+    public void addPlanet(String id, float x, float y, float radius, Color color) {
+        planets.add(new VirtualPlanet(id, x, y, radius, color));
     }
 
     /**

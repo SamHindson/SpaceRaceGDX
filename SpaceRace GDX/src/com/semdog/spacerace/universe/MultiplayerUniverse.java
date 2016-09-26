@@ -134,7 +134,7 @@ public class MultiplayerUniverse extends Universe {
         computerFont = FontManager.getFont("mohave-18-italic");
 
         try {
-            wormhole = new Wormhole(this);
+            wormhole = new Wormhole(this, _container.getGame());
         } catch (IOException ioe) {
             Notification.show("Could not connect to multiplayer service! Try again some other time.", "Aww :(", Colors.UI_BLUE, () -> Notification.showing = false);
             container.exit();
@@ -181,7 +181,7 @@ public class MultiplayerUniverse extends Universe {
         if (wormhole != null && player != null) {
             float networkTickTime = 1 / 30f;
             if (networkTime > networkTickTime) {
-                wormhole.sendPlayerState(PlayerState.SETPOS, player.getX(), player.getY());
+                wormhole.sendPlayerState(PlayerState.SETPOS, player.getX(), player.getY(), player.getAnimState(), player.getEnvironmentX(), player.getEnvironmentY());
             }
         }
 
@@ -339,7 +339,9 @@ public class MultiplayerUniverse extends Universe {
 
     @Override
     public void dispose() {
-        super.dispose();
+        for (Map.Entry<Integer, Mass> entry : masses.entrySet()) {
+            entry.getValue().dispose();
+        }
         wormhole.close();
     }
 
@@ -421,10 +423,11 @@ public class MultiplayerUniverse extends Universe {
 
         if (metaPlayer.getTeam() == Team.PINK) pinks.put(player.getId(), metaPlayer);
         else blues.put(player.getId(), metaPlayer);
+        hud.showNotification("'" + player.getName() + "' has joined the game");
     }
 
     public void createPlanet(VirtualPlanet planet) {
-        Planet planet2 = new Planet(planet.getID(), planet.getX(), planet.getY(), planet.getRadius());
+        Planet planet2 = new Planet(planet.getID(), planet.getX(), planet.getY(), planet.getRadius(), new Color(planet.getColor()), planet.getSeed());
         planets.add(planet2);
         trackables.add(planet2);
     }
@@ -469,7 +472,7 @@ public class MultiplayerUniverse extends Universe {
     public void removePuppet(int id) {
         if (puppets.get(id).getTeam() == Team.PINK) pinks.remove(id);
         else blues.remove(id);
-
+        hud.showNotification("'" + player.getName() + "' has left the game");
         puppets.remove(id);
     }
 
@@ -483,6 +486,7 @@ public class MultiplayerUniverse extends Universe {
                 Grenade newGrenade = new Grenade(request.getX(), request.getY(), request.getDX(), request.getDY());
                 newGrenade.setControllerID(request.getId());
                 masses.put(request.getId(), newGrenade);
+                trackables.add(newGrenade);
         }
     }
 
@@ -501,7 +505,6 @@ public class MultiplayerUniverse extends Universe {
                             mass.doDamage(damage, DamageCause.EXPLOSION);
                     }
                 }*/
-
                 float distance = Vector2.dst(player.getFX(), player.getFY(), effect.getX(), effect.getY());
                 if (distance < 300) {
                     float damage = 500.f / (0.1f * distance + 1) - distance * 0.017f;
@@ -521,6 +524,9 @@ public class MultiplayerUniverse extends Universe {
     }
 
     public void killMass(int id) {
+        trackables.removeValue((Trackable) masses.get(id), true);
         masses.remove(id);
     }
+
+
 }

@@ -25,6 +25,7 @@ import java.net.InetAddress;
 
 public class MultiplayerMenu extends RaceScreen {
 
+    private static final String VALIDCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*_1234567890-.";
     public static InetAddress serverAddress;
     private Button joinButton, abandonButton;
     private boolean canJoin;
@@ -54,6 +55,7 @@ public class MultiplayerMenu extends RaceScreen {
         joinButton.setColors(Colors.UI_GREEN, Colors.UI_WHITE);
 
         nameInput = new TextInput(Gdx.graphics.getWidth() * 0.4f, Gdx.graphics.getHeight() * 0.4f, Gdx.graphics.getWidth() * 0.2f, 100, 17);
+        nameInput.setValidChars(VALIDCHARS);
         Gdx.input.setInputProcessor(nameInput);
 
         new Thread(() -> {

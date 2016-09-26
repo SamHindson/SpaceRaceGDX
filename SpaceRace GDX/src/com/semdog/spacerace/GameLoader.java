@@ -2,7 +2,7 @@ package com.semdog.spacerace;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.semdog.spacerace.net.SpaceRaceServer;
+//import com.semdog.spacerace.net.SpaceRaceServer;
 
 /**
  * The entry point of SpaceRace. Can be used to launch either the real game or a dedicated server,

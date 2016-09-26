@@ -260,7 +260,6 @@ public class Player implements Collideable, Disposable, Trackable {
                     } else {
                         //  If you're on the floor already, stop moving or you'll go right through the planet!
                         velocity.set(Vector2.Zero);
-
                         //  Adds the planet to the list of places you've visited
                         if (!visitedPlanets.contains(environment, true)) {
                             visitedPlanets.add(environment);
@@ -454,6 +453,12 @@ public class Player implements Collideable, Disposable, Trackable {
                 }
             }
         }
+
+        if (environment != null)
+            if (Vector2.dst(position.x, position.y, getEnvironmentX(), getEnvironmentY()) < environment.getRadius() + 10 && onGround) {
+                onGround = true;
+                position.set(getEnvironmentX() + (environment.getRadius() + 10) * MathUtils.cos(angle), getEnvironmentY() + (environment.getRadius() + 10) * MathUtils.sin(angle));
+            }
     }
 
     /**
@@ -814,6 +819,10 @@ public class Player implements Collideable, Disposable, Trackable {
 
     public boolean isFlipped() {
         return flipped;
+    }
+
+    public float getAnimState() {
+        return lefting ? -1 : righting ? 1 : 0;
     }
 
     public boolean isHome() {

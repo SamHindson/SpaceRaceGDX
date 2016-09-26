@@ -733,7 +733,6 @@ public class Universe implements Disposable {
             planet.dispose();
         }
         planets.clear();
-
         for (Mass mass : masses) {
             mass.dispose();
         }

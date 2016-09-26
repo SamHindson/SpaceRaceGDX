@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.net.NewPlayer;
 import com.semdog.spacerace.net.PlayerDisconnect;
 import com.semdog.spacerace.net.PlayerState;
@@ -25,14 +26,14 @@ public class SpaceRaceServer extends Listener implements Runnable {
     private VirtualUniverse universe;
     private Server server;
 
-    private SpaceRaceServer() throws IOException {
+    public SpaceRaceServer() throws IOException {
         //  Create a standard universe with five planets
         universe = new VirtualUniverse();
-        universe.addPlanet("Mors", 0, 0, 200);
-        universe.addPlanet("Dagobah", 1200, 0, 200);
-        universe.addPlanet("Xen", 1200, 1200, 200);
-        universe.addPlanet("Hillbrow", 0, 1200, 200);
-        universe.addPlanet("Toilet", 600, 600, 50);
+        universe.addPlanet("Mors", 0, 0, 200, Colors.P_RED);
+        universe.addPlanet("Dagobah", 1200, 0, 200, Colors.P_GREEN);
+        universe.addPlanet("Xen", 1200, 1200, 200, Colors.P_PURPLE);
+        universe.addPlanet("Hillbrow", 0, 1200, 200, Colors.P_ORANGE);
+        universe.addPlanet("Toilet", 600, 600, 75, Colors.P_WHITE);
 
         //  Creates a new Kryo server
         server = new Server();

@@ -1,5 +1,6 @@
 package com.semdog.spacerace.net;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -43,9 +44,7 @@ public class MultiplayerPlayer extends Player {
         super.update(dt, controllable, planets, lockedCamera);
         //  If the player is moving, tell the wormhole that.
         if (!getVelocity().equals(Vector2.Zero))
-            wormhole.sendPlayerState(PlayerState.SETPOS, position.x, position.y);
-        //  Sets the Puppet's animation state
-        wormhole.sendPlayerState(PlayerState.ANIMSTATE, lefting ? -1 : righting ? 1 : 0);
+            wormhole.sendPlayerState(PlayerState.SETPOS, position.x, position.y, lefting ? -1 : righting ? 1 : 0, getEnvironmentX(), getEnvironmentY());
     }
 
     /**
@@ -72,11 +71,11 @@ public class MultiplayerPlayer extends Player {
     public void checkCollisions(Array<Bullet> bullets) {
         if (!alive) return;
         for (Bullet bullet : bullets) {
-            float accuracy = 5;
+            float accuracy = 15;
             float ox = bullet.getX();
             float oy = bullet.getY();
-            float fx = bullet.getX() + (bullet.getDx() * 0.01f);
-            float fy = bullet.getY() + (bullet.getDy() * 0.01f);
+            float fx = bullet.getX() + (bullet.getDx() * Gdx.graphics.getDeltaTime());
+            float fy = bullet.getY() + (bullet.getDy() * Gdx.graphics.getDeltaTime());
             for (float i = 0; i <= accuracy; i++) {
                 float px = MathUtils.lerp(ox, fx, i / accuracy);
                 float py = MathUtils.lerp(oy, fy, i / accuracy);

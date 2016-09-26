@@ -119,11 +119,12 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
     public void update(float dt) {
         doneButton.update(dt);
 
-        if (listening && listeningPrimary) {
-            primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
-        }
-        if (listening && !listeningPrimary) {
-            secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
+        if (listening) {
+            if (listeningPrimary) {
+                primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
+            } else {
+                secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.getRandomPlanetColor());
+            }
         }
 
         for (Button button : primaryChangers) {
@@ -171,15 +172,19 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        if (listening && listeningPrimary) {
-            primaryKeyCodes[listeningIndex] = keycode;
-            primaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
-            listening = false;
-        }
-        if (listening && !listeningPrimary) {
-            secondaryKeyCodes[listeningIndex] = keycode;
-            secondaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
-            listening = false;
+        if (listening) {
+            if (listeningPrimary) {
+                primaryKeyCodes[listeningIndex] = keycode;
+                primaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
+                primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.P_BLUE);
+                listening = false;
+            } else {
+                secondaryKeyCodes[listeningIndex] = keycode;
+                secondaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
+                secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.P_BLUE);
+                listening = false;
+
+            }
         }
         return false;
     }

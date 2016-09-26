@@ -1,15 +1,19 @@
 package com.semdog.spacerace.net;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.semdog.spacerace.RaceGame;
+import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.net.entities.*;
 import com.semdog.spacerace.net.scoring.ScoreSheet;
 import com.semdog.spacerace.players.Player;
 import com.semdog.spacerace.players.Team;
 import com.semdog.spacerace.screens.MultiplayerMenu;
+import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.universe.MultiplayerUniverse;
 
 import java.io.IOException;
@@ -21,7 +25,9 @@ public class Wormhole extends Listener {
     private MultiplayerUniverse universe;
     private int clientID;
 
-    public Wormhole(MultiplayerUniverse universe) throws IOException {
+    private RaceGame game;
+
+    public Wormhole(MultiplayerUniverse universe, RaceGame game) throws IOException {
         this.universe = universe;
 
         client = new Client();
@@ -60,10 +66,23 @@ public class Wormhole extends Listener {
         client.addListener(this);
 
         clientID = client.getID();
+
+        this.game = game;
     }
 
     public int getID() {
         return clientID;
+    }
+
+    @Override
+    public void disconnected(Connection connection) {
+        universe.dispose();
+        Notification.show("Connection to Server Lost!", "Aw snap!", Colors.P_BLUE, () -> {
+            Notification.showing = false;
+        });
+        Gdx.app.postRunnable(() -> {
+            game.changeScreen("menu");
+        });
     }
 
     @Override
@@ -81,13 +100,11 @@ public class Wormhole extends Listener {
             }
         } else if (object instanceof PlayerState) {
             PlayerState state = (PlayerState) object;
-
             switch (state.getCategory()) {
-                case PlayerState.ANIMSTATE:
-                    universe.setPlayerAnimState(state.getId(), state.getInformation()[0]);
-                    break;
                 case PlayerState.SETPOS:
                     universe.setPuppetPosition(state.getId(), state.getInformation()[0], state.getInformation()[1]);
+                    universe.setPlayerAnimState(state.getId(), state.getInformation()[2]);
+                    universe.setEnvironmentPosition(state.getId(), state.getInformation()[3], state.getInformation()[4]);
                     break;
                 case PlayerState.ENVSTATE:
                     universe.setEnvironmentPosition(state.getId(), state.getInformation()[0], state.getInformation()[1]);

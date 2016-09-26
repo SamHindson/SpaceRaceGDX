@@ -1,5 +1,6 @@
 package com.semdog.spacerace.weapons;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -32,7 +33,7 @@ public class Bullet {
     }
 
     public Bullet(float x, float y, float dx, float dy, float angle, int damage, float inaccuracy) {
-        this(0, x, y, 3500 * MathUtils.cos(angle + inaccuracy) + dx, 3500 * MathUtils.sin(angle + inaccuracy) + dy, damage);
+        this(0, x, y, 1500 * MathUtils.cos(angle + inaccuracy) + dx, 1500 * MathUtils.sin(angle + inaccuracy) + dy, damage);
     }
 
     public void updatePhysics(float dt) {
@@ -62,7 +63,7 @@ public class Bullet {
 
     public void draw(ShapeRenderer renderer) {
         renderer.setColor(Color.WHITE);
-        renderer.line(x, y, x + dx * 0.005f, y + dy * 0.005f);
+        renderer.line(x, y, x + dx * Gdx.graphics.getDeltaTime(), y + dy * Gdx.graphics.getDeltaTime());
     }
 
     public boolean alive() {

@@ -115,23 +115,11 @@ public class RaceGame extends ApplicationAdapter {
         Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
 
         /* Initializes the screen */
-        screen = new MenuScreen(this);
-
-        /* Welcomes the player if it is their first time playing */
-        if (SettingsManager.isFirstTime()) {
-            Notification.show("Welcome to SpaceRace!\nDespite its cute looks, this game is quite literally rocket science and thus the help section is highly recommended.", "Take Me There", "I'm Smart", Colors.P_PINK, Colors.P_BLUE, () -> {
-                changeScreen("help");
-                Notification.showing = false;
-            }, () -> Notification.showing = false);
-
-            SettingsManager.setFirstTime(false);
-            SettingsManager.writeSettings();
-        }
-
+        screen = new StartScreen(this);
         screenChangeJitter = 10;
 
         //  Plays the initial epic music
-        SoundManager.playMusic("" + Tools.decide("spacerace", "menu"), false);
+        SoundManager.playMusic("" + Tools.decide("spacerace"), false);
     }
 
     private void update(float dt) {
@@ -226,7 +214,6 @@ public class RaceGame extends ApplicationAdapter {
         if (postProcessor.isEnabled()) {
             postProcessor.render();
         }
-
     }
 
     @Override
@@ -248,6 +235,7 @@ public class RaceGame extends ApplicationAdapter {
      */
     public void changeScreen(String name) {
         /* Get rid of the current screen */
+        System.out.println("Sert");
         screen.dispose();
 
         /* Adds to the color jitter effect when changing screens */
@@ -266,6 +254,15 @@ public class RaceGame extends ApplicationAdapter {
                 SoundManager.stopMusic("spacerace");
                 break;
             case "menu":
+                /* Welcomes the player if it is their first time playing */
+                if (SettingsManager.isFirstTime()) {
+                    Notification.show("Welcome to SpaceRace!\nDespite its cute looks, this game is quite literally rocket science and thus the help section is highly recommended.", "Take Me There", "I'm Smart", Colors.P_PINK, Colors.P_BLUE, () -> {
+                        changeScreen("help");
+                        Notification.showing = false;
+                    }, () -> Notification.showing = false);
+                    SettingsManager.setFirstTime(false);
+                    SettingsManager.writeSettings();
+                }
                 screen = new MenuScreen(this);
                 break;
             case "playmenu":
@@ -297,7 +294,7 @@ public class RaceGame extends ApplicationAdapter {
             SoundManager.stopMusic("alephnull");
 
             if (!SoundManager.isMusicPlaying("menu") && !SoundManager.isMusicPlaying("spacerace"))
-                SoundManager.playMusic(Tools.decide("menu", "spacerace") + "", false);
+                SoundManager.playMusic("menu", true);
         }
 
         //  Changes the direction of the motions of the background images
@@ -308,6 +305,13 @@ public class RaceGame extends ApplicationAdapter {
     public void changeResolution() {
         //  The Notification's buttons need to be repositioned due to the resolution change
         Notification.resetValues();
+        backgroundRenderer.dispose();
+        backgroundRenderer = new ShapeRenderer();
+
+        for (BackgroundElement backgroundElement : backgroundElements) {
+            backgroundElement.x = MathUtils.random(Gdx.graphics.getWidth());
+            backgroundElement.y = MathUtils.random(Gdx.graphics.getHeight());
+        }
     }
 }
 

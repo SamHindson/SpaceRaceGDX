@@ -28,16 +28,15 @@ public class Planet implements Disposable, Trackable {
     private int specks;
     private float[] speckX, speckY, speckR, speckM, speckW;
 
-    public Planet(String id, float x, float y, float radius) {
+    public Planet(String id, float x, float y, float radius, Color color, int seed) {
         position = new Vector2(x, y);
         this.radius = radius;
-
+        this.color = color;
         this.id = id;
 
         mass = radius * radius * 5f;
 
-        color = Colors.getRandomPlanetColor();
-
+        //  Makes sure the specks aren't drawn if it is a debug planet.
         if (radius == 0.1f) {
             specks = 0;
             return;
@@ -52,6 +51,8 @@ public class Planet implements Disposable, Trackable {
 
         float maxSize = 0.5f * (radius - 50);
 
+        MathUtils.random.setSeed(seed);
+
         for (int j = 0; j < specks; j++) {
             float size = MathUtils.random(1, maxSize);
             float angle = MathUtils.random(MathUtils.PI2);
@@ -63,6 +64,10 @@ public class Planet implements Disposable, Trackable {
             speckM[j] = MathUtils.random(0.5f, 1);
             speckW[j] = size;
         }
+    }
+
+    public Planet(String id, float x, float y, float radius) {
+        this(id, x, y, radius, Colors.getRandomPlanetColor(), MathUtils.random(0xFFFFFF));
     }
 
     public void draw(ShapeRenderer shapeRenderer, boolean goggles) {

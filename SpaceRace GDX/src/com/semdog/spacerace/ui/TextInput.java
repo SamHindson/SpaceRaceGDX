@@ -20,6 +20,7 @@ public class TextInput implements InputProcessor {
     private int limit = 250;
     private BitmapFont font;
     private String text = "";
+    private String validChars = "";
 
     public TextInput(float x, float y, float width, float height, int limit) {
         this.x = x;
@@ -47,6 +48,10 @@ public class TextInput implements InputProcessor {
         return text;
     }
 
+    public void setValidChars(String validChars) {
+        this.validChars = validChars;
+    }
+
     @Override
     public boolean keyDown(int keycode) {
         return false;
@@ -67,7 +72,8 @@ public class TextInput implements InputProcessor {
         if (text.length() == limit - 1)
             return false;
 
-        text += character;
+        if (validChars.length() == 0 || validChars.contains(character + ""))
+            text += character;
         return false;
     }
 
