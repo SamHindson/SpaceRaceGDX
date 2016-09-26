@@ -10,36 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="854c81b6-6321-4cce-95d2-873f31cb3e9c" name="Default" comment="Pushoing changes to test mp">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/StartScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/music/menu.ogg" afterPath="$PROJECT_DIR$/assets/music/menu.ogg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/GameLoader.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/GameLoader.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/RaceGame.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/RaceGame.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/Player.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/players/Player.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Planet.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Planet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe$InputManager.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe$InputManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/universe/Universe.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/Bullet.class" afterPath="$PROJECT_DIR$/build/classes/main/com/semdog/spacerace/weapons/Bullet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/times.srt" afterPath="$PROJECT_DIR$/data/times.srt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/text/condolences.sr" afterPath="$PROJECT_DIR$/assets/text/condolences.sr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/text/failures.sr" afterPath="$PROJECT_DIR$/assets/text/failures.sr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/GameLoader.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/GameLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/SpaceRaceServer.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/SpaceRaceServer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/MultiplayerPlayer.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/MultiplayerPlayer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/Wormhole.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/Wormhole.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlanet.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualPlanet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualUniverse.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/VirtualUniverse.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/players/LifeAndDeath.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/players/LifeAndDeath.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/players/Player.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/players/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/KeysScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/MultiplayerMenu.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/screens/MultiplayerMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/TextInput.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/ui/TextInput.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/MultiplayerUniverse.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/MultiplayerUniverse.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Planet.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Planet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Universe.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/universe/Universe.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Bullet.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Bullet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Shotgun.java" afterPath="$PROJECT_DIR$/src/com/semdog/spacerace/weapons/Shotgun.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
     </list>
     <ignored path="SpaceRace GDX.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -89,11 +61,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RaceGame.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RaceGame.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="321" column="19" selection-start-line="321" selection-start-column="19" selection-end-line="321" selection-end-column="19" />
+            <state relative-caret-position="112">
+              <caret line="325" column="16" selection-start-line="325" selection-start-column="16" selection-end-line="325" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MANIFEST.MF" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="32">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -124,16 +106,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="272">
               <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SpaceRaceServer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/SpaceRaceServer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -554,7 +526,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/com/semdog/spacerace/screens/SingleplayerMenu.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/ui/CyclableText.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/ui/Button.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/net/entities/MassRequest.java" />
@@ -605,6 +576,7 @@
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/ui/TextInput.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/players/Player.java" />
         <option value="$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java" />
+        <option value="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
       </list>
     </option>
   </component>
@@ -727,7 +699,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="assets" />
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace GDX" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="META-INF" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -741,11 +731,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="assets" />
+              <option name="myItemId" value="classes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="music" />
+              <option name="myItemId" value="artifacts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaceRace_GDX_jar" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -760,8 +754,8 @@
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -1221,7 +1215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1473348257611</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Pushoing changes to test mp">
+      <created>1474904189984</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1474904189984</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1235,11 +1236,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="49" y="24" width="1317" height="744" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850242" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.38080496" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2244582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33948338" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -1353,13 +1354,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/ui/HelpSection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="41" column="113" selection-start-line="41" selection-start-column="113" selection-end-line="41" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/races/Race.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -1749,8 +1743,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/semdog/spacerace/RaceGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="321" column="19" selection-start-line="321" selection-start-column="19" selection-end-line="321" selection-end-column="19" />
+        <state relative-caret-position="112">
+          <caret line="325" column="16" selection-start-line="325" selection-start-column="16" selection-end-line="325" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
