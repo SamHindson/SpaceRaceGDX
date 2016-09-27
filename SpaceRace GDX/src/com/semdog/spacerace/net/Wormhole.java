@@ -99,6 +99,7 @@ public class Wormhole extends Listener {
             for (int t = 0; t < state.getPlayers().length; t++) {
                 universe.createPuppet(state.getPlayerIDs()[t], state.getPlayers()[t]);
             }
+            universe.sortTeams();
         } else if (object instanceof PlayerState) {
             PlayerState state = (PlayerState) object;
             switch (state.getCategory()) {
@@ -118,13 +119,14 @@ public class Wormhole extends Listener {
             BulletRequest request = (BulletRequest) object;
             universe.addBullet(request.getOwnerID(), request.getX(), request.getY(), request.getDx(), request.getDy(), request.getDamage());
         } else if (object instanceof PlayerDisconnect) {
-            universe.removePuppet(((PlayerDisconnect) object).getId());
+            if(connection.getID() != ((PlayerDisconnect) object).getId()) universe.removePuppet(((PlayerDisconnect) object).getId());
         } else if (object instanceof MassSpawnRequest) {
             System.out.println("New mass was approved.");
             universe.createMass(((MassSpawnRequest) object));
         } else if (object instanceof MassKillRequest) {
             universe.killMass((((MassKillRequest) object)).getId());
         } else if (object instanceof ScoreSheet) {
+            System.out.println("wew");
             universe.setScores((ScoreSheet) object);
         } else if (object instanceof MassMap) {
             MassMap massMap = (MassMap) object;
@@ -144,9 +146,9 @@ public class Wormhole extends Listener {
     }
 
     public void registerPlayer(Player player) {
-        VirtualPlayer player2 = new VirtualPlayer(player.getName(), clientID, player.getTeam(), player.getX(), player.getY(), player.getEnvironmentX(), player.getEnvironmentY());
+        VirtualPlayer player2 = new VirtualPlayer(player.getName(), client.getID(), player.getTeam(), player.getX(), player.getY(), player.getEnvironmentX(), player.getEnvironmentY());
         NewPlayer request = new NewPlayer(player2);
-        request.setId(clientID);
+        request.setId(client.getID());
         client.sendTCP(request);
     }
 
@@ -164,9 +166,19 @@ public class Wormhole extends Listener {
 
     public void close() {
         client.close();
+        try {
+            client.dispose();
+        } catch (IOException e) {
+            Gdx.app.error("Wormhole", "That client refuses to die!");
+            e.printStackTrace();
+        }
     }
 
     public void killMass(int id) {
         client.sendTCP(new MassKillRequest(id));
+    }
+
+    public void endConnection() {
+        client.sendTCP(new PlayerDisconnect(clientID));
     }
 }

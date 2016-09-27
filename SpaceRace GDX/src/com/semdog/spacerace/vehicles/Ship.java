@@ -312,7 +312,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
     }
 
     void explode(DamageCause cause) {
-        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y, pilot == null ? -1 : pilot.getID()));
 
         if (pilot != null) {
             Universe.currentUniverse.playerKilled(cause);

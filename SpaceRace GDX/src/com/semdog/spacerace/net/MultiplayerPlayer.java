@@ -38,6 +38,7 @@ public class MultiplayerPlayer extends Player {
     public void setTeam(Team team) {
         this.team = team;
         jetpack = new Sprite(Art.get(team == Team.PINK ? "pinkbp" : "bluebp"));
+        wormhole.sendPlayerState(PlayerState.TEAMSET, team.equals(Team.PINK) ? 0 : 1);
     }
 
     public void update(float dt, boolean controllable, Array<Planet> planets, boolean lockedCamera) {

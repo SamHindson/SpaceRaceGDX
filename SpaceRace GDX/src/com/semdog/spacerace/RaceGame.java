@@ -239,8 +239,7 @@ public class RaceGame extends ApplicationAdapter {
                 break;
             case "multiplay":
                 screen = new PlayScreen(this, true);
-                SoundManager.stopMusic("menu");
-                SoundManager.stopMusic("spacerace");
+                SoundManager.stopAllMusic();
                 break;
             case "menu":
                 /* Welcomes the player if it is their first time playing */
@@ -278,7 +277,7 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         /* Stops/starts any music that needs to do so */
-        if (!name.equals("play")) {
+        if (!name.equals("play") && !name.equals("multiplay")) {
             SoundManager.stopMusic("oxidiser");
             SoundManager.stopMusic("alephnull");
 

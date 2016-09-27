@@ -64,7 +64,7 @@ public class Box extends Mass {
     @Override
     public void die(DamageCause reason) {
         super.die(reason);
-        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y, 0));
         Universe.currentUniverse.killBox(this);
     }
 

@@ -29,6 +29,7 @@ public class VirtualMass {
 
     private Rectangle bounds;
     private VirtualPlanet environment;
+    public boolean alive = true;
 
     public VirtualMass(float x, float y, float dx, float dy, float w, float h, float lifespan) {
         this.x = x;
@@ -119,5 +120,9 @@ public class VirtualMass {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 }

@@ -24,11 +24,13 @@ public class Rocket extends Mass {
     private Sprite sprite;
     private ParticleEffect particleEffect;
 
+    private int ownerID;
+
     public Rocket(float x, float y, float direction, int owner) {
         this(x + 20 * MathUtils.cos(direction), y + 20 * MathUtils.sin(direction), 700 * MathUtils.cos(direction), 700 * MathUtils.sin(direction), owner);
     }
 
-    public Rocket(float x, float y, float dx, float dy, int owner) {
+    public Rocket(float x, float y, float dx, float dy, int ownerID) {
         super(x, y, dx, dy, 10, null, "rocket");
         width = 3;
         height = 7.5f;
@@ -38,6 +40,8 @@ public class Rocket extends Mass {
 
         particleEffect = new ParticleEffect();
         particleEffect.setPosition(x, y);
+
+        this.ownerID = ownerID;
     }
 
     @Override
@@ -83,7 +87,7 @@ public class Rocket extends Mass {
     }
 
     public void explode() {
-        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y, ownerID));
     }
 
     @Override

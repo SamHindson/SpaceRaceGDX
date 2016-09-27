@@ -30,6 +30,7 @@ public class VirtualPlayer {
         this.y = y;
         this.environmentX = environmentX;
         this.environmentY = environmentY;
+        System.out.println("Set a virtual player with ID ");
     }
 
     public boolean isAlive() {
@@ -95,5 +96,9 @@ public class VirtualPlayer {
 
     public float getEnvironmentY() {
         return environmentY;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }

@@ -16,6 +16,8 @@ public class PlayerState {
     public static final int ENVSTATE = 2;
     public static final int LIFE = 3;
     public static final int BULLETKILL = 4;
+    public static final int EXPLOSIONKILL = 5;
+    public static final int TEAMSET = 6;
 
     private int id;
     private int category;

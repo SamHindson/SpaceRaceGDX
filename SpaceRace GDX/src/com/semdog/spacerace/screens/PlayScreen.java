@@ -42,14 +42,11 @@ public class PlayScreen extends RaceScreen {
 
         if (multiplayer) {
             briefing = new Briefing(this, "Multiplayer Time!", "Welcome to SpaceRace Multiplayer.\nDon't even bother reporting the bugs; you'll be clicking 'Submit Another' for the rest of your days.\n\nThis is, at the moment, mostly a proof-of-concept kind of thing. So just appreciate how broken it is and move on.");
+            pauseMenu = new MultiplayerPauseMenu(this);
         } else {
             briefing = new Briefing(this, RaceManager.getCurrentRace().getName(), RaceManager.getCurrentRace().getBriefing());
-        }
-
-        if (multiplayer)
-            pauseMenu = new MultiplayerPauseMenu(this);
-        else
             pauseMenu = new PauseMenu(this);
+        }
 
         bigBang(multiplayer);
     }
@@ -133,6 +130,9 @@ public class PlayScreen extends RaceScreen {
 
     @Override
     public void exit() {
+        if(multiplayer) {
+            ((MultiplayerUniverse)universe).disconnect();
+        }
         game.changeScreen("playmenu");
     }
 

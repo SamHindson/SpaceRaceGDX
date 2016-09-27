@@ -613,6 +613,8 @@ public class Universe implements Disposable {
         hud.setDead(cause, !suddenDeath);
         hud.displayMessage();
 
+        player.setAlive(false);
+
         if (suddenDeath && !won) {
             terminateRace(true, cause);
         }

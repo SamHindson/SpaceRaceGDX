@@ -101,6 +101,9 @@ public class SpaceRaceServer extends Listener implements Runnable {
             server.sendToAllExceptTCP(connection.getID(), newboy);
             //  Adds the player to the virtual universe
             universe.addPlayer(newboy.getId(), newboy.getPlayer());
+            ScoreSheet scoreSheet = new ScoreSheet();
+            scoreSheet.players = universe.getPlayers();
+            server.sendToAllTCP(scoreSheet);
         } else if (object instanceof PlayerState) {
             //  A player has just informed us of his state.
             PlayerState state = (PlayerState) object;
@@ -122,6 +125,21 @@ public class SpaceRaceServer extends Listener implements Runnable {
                 ScoreSheet scoreSheet = new ScoreSheet();
                 scoreSheet.players = universe.getPlayers();
                 server.sendToAllTCP(scoreSheet);
+            }  else if (state.getCategory() == PlayerState.EXPLOSIONKILL) {
+                //  Inform the universe that somebody was killed by a boom
+                universe.killPoint(connection.getID(), (int) state.getInformation()[0]);
+                //  Get the updated scores of the players and send it to everyone
+                ScoreSheet scoreSheet = new ScoreSheet();
+                scoreSheet.players = universe.getPlayers();
+                server.sendToAllTCP(scoreSheet);
+            }  else if (state.getCategory() == PlayerState.TEAMSET) {
+                System.out.println("Somebody wants to change teams.");
+                //  Inform the universe that somebody has changed their team
+                universe.setTeam(connection.getID(), (int) state.getInformation()[0]);
+                //  Get the updated teams of the players and send it to everyone
+                ScoreSheet scoreSheet = new ScoreSheet();
+                scoreSheet.players = universe.getPlayers();
+                server.sendToAllTCP(scoreSheet);
             }
         } else if (object instanceof BulletRequest) {
             //  Tell all clients to spawn a bullet
@@ -132,6 +150,9 @@ public class SpaceRaceServer extends Listener implements Runnable {
         } else if (object instanceof MassKillRequest) {
             universe.killMass(((MassKillRequest) object).getId());
             server.sendToAllTCP(object);
+        } else if (object instanceof PlayerDisconnect) {
+            universe.removePlayer(((PlayerDisconnect)object).getId());
+            server.sendToAllExceptTCP(connection.getID(), object);
         }
 
         // TODO work out multiplayer physics!!!

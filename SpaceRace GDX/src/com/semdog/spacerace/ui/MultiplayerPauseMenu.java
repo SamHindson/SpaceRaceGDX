@@ -48,7 +48,7 @@ public class MultiplayerPauseMenu extends Overlay {
         spriteBatch.setColor(0.f, 0.f, 0.f, 0.75f);
         spriteBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        titleFont.draw(spriteBatch, "Paused", 0, Gdx.graphics.getHeight() * 0.75f, Gdx.graphics.getWidth(), 1, false);
+        titleFont.draw(spriteBatch, "Not Really Paused", 0, Gdx.graphics.getHeight() * 0.75f, Gdx.graphics.getWidth(), 1, false);
         resume.draw(spriteBatch);
         restart.draw(spriteBatch);
         exit.draw(spriteBatch);

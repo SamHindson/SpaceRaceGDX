@@ -162,6 +162,16 @@ public class Puppet implements Trackable, Collideable {
 
     }
 
+    public void setTeam(Team team) {
+        if(this.team.equals(team)) return;
+        this.team = team;
+        jetpack = new Sprite(Art.get(team == Team.PINK ? "pinkbp" : "bluebp"));jetpack.setSize(20, 20);
+        jetpack.setOriginCenter();
+        idleTexture.setSize(20, 20);
+        idleTexture.setFlip(flipped, false);
+        idleTexture.setOriginCenter();
+    }
+
     @Override
     public Rectangle getCollisionBounds() {
         return bounds;

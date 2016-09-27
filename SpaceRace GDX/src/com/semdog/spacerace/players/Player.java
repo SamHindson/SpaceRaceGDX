@@ -45,6 +45,7 @@ public class Player implements Collideable, Disposable, Trackable {
     private Array<Planet> visitedPlanets;
     private int grenadeCount;
     private int toastCount;
+    private int id;
     private float angle;
     private float animTime = 0f;
     private float jetpackFuel = 100;
@@ -444,7 +445,7 @@ public class Player implements Collideable, Disposable, Trackable {
                     if (Universe.currentUniverse instanceof MultiplayerUniverse)
                         ((MultiplayerUniverse) Universe.currentUniverse).requestMass(new MassSpawnRequest(MassSpawnRequest.GRENADE, gx, gy, gdx, gdy, 3.5f));
                     else
-                        new Grenade(gx, gy, gdx, gdy, 420);
+                        new Grenade(gx, gy, gdx, gdy, id);
 
                     grenadeCount--;
                 }
@@ -747,6 +748,10 @@ public class Player implements Collideable, Disposable, Trackable {
         return (environment != null) ? environment.getID() : "???";
     }
 
+    public void setID(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean canCollect(Collectible collectible) {
         if (collectible instanceof Health)
@@ -847,5 +852,13 @@ public class Player implements Collideable, Disposable, Trackable {
         }
 
         jetpackEffect.dispose();
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public int getID() {
+        return id;
     }
 }

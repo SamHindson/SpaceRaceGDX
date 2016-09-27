@@ -12,10 +12,12 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Explosion extends Effect {
     private ParticleEffect effect;
+    private int causerID;
 
-    public Explosion(float x, float y) {
+    public Explosion(float x, float y, int causerID) {
         this.x = x;
         this.y = y;
+        this.causerID = causerID;
 
         effect = new ParticleEffect();
 
@@ -55,5 +57,12 @@ public class Explosion extends Effect {
     @Override
     public void dispose() {
         effect.dispose();
+    }
+
+    /**
+     * Gets who caused the explosion.
+     */
+    public int getCauserID() {
+        return causerID;
     }
 }

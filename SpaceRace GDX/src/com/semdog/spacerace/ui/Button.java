@@ -89,7 +89,7 @@ public class Button {
             batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
             //batch.setColor(hovered ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
             batch.setColor(held ? Tools.darker(buttonColor) : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
-            batch.draw(Art.get("pixel_white"), x - width / 2 + (hovered ? 2 : 0), y - height / 2 + (hovered ? 0 : 2), width - 2, height - 2);
+            batch.draw(Art.get("pixel_white"), x - width / 2 + (held ? 2 : 0), y - height / 2 + (hovered ? 0 : 2), width - (held||!hovered?2:0), height - (held||!hovered?2:0));
         } else {
             batch.setColor(held ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
             batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
@@ -99,7 +99,7 @@ public class Button {
 
         //font.setColor(hovered ? (buttonColor.equals(Color.CLEAR) ? Color.BLACK : buttonColor) : textColor);
         font.setColor(held ? Color.WHITE : textColor);
-        font.draw(batch, text, x - width / 2 - (borders ? held ? -1 : 1 : 0), y + font.getLineHeight() / 4 + (borders ? held ? -1 : 1 : 0), width, 1, false);
+        font.draw(batch, text, x - width / 2 - (borders ? (hovered) ? held ? -1 : 0 : 1 : 0), y + font.getLineHeight() / 4 + (borders ? (hovered) ? held ? -1 : 0 : 1 : 0), width, 1, false);
     }
 
     public void setPosition(float x, float y) {

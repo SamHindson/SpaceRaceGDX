@@ -40,18 +40,18 @@ public class Scores extends Overlay {
         float w = 0;
         for (Map.Entry<Integer, MetaPlayer> entry : pinks.entrySet()) {
             peopleFont.setColor(Colors.P_PINK);
-            peopleFont.draw(spriteBatch, entry.getValue().getName(), 0, Gdx.graphics.getHeight() * 0.75f - peopleFont.getCapHeight() * w, Gdx.graphics.getWidth() * 0.45f, Align.right, false);
+            peopleFont.draw(spriteBatch, entry.getValue().getName(), 0, Gdx.graphics.getHeight() * 0.75f - (6 + peopleFont.getCapHeight()) * w, Gdx.graphics.getWidth() * 0.45f, Align.right, false);
             peopleFont.setColor(Colors.P_WHITE);
-            peopleFont.draw(spriteBatch, entry.getValue().getScore() + "", Gdx.graphics.getWidth() * 0.475f, Gdx.graphics.getHeight() * 0.75f - peopleFont.getCapHeight() * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
+            peopleFont.draw(spriteBatch, entry.getValue().getScore() + "", Gdx.graphics.getWidth() * 0.475f, Gdx.graphics.getHeight() * 0.75f - (6 + peopleFont.getCapHeight()) * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
             w++;
         }
 
         w = 0;
         for (Map.Entry<Integer, MetaPlayer> entry : blues.entrySet()) {
             peopleFont.setColor(Colors.P_BLUE);
-            peopleFont.draw(spriteBatch, entry.getValue().getName(), Gdx.graphics.getWidth() * 0.55f, Gdx.graphics.getHeight() * 0.75f - peopleFont.getCapHeight() * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
+            peopleFont.draw(spriteBatch, entry.getValue().getName(), Gdx.graphics.getWidth() * 0.55f, Gdx.graphics.getHeight() * 0.75f - (6 + peopleFont.getCapHeight()) * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
             peopleFont.setColor(Colors.P_WHITE);
-            peopleFont.draw(spriteBatch, entry.getValue().getScore() + "", Gdx.graphics.getWidth() * 0.525f, Gdx.graphics.getHeight() * 0.75f - peopleFont.getCapHeight() * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
+            peopleFont.draw(spriteBatch, entry.getValue().getScore() + "", Gdx.graphics.getWidth() * 0.525f, Gdx.graphics.getHeight() * 0.75f - (6 + peopleFont.getCapHeight()) * w, Gdx.graphics.getWidth() * 0.45f, Align.left, false);
             w++;
         }
     }

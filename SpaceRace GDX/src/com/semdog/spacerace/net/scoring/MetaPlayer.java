@@ -15,6 +15,10 @@ public class MetaPlayer {
     private Team team;
     private String name;
 
+    public MetaPlayer() {
+
+    }
+
     public void setTeam(Team team) {
         this.team = team;
     }

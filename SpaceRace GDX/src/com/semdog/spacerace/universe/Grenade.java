@@ -40,6 +40,8 @@ public class Grenade extends Mass implements Trackable {
         sprite = new Sprite(Art.get("grenade"));
         sprite.setSize(2, 2);
         sprite.setOriginCenter();
+
+        this.owner = owner;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class Grenade extends Mass implements Trackable {
     protected void handlePlanetCollision(float speed, boolean e) {
         if (!exploded) {
             exploded = true;
-            Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+            Universe.currentUniverse.addEffect(new Explosion(position.x, position.y, owner));
             die(DamageCause.EXPLOSION);
         }
     }
@@ -106,7 +108,7 @@ public class Grenade extends Mass implements Trackable {
 
     public void explode() {
         exploded = true;
-        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
+        Universe.currentUniverse.addEffect(new Explosion(position.x, position.y, owner));
         die(DamageCause.EXPLOSION);
     }
 
