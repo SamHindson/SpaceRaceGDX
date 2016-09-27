@@ -1,6 +1,7 @@
 package com.semdog.spacerace.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,8 +24,9 @@ public class Briefing extends Overlay {
     private BitmapFont headingFont, titleFont, briefingFont;
     private PlayScreen container;
 
+    /*  If the briefing is made without any text it should be very apparent that this is a horrible bug */
     public Briefing(PlayScreen container) {
-        this(container, "???", "!?!?!");
+        this(container, "???", "You should NEVER being seeing this message! Tell a developer, like right now.");
     }
 
     public Briefing(PlayScreen container, String title, String briefing) {
@@ -43,6 +45,9 @@ public class Briefing extends Overlay {
     public void update(float dt) {
         super.update(dt);
         go.update(dt);
+
+        /*  Action can also be initiated by pressing the "Enter" button */
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) dismiss();
     }
 
     private void dismiss() {

@@ -12,11 +12,12 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Ammo extends Collectible {
     public Ammo(float h, float a) {
-        super(h, a, 10, 10, "fuel", 0x01);
+        super(h, a, 10, 10, "ammo", 0x01);
     }
 
     @Override
     protected void get(Collideable collideable) {
+        if (!active) return;
         Universe.currentUniverse.playUISound("ammoget");
         ((Player) collideable).replenishAmmo();
     }

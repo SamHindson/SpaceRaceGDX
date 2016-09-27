@@ -10,8 +10,8 @@ import com.semdog.spacerace.universe.Universe;
 
 public class Health extends Collectible {
 
-    public Health(float x, float y) {
-        super(x, y, 10, 10, "health", 0x01);
+    public Health(float h, float a) {
+        super(h, a, 10, 10, "health", 0x01);
     }
 
     @Override

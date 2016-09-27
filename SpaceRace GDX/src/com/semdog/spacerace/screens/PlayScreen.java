@@ -1,14 +1,16 @@
 package com.semdog.spacerace.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.RaceGame;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.Tools;
+import com.semdog.spacerace.players.DamageCause;
 import com.semdog.spacerace.races.RaceManager;
 import com.semdog.spacerace.ui.Briefing;
+import com.semdog.spacerace.ui.MultiplayerPauseMenu;
+import com.semdog.spacerace.ui.Overlay;
 import com.semdog.spacerace.ui.PauseMenu;
 import com.semdog.spacerace.universe.MultiplayerUniverse;
 import com.semdog.spacerace.universe.Universe;
@@ -25,7 +27,7 @@ public class PlayScreen extends RaceScreen {
     private Universe universe;
     private Briefing briefing;
     private SpriteBatch overlayBatch;
-    private PauseMenu pauseMenu;
+    private Overlay pauseMenu;
 
     private boolean multiplayer = false;
     private boolean paused = false;
@@ -44,7 +46,10 @@ public class PlayScreen extends RaceScreen {
             briefing = new Briefing(this, RaceManager.getCurrentRace().getName(), RaceManager.getCurrentRace().getBriefing());
         }
 
-        pauseMenu = new PauseMenu(this);
+        if (multiplayer)
+            pauseMenu = new MultiplayerPauseMenu(this);
+        else
+            pauseMenu = new PauseMenu(this);
 
         bigBang(multiplayer);
     }
@@ -56,7 +61,10 @@ public class PlayScreen extends RaceScreen {
         }
 
         if (paused) {
+            universe.setPlayerEnabled(false);
             pauseMenu.update(dt);
+        } else {
+            universe.setPlayerEnabled(true);
         }
 
         universe.tick(timescale * dt);
@@ -67,7 +75,7 @@ public class PlayScreen extends RaceScreen {
         universe.tickPhysics(timescale * dt);
         universe.finalizeState();
 
-        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(SettingsManager.getKey("PAUSE"))) {
             paused = !paused;
             if (!multiplayer) {
                 universe.setActivated(!paused);
@@ -135,4 +143,7 @@ public class PlayScreen extends RaceScreen {
         pauseMenu.setShowing(false);
     }
 
+    public void killPlayer() {
+        Universe.currentUniverse.playerKilled(DamageCause.RESPAWN);
+    }
 }

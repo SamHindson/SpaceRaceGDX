@@ -609,7 +609,7 @@ public class Universe implements Disposable {
     /**
      * Handles when a player is killed
      */
-    public void playerKilled(Player player, DamageCause cause) {
+    public void playerKilled(DamageCause cause) {
         hud.setDead(cause, !suddenDeath);
         hud.displayMessage();
 

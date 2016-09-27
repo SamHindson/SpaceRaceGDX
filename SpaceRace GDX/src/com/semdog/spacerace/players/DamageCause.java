@@ -17,7 +17,8 @@ public enum DamageCause {
     MASS("You were hit by a UFO"),
     FALLING("You fell out of the sky"),
     OLDAGE("If you're a player and you see this, REPORT IMMEDIATELY. Horrible horrible bug"), // Only masses are meant to die from old age
-    DRINKINGFUEL("You drank rocket fuel.");
+    DRINKINGFUEL("You drank rocket fuel."),
+    RESPAWN("You chose the easy way out.");
 
     private String details;
 

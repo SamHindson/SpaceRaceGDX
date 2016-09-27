@@ -49,6 +49,9 @@ public class ListView {
         });
         down.setColors(borderColor, Color.WHITE);
 
+        up.setBorders(false);
+        down.setBorders(false);
+
         items = new Button[maxItems];
         pageCount = items.length / maxItems + 1;
     }

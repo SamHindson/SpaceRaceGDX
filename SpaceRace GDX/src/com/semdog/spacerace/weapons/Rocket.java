@@ -24,8 +24,12 @@ public class Rocket extends Mass {
     private Sprite sprite;
     private ParticleEffect particleEffect;
 
-    public Rocket(float x, float y, float direction, Player owner) {
-        super(x + 20 * MathUtils.cos(direction), y + 20 * MathUtils.sin(direction), 700 * MathUtils.cos(direction), 700 * MathUtils.sin(direction), 10, owner.getEnvironment(), "rocket");
+    public Rocket(float x, float y, float direction, int owner) {
+        this(x + 20 * MathUtils.cos(direction), y + 20 * MathUtils.sin(direction), 700 * MathUtils.cos(direction), 700 * MathUtils.sin(direction), owner);
+    }
+
+    public Rocket(float x, float y, float dx, float dy, int owner) {
+        super(x, y, dx, dy, 10, null, "rocket");
         width = 3;
         height = 7.5f;
         sprite = new Sprite(Art.get("rocket"));
@@ -33,9 +37,14 @@ public class Rocket extends Mass {
         sprite.setSize(3, 7.5f);
 
         particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.internal("assets/effects/rocketflame.p"), Gdx.files.internal("assets/effects"));
         particleEffect.setPosition(x, y);
-        particleEffect.getEmitters().get(0).getAngle().setHigh(direction * MathUtils.radiansToDegrees + 180);
+    }
+
+    @Override
+    protected void load() {
+        super.load();
+        particleEffect.load(Gdx.files.internal("assets/effects/rocketflame.p"), Gdx.files.internal("assets/effects"));
+        particleEffect.getEmitters().get(0).getAngle().setHigh(MathUtils.atan2(velocity.y, velocity.x) * MathUtils.radiansToDegrees + 180);
     }
 
     @Override
@@ -56,8 +65,10 @@ public class Rocket extends Mass {
 
     @Override
     public void render(SpriteBatch batch) {
-        particleEffect.draw(batch);
-        sprite.draw(batch);
+        if (loaded) {
+            particleEffect.draw(batch);
+            sprite.draw(batch);
+        }
     }
 
     @Override
@@ -71,7 +82,7 @@ public class Rocket extends Mass {
         explode();
     }
 
-    private void explode() {
+    public void explode() {
         Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
     }
 

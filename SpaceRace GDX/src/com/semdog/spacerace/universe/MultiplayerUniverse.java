@@ -16,6 +16,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.semdog.spacerace.collectables.Ammo;
+import com.semdog.spacerace.collectables.Collectible;
+import com.semdog.spacerace.collectables.Health;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.Effect;
@@ -41,9 +44,8 @@ import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.RaceEndScreen;
 import com.semdog.spacerace.ui.Scores;
 import com.semdog.spacerace.weapons.Bullet;
-import com.semdog.spacerace.weapons.Carbine;
-import com.semdog.spacerace.weapons.SMG;
-import com.semdog.spacerace.weapons.Shotgun;
+import com.semdog.spacerace.weapons.Rocket;
+import com.semdog.spacerace.weapons.RocketLauncher;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,6 +64,7 @@ public class MultiplayerUniverse extends Universe {
 
     private HashMap<Integer, Puppet> puppets;
     private HashMap<Integer, Mass> masses;
+    private Array<Collectible> collectibles;
 
     private float networkTime;
 
@@ -127,8 +130,6 @@ public class MultiplayerUniverse extends Universe {
 
         playerEnabled = true;
 
-        collideables.add(player);
-
         exiting = false;
 
         computerFont = FontManager.getFont("mohave-18-italic");
@@ -149,6 +150,7 @@ public class MultiplayerUniverse extends Universe {
         metaPlayer.setTeam(player.getTeam());
         metaPlayer.setName(player.getName());
 
+        collideables.add(player);
 
         if (metaPlayer.getTeam() == Team.PINK) {
             pinks.put(wormhole.getID(), metaPlayer);
@@ -159,13 +161,18 @@ public class MultiplayerUniverse extends Universe {
         wormhole.registerPlayer(player);
         hud = new HUD(player);
         player.setHud(hud);
-        if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
+        /*if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
         else if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new Shotgun());
-        else player.setWeapon(new Carbine());
+        else player.setWeapon(new Carbine());*/
+        player.setWeapon(new RocketLauncher());
 
         trackables.add(player);
 
         hud.showStats();
+
+        collectibles = new Array<>();
+
+        setSuddenDeath(false);
     }
 
     private Team decideTeam() {
@@ -283,6 +290,10 @@ public class MultiplayerUniverse extends Universe {
 
             puppet.getValue().update(dt);
         }
+
+        for (Collectible collectible : collectibles) {
+            collectible.update(dt, collideables);
+        }
     }
 
     @Override
@@ -292,9 +303,10 @@ public class MultiplayerUniverse extends Universe {
 
         super.respawnPlayer();
 
-        if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
+        /*if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new SMG());
         else if (MathUtils.randomBoolean(1 / 3f)) player.setWeapon(new Shotgun());
-        else player.setWeapon(new Carbine());
+        else player.setWeapon(new Carbine());*/
+        player.setWeapon(new RocketLauncher());
     }
 
     @Override
@@ -335,6 +347,18 @@ public class MultiplayerUniverse extends Universe {
                 break;
             }
         }
+
+        for (Map.Entry<Integer, Mass> entry : masses.entrySet()) {
+            if (!entry.getValue().alive) {
+                if (entry.getValue() instanceof Grenade)
+                    ((Grenade) entry.getValue()).explode();
+                if (entry.getValue() instanceof Rocket)
+                    ((Rocket) entry.getValue()).explode();
+                if (entry.getValue() instanceof Trackable)
+                    trackables.removeValue((Trackable) entry.getValue(), true);
+                masses.remove(entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -364,6 +388,10 @@ public class MultiplayerUniverse extends Universe {
         }
 
         player.draw(universeBatch);
+
+        for (Collectible collectible : collectibles) {
+            collectible.draw(universeBatch);
+        }
 
         for (Map.Entry<Integer, Puppet> puppet : puppets.entrySet()) {
             puppet.getValue().draw(universeBatch);
@@ -477,16 +505,23 @@ public class MultiplayerUniverse extends Universe {
     }
 
     public void requestMass(MassSpawnRequest what) {
+        what.setOwner(wormhole.getID());
         wormhole.requestVirtualMass(what);
     }
 
     public void createMass(MassSpawnRequest request) {
         switch (request.getType()) {
             case MassSpawnRequest.GRENADE:
-                Grenade newGrenade = new Grenade(request.getX(), request.getY(), request.getDX(), request.getDY());
+                Grenade newGrenade = new Grenade(request.getX(), request.getY(), request.getDX(), request.getDY(), request.getOwner());
                 newGrenade.setControllerID(request.getId());
                 masses.put(request.getId(), newGrenade);
                 trackables.add(newGrenade);
+                break;
+            case MassSpawnRequest.ROCKET:
+                Rocket newRocket = new Rocket(request.getX(), request.getY(), request.getDX(), request.getDY(), request.getOwner());
+                newRocket.setControllerID(request.getId());
+                masses.put(request.getId(), newRocket);
+                break;
         }
     }
 
@@ -524,9 +559,27 @@ public class MultiplayerUniverse extends Universe {
     }
 
     public void killMass(int id) {
-        trackables.removeValue((Trackable) masses.get(id), true);
-        masses.remove(id);
+        masses.get(id).alive = false;
     }
 
 
+    public void planetCollision(int id) {
+        // TODO something here
+    }
+
+    public void sortCollectibles() {
+        Gdx.app.log("MultiplayerUniverse", "Sroting ht");
+        for (int f = 0; f < 8; f++) {
+            float a = f * MathUtils.PI2 / 8f;
+            if (f % 2 == 0) {
+                Collectible c = new Health(10, a);
+                c.setEnvironment(planets.get(planets.size - 1));
+                collectibles.add(c);
+            } else {
+                Collectible c = new Ammo(10, a);
+                c.setEnvironment(planets.get(planets.size - 1));
+                collectibles.add(c);
+            }
+        }
+    }
 }

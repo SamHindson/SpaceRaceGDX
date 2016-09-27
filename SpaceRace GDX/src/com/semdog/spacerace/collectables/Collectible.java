@@ -59,9 +59,11 @@ public abstract class Collectible implements Trackable {
 
         color = Art.getAccent(textureName);
         particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.internal("assets/effects/weaponpickup.p"), Gdx.files.internal("assets/effects"));
-        particleEffect.start();
-        particleEffect.getEmitters().first().getTint().setColors(new float[]{color.r, color.g, color.b});
+        Gdx.app.postRunnable(() -> {
+            particleEffect.load(Gdx.files.internal("assets/effects/weaponpickup.p"), Gdx.files.internal("assets/effects"));
+            particleEffect.start();
+            particleEffect.getEmitters().first().getTint().setColors(new float[]{color.r, color.g, color.b});
+        });
     }
 
     /**

@@ -98,7 +98,7 @@ public class SettingsScreen extends RaceScreen {
         // Sets the resolution of the game window.
         Gdx.graphics.setWindowedMode(SettingsManager.getWidth(), SettingsManager.getHeight());
 
-        game.changeResolution();
+        game.changeResolution(false);
 
         //  If Fullscreen is enabled, make it so
         if (SettingsManager.isFullscreen())

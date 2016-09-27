@@ -24,12 +24,15 @@ public class Fuel extends Collectible {
     //  If it is a player, kill them --- rocket fuel is not to be drunk.
     @Override
     protected void get(Collideable collideable) {
+        if (!active) return;
         if (collideable instanceof Ship) {
             Universe.currentUniverse.playUISound("fuelget");
             ((Ship) collideable).replenishFuel();
+            active = false;
         } else {
             Universe.currentUniverse.playUISound("fueldrink");
             ((Player) collideable).doDamage(1000, DamageCause.DRINKINGFUEL);
+            active = false;
         }
     }
 

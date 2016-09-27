@@ -15,23 +15,38 @@ import java.util.ArrayList;
  */
 
 public class VirtualMass {
+    public static final int GRENADE = 0;
+    public static final int ROCKET = 1;
+
     private float x, y, dx, dy, w, h;
     private float angle;
+    private float lifespan, age;
+
+    private int id;
+    private boolean onGround;
+
+    private int type = -1;
 
     private Rectangle bounds;
     private VirtualPlanet environment;
 
-    public VirtualMass(float x, float y, float dx, float dy, float w, float h) {
+    public VirtualMass(float x, float y, float dx, float dy, float w, float h, float lifespan) {
         this.x = x;
         this.y = y;
         this.dx = dx;
         this.dy = dy;
         this.w = w;
         this.h = h;
+        this.lifespan = lifespan;
         bounds = new Rectangle(x, y, w, h);
     }
 
-    public void update(float dt, ArrayList<VirtualPlanet> planets) {
+    public void update(VirtualUniverse virtualUniverse, float dt, ArrayList<VirtualPlanet> planets) {
+        age += dt;
+        if (age > lifespan) {
+            virtualUniverse.killMass(id);
+            return;
+        }
         if (environment != null) angle = MathUtils.atan2(y - environment.getY(), x - environment.getX());
 
         boolean foundPlanet = false;
@@ -39,9 +54,16 @@ public class VirtualMass {
             if (inRange(planet)) {
                 foundPlanet = true;
 
-                boolean onGround = Vector2.dst(x, y, planet.getX(), planet.getY()) < planet.getRadius();
-
                 if (!onGround) {
+                    if (Vector2.dst(x, y, planet.getX(), planet.getY()) < planet.getRadius()) {
+                        onGround = true;
+                        if (type == ROCKET) {
+                            virtualUniverse.killMass(id);
+                        } else {
+                            virtualUniverse.massHitGround(id);
+                        }
+                        break;
+                    }
                     if (planet != environment) {
                         setEnvironment(planet);
                     }
@@ -54,7 +76,10 @@ public class VirtualMass {
                     dy += ay * dt;
                     break;
                 } else {
+                    if (Vector2.dst(x, y, planet.getX(), planet.getY()) > planet.getRadius()) onGround = false;
                     dx = dy = 0;
+                    x = planet.getX() + (planet.getRadius() + 2) * MathUtils.cos(angle);
+                    y = planet.getY() + (planet.getRadius() + 2) * MathUtils.sin(angle);
                 }
             }
         }
@@ -89,10 +114,10 @@ public class VirtualMass {
     }
 
     public void setId(int id) {
-        int id1 = id;
+        this.id = id;
     }
 
     public void setType(int type) {
-        int type1 = type;
+        this.type = type;
     }
 }

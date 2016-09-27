@@ -60,6 +60,7 @@ public class Wormhole extends Listener {
         kryo.register(MassKillRequest.class);
         kryo.register(MassMap.class);
         kryo.register(MassState.class);
+        kryo.register(MassEvent.class);
 
         client.start();
         client.connect(5000, MultiplayerMenu.serverAddress, 13377, 24488);
@@ -94,7 +95,7 @@ public class Wormhole extends Listener {
             for (int r = 0; r < state.getPlanets().length; r++) {
                 universe.createPlanet(state.getPlanets()[r]);
             }
-
+            universe.sortCollectibles();
             for (int t = 0; t < state.getPlayers().length; t++) {
                 universe.createPuppet(state.getPlayerIDs()[t], state.getPlayers()[t]);
             }
@@ -119,6 +120,7 @@ public class Wormhole extends Listener {
         } else if (object instanceof PlayerDisconnect) {
             universe.removePuppet(((PlayerDisconnect) object).getId());
         } else if (object instanceof MassSpawnRequest) {
+            System.out.println("New mass was approved.");
             universe.createMass(((MassSpawnRequest) object));
         } else if (object instanceof MassKillRequest) {
             universe.killMass((((MassKillRequest) object)).getId());
@@ -128,6 +130,15 @@ public class Wormhole extends Listener {
             MassMap massMap = (MassMap) object;
             for (Map.Entry<Integer, MassState> entry : massMap.getMassStates().entrySet()) {
                 universe.setMassPosition(entry.getKey(), entry.getValue().getX(), entry.getValue().getY());
+            }
+        } else if (object instanceof MassEvent) {
+            MassEvent massEvent = (MassEvent) object;
+            int type = massEvent.getEvent();
+            int id = massEvent.getMassID();
+            switch (type) {
+                case MassEvent.PLANET_COLLIDE:
+                    universe.planetCollision(id);
+                    break;
             }
         }
     }

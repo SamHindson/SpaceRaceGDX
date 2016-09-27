@@ -50,6 +50,7 @@ public class RaceGame extends ApplicationAdapter {
     private float screenChangeJitter = 0;
     private boolean exiting = false;
     private boolean firstFrame = true;
+    private int width, height;
 
     /**
      * The first method called after main() which loads up the things needed to show the loading screen.
@@ -66,23 +67,9 @@ public class RaceGame extends ApplicationAdapter {
 
         /* Sets up the post processor */
         ShaderLoader.BasePath = "assets/shaders/";
-        postProcessor = new PostProcessor(false, false, true);
 
-        /* Creates the CRTScreen effect */
-        int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
-        crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
-        crtMonitor.setColorOffset(0.001f);
-        postProcessor.addEffect(crtMonitor);
-
-        /* Creates the screen bulge effect */
-        Curvature curvature = new Curvature();
-        curvature.setDistortion(0.2f);
-        postProcessor.addEffect(curvature);
-
-        /* Creates the screen curvature effect */
-        bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        bloom.setBloomIntesity(0.1f);
-        postProcessor.addEffect(bloom);
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
     }
 
     /**
@@ -120,6 +107,8 @@ public class RaceGame extends ApplicationAdapter {
 
         //  Plays the initial epic music
         SoundManager.playMusic("" + Tools.decide("spacerace"), false);
+
+        changeResolution(true);
     }
 
     private void update(float dt) {
@@ -157,14 +146,16 @@ public class RaceGame extends ApplicationAdapter {
         Gdx.gl20.glClearColor(0, 0, 0, 1f);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        postProcessor.setEnabled(SettingsManager.isPostprocessing());
+        if (postProcessor != null) {
+            postProcessor.setEnabled(SettingsManager.isPostprocessing());
 
-        if (postProcessor.isEnabled()) {
-            crtMonitor.setTime(age);
-            float f = MathUtils.random(screenChangeJitter);
-            crtMonitor.setColorOffset(0.00175f + f);
-            // Captures screen for post processing
-            postProcessor.capture();
+            if (postProcessor.isEnabled()) {
+                crtMonitor.setTime(age);
+                float f = MathUtils.random(screenChangeJitter);
+                crtMonitor.setColorOffset(0.00175f + f);
+                // Captures screen for post processing
+                postProcessor.capture();
+            }
         }
 
         if (firstFrame) {
@@ -211,9 +202,8 @@ public class RaceGame extends ApplicationAdapter {
         }
 
         // Finally (Part 2) we render the post-processed screen if we need to
-        if (postProcessor.isEnabled()) {
-            postProcessor.render();
-        }
+        if (postProcessor != null)
+            if (postProcessor.isEnabled()) postProcessor.render();
     }
 
     @Override
@@ -235,7 +225,6 @@ public class RaceGame extends ApplicationAdapter {
      */
     public void changeScreen(String name) {
         /* Get rid of the current screen */
-        System.out.println("Sert");
         screen.dispose();
 
         /* Adds to the color jitter effect when changing screens */
@@ -302,15 +291,40 @@ public class RaceGame extends ApplicationAdapter {
         BackgroundElement.d %= 360;
     }
 
-    public void changeResolution() {
+    public void changeResolution(boolean initialChange) {
         //  The Notification's buttons need to be repositioned due to the resolution change
         Notification.resetValues();
-        backgroundRenderer.dispose();
-        backgroundRenderer = new ShapeRenderer();
 
-        for (BackgroundElement backgroundElement : backgroundElements) {
-            backgroundElement.x = MathUtils.random(Gdx.graphics.getWidth());
-            backgroundElement.y = MathUtils.random(Gdx.graphics.getHeight());
+        if (width != Gdx.graphics.getWidth()) {
+        /* Resets the BackgroundRenderer and the stars themselves */
+            backgroundRenderer.dispose();
+            backgroundRenderer = new ShapeRenderer();
+
+            for (BackgroundElement backgroundElement : backgroundElements) {
+                backgroundElement.x = MathUtils.random(Gdx.graphics.getWidth());
+                backgroundElement.y = MathUtils.random(Gdx.graphics.getHeight());
+            }
+        }
+
+        /* Recreates the PostProcessor if the resolution has changed, or if the game is starting for the first time */
+        if (initialChange || Gdx.graphics.getWidth() != width) {
+            postProcessor = new PostProcessor(false, false, true);
+
+        /* Creates the CRTScreen effect */
+            int effects = CrtScreen.Effect.Scanlines.v | CrtScreen.Effect.PhosphorVibrance.v;
+            crtMonitor = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false, CrtScreen.RgbMode.RgbShift, effects);
+            crtMonitor.setColorOffset(0.001f);
+            postProcessor.addEffect(crtMonitor);
+
+        /* Creates the screen bulge effect */
+            Curvature curvature = new Curvature();
+            curvature.setDistortion(0.1f);
+            postProcessor.addEffect(curvature);
+
+        /* Creates the screen curvature effect */
+            bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            bloom.setBloomIntesity(0.05f);
+            postProcessor.addEffect(bloom);
         }
     }
 }

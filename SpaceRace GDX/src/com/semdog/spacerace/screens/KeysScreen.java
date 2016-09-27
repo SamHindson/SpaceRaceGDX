@@ -11,6 +11,7 @@ import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
 import com.semdog.spacerace.misc.FontManager;
 import com.semdog.spacerace.ui.Button;
+import com.semdog.spacerace.ui.Notification;
 import com.semdog.spacerace.ui.TitleCard;
 
 /**
@@ -72,6 +73,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
                 listeningPrimary = true;
             });
             primaryChangers[a].setColors(Color.CLEAR, Colors.P_PINK);
+            primaryChangers[a].setBorders(false);
             primaryKeyCodes[a] = keyCode;
             a++;
         }
@@ -93,6 +95,7 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
                 listeningPrimary = false;
             });
             secondaryChangers[b].setColors(Color.CLEAR, Colors.P_PINK);
+            secondaryChangers[b].setBorders(false);
             secondaryKeyCodes[b] = keyCode;
             b++;
         }
@@ -173,6 +176,12 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (listening) {
+            if (checkConflicts(keycode)) {
+                listening = false;
+                if (listeningPrimary) primaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.P_PINK);
+                else secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.P_PINK);
+                return false;
+            }
             if (listeningPrimary) {
                 primaryKeyCodes[listeningIndex] = keycode;
                 primaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
@@ -183,7 +192,33 @@ public class KeysScreen extends RaceScreen implements InputProcessor {
                 secondaryChangers[listeningIndex].setText(Input.Keys.toString(keycode));
                 secondaryChangers[listeningIndex].setColors(Color.CLEAR, Colors.P_BLUE);
                 listening = false;
+            }
+        }
+        return false;
+    }
 
+    private boolean checkConflicts(int keycode) {
+        if (listeningPrimary) if (keycode == primaryKeyCodes[listeningIndex]) return false;
+        else if (keycode == secondaryKeyCodes[listeningIndex]) return false;
+
+        for (int i = 0; i < primaryKeyCodes.length; i++) {
+            int k = primaryKeyCodes[i];
+            if (k == keycode) {
+                Notification.show("Conflicting keys!\nThe key " + Input.Keys.toString(keycode) + " is already in use by: " + primaries[i], "Okie dokie", Colors.P_GRAY, () -> {
+                    listening = false;
+                    Notification.showing = false;
+                });
+                return true;
+            }
+        }
+        for (int i = 0; i < secondaryKeyCodes.length; i++) {
+            int k = secondaryKeyCodes[i];
+            if (k == keycode) {
+                Notification.show("Conflicting keys!\n" + Input.Keys.toString(keycode) + " is already in use by: " + secondaries[i], "Okie dokie", Colors.P_GRAY, () -> {
+                    listening = false;
+                    Notification.showing = false;
+                });
+                return true;
             }
         }
         return false;

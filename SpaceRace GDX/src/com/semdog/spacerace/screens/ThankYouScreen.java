@@ -33,7 +33,7 @@ public class ThankYouScreen extends RaceScreen {
         titleCard = new TitleCard(TitleCard.BIG, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.85f);
         devPlanet = new Texture(Gdx.files.internal("assets/thanks.png"));
 
-        neatoButton = new Button("Neato!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.1f, 150, 75, () -> game.changeScreen("menu"));
+        neatoButton = new Button("Neato!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.1f, 200, 60, () -> game.changeScreen("menu"));
         neatoButton.setColors(Colors.P_BLUE, Colors.UI_WHITE);
     }
 

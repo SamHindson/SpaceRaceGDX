@@ -42,10 +42,10 @@ public class HelpScreen extends RaceScreen implements ListViewListener {
         itemChooser.setTitles(helpSection.getTitles(), helpSection.getCompleted());
         itemChooser.setListener(this);
 
-        backButton = new Button("Got it!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 140, 50, this::exit);
+        backButton = new Button("Got it!", false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.05f, 200, 50, this::exit);
         backButton.setColors(Colors.UI_YELLOW, Color.BLACK);
 
-        bugButton = new Button("Report a Bug", false, Gdx.graphics.getWidth() * 0.85f, Gdx.graphics.getHeight() * 0.05f, 200, 50, () -> game.changeScreen("bug"));
+        bugButton = new Button("Report a Bug", false, (Gdx.graphics.getWidth() - 100 - 250 - 100) + 350 - 100, Gdx.graphics.getHeight() * 0.05f, 200, 50, () -> game.changeScreen("bug"));
         bugButton.setColors(Colors.UI_RED, Colors.UI_WHITE);
     }
 

@@ -315,7 +315,7 @@ public abstract class Ship extends Mass implements Collideable, Trackable {
         Universe.currentUniverse.addEffect(new Explosion(position.x, position.y));
 
         if (pilot != null) {
-            Universe.currentUniverse.playerKilled(pilot, cause);
+            Universe.currentUniverse.playerKilled(cause);
         }
 
         rud();

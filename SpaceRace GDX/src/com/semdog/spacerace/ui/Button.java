@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.audio.SoundManager;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.misc.FontManager;
+import com.semdog.spacerace.misc.Tools;
 
 /**
  * A clickable UI entity that does something when clicked. Like a normal UI button.
@@ -21,6 +22,7 @@ public class Button {
     private boolean hovered, held;
     private boolean notification = false; // Whether the button is one which appears on the notification overlay.
     private boolean beeps = true;
+    private boolean borders = true;
 
     private String text;
     private Color buttonColor, textColor;
@@ -57,12 +59,19 @@ public class Button {
         } else {
             hovered = false;
         }
-        if (held && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-            held = false;
-            clickEvent.execute();
+        if (held) {
+            if (!(Gdx.input.getX() > x - width / 2 && Gdx.input.getX() < x + width / 2 && Gdx.graphics.getHeight() - Gdx.input.getY() > y - height / 2 && Gdx.graphics.getHeight() - Gdx.input.getY() < y + height / 2)) {
+                held = false;
+            } else if (!Gdx.input.isButtonPressed(Buttons.LEFT)) {
+                held = false;
 
-            if (beeps)
-                SoundManager.playSound("boop", 0.05f, 0);
+                if (Gdx.input.getX() > x - width / 2 && Gdx.input.getX() < x + width / 2 && Gdx.graphics.getHeight() - Gdx.input.getY() > y - height / 2 && Gdx.graphics.getHeight() - Gdx.input.getY() < y + height / 2) {
+                    clickEvent.execute();
+
+                    if (beeps)
+                        SoundManager.playSound("boop", 0.05f, 0);
+                }
+            }
         }
     }
 
@@ -70,14 +79,27 @@ public class Button {
         this.beeps = beeps;
     }
 
+    public void setBorders(boolean borders) {
+        this.borders = borders;
+    }
+
     public void draw(SpriteBatch batch) {
-        batch.setColor(hovered ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
-        batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
+        if (borders && !buttonColor.equals(Color.CLEAR)) {
+            batch.setColor(held ? buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor : Tools.darker(buttonColor));
+            batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
+            //batch.setColor(hovered ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
+            batch.setColor(held ? Tools.darker(buttonColor) : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
+            batch.draw(Art.get("pixel_white"), x - width / 2 + (hovered ? 2 : 0), y - height / 2 + (hovered ? 0 : 2), width - 2, height - 2);
+        } else {
+            batch.setColor(held ? textColor : buttonColor.equals(Color.BLACK) ? Color.CLEAR : buttonColor);
+            batch.draw(Art.get("pixel_white"), x - width / 2, y - height / 2, width, height);
+        }
 
         batch.setColor(Color.WHITE);
 
-        font.setColor(hovered ? (buttonColor.equals(Color.CLEAR) ? Color.BLACK : buttonColor) : textColor);
-        font.draw(batch, text, x - width / 2, y + font.getLineHeight() / 4, width, 1, false);
+        //font.setColor(hovered ? (buttonColor.equals(Color.CLEAR) ? Color.BLACK : buttonColor) : textColor);
+        font.setColor(held ? Color.WHITE : textColor);
+        font.draw(batch, text, x - width / 2 - (borders ? held ? -1 : 1 : 0), y + font.getLineHeight() / 4 + (borders ? held ? -1 : 1 : 0), width, 1, false);
     }
 
     public void setPosition(float x, float y) {

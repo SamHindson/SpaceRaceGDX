@@ -28,7 +28,7 @@ public class SpaceRaceServer extends Listener implements Runnable {
 
     public SpaceRaceServer() throws IOException {
         //  Create a standard universe with five planets
-        universe = new VirtualUniverse();
+        universe = new VirtualUniverse(this);
         universe.addPlanet("Mors", 0, 0, 200, Colors.P_RED);
         universe.addPlanet("Dagobah", 1200, 0, 200, Colors.P_GREEN);
         universe.addPlanet("Xen", 1200, 1200, 200, Colors.P_PURPLE);
@@ -68,6 +68,7 @@ public class SpaceRaceServer extends Listener implements Runnable {
         kryo.register(MassKillRequest.class);
         kryo.register(MassMap.class);
         kryo.register(MassState.class);
+        kryo.register(MassEvent.class);
 
         server.addListener(this);
         server.start();
@@ -80,7 +81,7 @@ public class SpaceRaceServer extends Listener implements Runnable {
         try {
             new SpaceRaceServer();
         } catch (IOException e) {
-            System.err.println("Could not start server!");
+            System.err.println("Could not start server! Here's an ELI5 of why:");
             e.printStackTrace();
         }
     }
@@ -165,5 +166,13 @@ public class SpaceRaceServer extends Listener implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void killMass(int id) {
+        server.sendToAllTCP(new MassKillRequest(id));
+    }
+
+    public void sendMassEvent(MassEvent massEvent) {
+        server.sendToAllTCP(massEvent);
     }
 }

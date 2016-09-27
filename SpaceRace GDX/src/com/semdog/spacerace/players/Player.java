@@ -10,10 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.semdog.spacerace.collectables.Collectible;
-import com.semdog.spacerace.collectables.Health;
-import com.semdog.spacerace.collectables.Toast;
-import com.semdog.spacerace.collectables.WeaponPickup;
+import com.semdog.spacerace.collectables.*;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.io.SettingsManager;
@@ -445,20 +442,20 @@ public class Player implements Collideable, Disposable, Trackable {
                     float gdy = 150 * MathUtils.sin(a) + velocity.y;
 
                     if (Universe.currentUniverse instanceof MultiplayerUniverse)
-                        ((MultiplayerUniverse) Universe.currentUniverse).requestMass(new MassSpawnRequest(MassSpawnRequest.GRENADE, gx, gy, gdx, gdy));
+                        ((MultiplayerUniverse) Universe.currentUniverse).requestMass(new MassSpawnRequest(MassSpawnRequest.GRENADE, gx, gy, gdx, gdy, 3.5f));
                     else
-                        new Grenade(gx, gy, gdx, gdy);
+                        new Grenade(gx, gy, gdx, gdy, 420);
 
                     grenadeCount--;
                 }
             }
         }
 
-        if (environment != null)
+        /*if (environment != null)
             if (Vector2.dst(position.x, position.y, getEnvironmentX(), getEnvironmentY()) < environment.getRadius() + 10 && onGround) {
                 onGround = true;
                 position.set(getEnvironmentX() + (environment.getRadius() + 10) * MathUtils.cos(angle), getEnvironmentY() + (environment.getRadius() + 10) * MathUtils.sin(angle));
-            }
+            }*/
     }
 
     /**
@@ -559,7 +556,7 @@ public class Player implements Collideable, Disposable, Trackable {
             alive = false;
             ship = null;
 
-            Universe.currentUniverse.playerKilled(this, damageCause);
+            Universe.currentUniverse.playerKilled(damageCause);
             Universe.currentUniverse.stopSound("rcs");
 
             if (pilotingShip) {
@@ -761,6 +758,10 @@ public class Player implements Collideable, Disposable, Trackable {
 
         if (collectible instanceof Toast) {
             return true;
+        }
+
+        if (collectible instanceof Ammo) {
+            return weapon.getAmmoLeft() < weapon.getMaxAmmo();
         }
 
         return true;

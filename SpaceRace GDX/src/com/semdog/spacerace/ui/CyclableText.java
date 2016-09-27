@@ -39,6 +39,8 @@ public class CyclableText {
         forward = new Button(">", false, x + height / 2 + width, y + height / 2, height, height, this::forward);
         back.setColors(Color.BLACK, Colors.P_PINK);
         forward.setColors(Color.BLACK, Colors.P_PINK);
+        back.setBorders(false);
+        forward.setBorders(false);
         currentIndex = 0;
 
         back.setBeeps(false);

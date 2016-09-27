@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.misc.FontManager;
+import com.semdog.spacerace.misc.Tools;
 
 /**
  * A class which allows messages to be displayed to the user which override any
@@ -92,8 +93,10 @@ public class Notification {
         batch.begin();
         batch.setColor(0.f, 0.f, 0.f, 0.75f);
         batch.draw(Art.get("pixel_white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.setColor(Color.DARK_GRAY);
+        batch.setColor(Tools.darker(Color.DARK_GRAY));
         batch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 2 - height / 2, Gdx.graphics.getWidth() / 3, height);
+        batch.setColor(Color.DARK_GRAY);
+        batch.draw(Art.get("pixel_white"), Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 2 - height / 2 + 2, Gdx.graphics.getWidth() / 3 - 2, height - 2);
         batch.setColor(Color.WHITE);
         font.setColor(Colors.UI_WHITE);
         font.draw(batch, title, Gdx.graphics.getWidth() / 3 + 10, Gdx.graphics.getHeight() / 2 + textHeight / 2, Gdx.graphics.getWidth() / 3 - 20, 1, true);

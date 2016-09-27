@@ -25,11 +25,12 @@ public class Grenade extends Mass implements Trackable {
     private boolean exploded = false, bouncing = true;
     private float timer = 0;
     private float beepTimer = 0;
+    private int owner;
 
     private Sprite sprite;
     private ParticleEffect trail;
 
-    public Grenade(float x, float y, float dx, float dy) {
+    public Grenade(float x, float y, float dx, float dy, int owner) {
         super(x, y, dx, dy, 2, 2, 10, null, "grenade");
 
         bounds = new Rectangle(x, y, 1, 1);
@@ -66,14 +67,13 @@ public class Grenade extends Mass implements Trackable {
         }
         bounds.set(position.x, position.y, 1, 1);
 
-        if (timer > 3.5f) {
+        if (timer > 3.5f && !(Universe.currentUniverse instanceof MultiplayerUniverse)) {
             explode();
         }
     }
 
     @Override
     protected void handleMassCollision(Mass mass) {
-        Gdx.app.log("Grenade", "Hit a mass!");
         explode();
     }
 
@@ -99,7 +99,7 @@ public class Grenade extends Mass implements Trackable {
     @Override
     protected void hitPlayer(Player player) {
         if (!exploded) {
-            Universe.currentUniverse.playerKilled(player, DamageCause.EXPLOSION);
+            Universe.currentUniverse.playerKilled(DamageCause.EXPLOSION);
             explode();
         }
     }
@@ -130,7 +130,7 @@ public class Grenade extends Mass implements Trackable {
 
     @Override
     public void dispose() {
-        trail.dispose();
+        Gdx.app.postRunnable(() -> trail.dispose());
     }
 
     @Override

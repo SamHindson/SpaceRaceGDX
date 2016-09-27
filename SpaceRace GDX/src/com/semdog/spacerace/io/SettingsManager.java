@@ -3,6 +3,7 @@ package com.semdog.spacerace.io;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
+import com.semdog.spacerace.GameLoader;
 import com.semdog.spacerace.audio.SoundManager;
 
 import java.util.HashMap;
@@ -59,18 +60,19 @@ public class SettingsManager {
         preferences = Gdx.app.getPreferences("srsettings");
         keyBindings = Gdx.app.getPreferences("srskeys");
 
-        /*  If our preferences does not contain something as basic as the 'fullscreen' parameter, we can assume that it
-            does not actually exist. So we make it here */
-        if (!preferences.contains("fullscreen")) {
-            Gdx.app.error("SettingsManager", "No preferences found. Writing now...");
+        /*  If our preferences does not contain the "Prefversion" property (or the preferences are of the wrong version),
+            then it must be  created here.  */
+        if (!preferences.contains("prefversion") || !preferences.getString("prefversion").equals(GameLoader.VERSION)) {
+            System.out.println("Contains? " + preferences.contains("PREFVERSION"));
+            System.out.println("Version? " + preferences.getString("PREFVERSION"));
+            Gdx.app.error("SettingsManager", "Invalid preferences! Writing now...");
             setFullscreen(false);
             setResolution("1280x720");
             setMaster(100);
             setSfx(100);
             setMusic(100);
             writeSettings();
-
-            //  A missing preferences file most likely means the game has not been launched before, so we'll show the welcome message.
+            //  A missing preferences file (or an upgraded game) is indicative of a new player (or new game version) so we'll show the welcome message.
             firstTime = true;
         } else {
             fullscreen = preferences.getBoolean("fullscreen");
@@ -84,12 +86,12 @@ public class SettingsManager {
             height = Integer.parseInt(resolution.split("x")[1]);
         }
 
-
         keys = new HashMap<>();
 
-        // Likewise, if the key bindings doesn't contain the key for 'left', it probably also doesn't exist.
-        if (!keyBindings.contains("LEFT")) {
-            Gdx.app.error("SettingsManager", "No Controls, Man!");
+        /*  Likewise, if the key bindings doesn't contain the a property holding its version (or one holding the wrong one),
+            it starts anew */
+        if (!keyBindings.contains("KEYVERSION") || !keyBindings.getString("KEYVERSION").equals(GameLoader.VERSION)) {
+            Gdx.app.error("SettingsManager", "Invalid control scheme version! Writing now...");
             keys.put("LEFT", DEF_LEFT);
             keys.put("RIGHT", DEF_RIGHT);
             keys.put("JUMP", DEF_JUMP);
@@ -108,9 +110,11 @@ public class SettingsManager {
         } else {
             //	If it does, it simply sticks the loaded keys into our key map.
             for (Map.Entry<String, ?> entry : keyBindings.get().entrySet()) {
+                if (entry.getKey().equals("KEYVERSION")) continue;
                 keys.put(entry.getKey(), Integer.parseInt("" + entry.getValue()));
             }
         }
+
 
         //	Sets the volumes loaded from the preferences.
         SoundManager.setMasterVolume(preferences.getFloat("master"));
@@ -125,6 +129,7 @@ public class SettingsManager {
         for (Map.Entry<String, Integer> entry : keys.entrySet()) {
             keyBindings.putInteger(entry.getKey(), entry.getValue());
         }
+        keyBindings.putString("KEYVERSION", GameLoader.VERSION);
         keyBindings.flush();
     }
 
@@ -139,6 +144,7 @@ public class SettingsManager {
         preferences.putFloat("master", master);
         preferences.putFloat("sfx", sfx);
         preferences.putFloat("music", music);
+        preferences.putString("prefversion", GameLoader.VERSION);
         preferences.flush();
     }
 

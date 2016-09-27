@@ -1,6 +1,7 @@
 package com.semdog.spacerace.net.entities;
 
 import com.badlogic.gdx.graphics.Color;
+import com.semdog.spacerace.SpaceRaceServer;
 import com.semdog.spacerace.net.UniverseState;
 
 import java.util.ArrayList;
@@ -23,13 +24,16 @@ public class VirtualUniverse {
     private HashMap<Integer, VirtualPlayer> players;
     private ArrayList<VirtualPlanet> planets;
 
-    public VirtualUniverse() {
+    private SpaceRaceServer server;
+
+    public VirtualUniverse(SpaceRaceServer server) {
         currentUniverse = this;
         players = new HashMap<>();
         planets = new ArrayList<>();
 
         masses = new HashMap<>();
         massStates = new HashMap<>();
+        this.server = server;
     }
 
     /**
@@ -37,7 +41,7 @@ public class VirtualUniverse {
      */
     public void update(float dt) {
         for (Map.Entry<Integer, VirtualMass> massEntry : masses.entrySet()) {
-            massEntry.getValue().update(dt, planets);
+            massEntry.getValue().update(this, dt, planets);
             massStates.get(massEntry.getKey()).set(massEntry.getValue().getX(), massEntry.getValue().getY());
         }
     }
@@ -103,7 +107,7 @@ public class VirtualUniverse {
      * Creates a mass from a MassSpawnRequest template
      */
     public void addMass(MassSpawnRequest massSpawnRequest) {
-        VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h);
+        VirtualMass mass = new VirtualMass(massSpawnRequest.x, massSpawnRequest.y, massSpawnRequest.dx, massSpawnRequest.dy, massSpawnRequest.w, massSpawnRequest.h, massSpawnRequest.lifespan);
         mass.setId(massSpawnRequest.id);
         mass.setType(massSpawnRequest.type);
         massStates.put(massSpawnRequest.id, new MassState());
@@ -122,6 +126,7 @@ public class VirtualUniverse {
      */
     public void killMass(int id) {
         masses.remove(id);
+        server.killMass(id);
     }
 
     public HashMap<Integer, VirtualPlayer> getPlayers() {
@@ -130,5 +135,10 @@ public class VirtualUniverse {
 
     public ArrayList<VirtualPlanet> getPlanets() {
         return planets;
+    }
+
+    public void massHitGround(int id) {
+        MassEvent massEvent = new MassEvent(MassEvent.PLANET_COLLIDE, id, 0);
+        server.sendMassEvent(massEvent);
     }
 }

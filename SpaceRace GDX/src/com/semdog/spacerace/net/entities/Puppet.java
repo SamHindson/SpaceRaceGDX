@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.semdog.spacerace.collectables.Collectible;
 import com.semdog.spacerace.graphics.Art;
 import com.semdog.spacerace.graphics.Colors;
 import com.semdog.spacerace.graphics.effects.DustPuff;
 import com.semdog.spacerace.players.Team;
+import com.semdog.spacerace.universe.Collideable;
 import com.semdog.spacerace.universe.Trackable;
 import com.semdog.spacerace.universe.Universe;
 
@@ -22,7 +24,7 @@ import com.semdog.spacerace.universe.Universe;
  * @author Sam
  */
 
-public class Puppet implements Trackable {
+public class Puppet implements Trackable, Collideable {
     private String name;
     private Vector2 position;
     private Team team;
@@ -153,5 +155,25 @@ public class Puppet implements Trackable {
 
     private float getEnvironmentY() {
         return environmentY;
+    }
+
+    @Override
+    public void collectCollectible(Collectible collectible) {
+
+    }
+
+    @Override
+    public Rectangle getCollisionBounds() {
+        return bounds;
+    }
+
+    @Override
+    public boolean canCollect(Collectible collectible) {
+        return true;
+    }
+
+    @Override
+    public int getType() {
+        return Collectible.PLAYER;
     }
 }
